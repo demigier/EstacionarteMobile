@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "366591321757",
+    "project_id": "estacionartest-adef0",
+    "storage_bucket": "estacionartest-adef0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:366591321757:android:0fe36fee8851b973fa5674",
+        "android_client_info": {
+          "package_name": "com.ort.estacionarte"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "366591321757-s6fj92mi213kglbfubklg8f8des5veko.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAq1xH_SOWL-dbfOa-ED4-xZN5sCe_PHYs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "366591321757-s6fj92mi213kglbfubklg8f8des5veko.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
