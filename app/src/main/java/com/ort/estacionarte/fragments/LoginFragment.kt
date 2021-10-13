@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.core.widget.doOnTextChanged
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -21,7 +22,7 @@ class LoginFragment : Fragment() {
         fun newInstance() = LoginFragment()
     }
 
-    private lateinit var viewModel: LoginViewModel
+    private lateinit var loginViewModel: LoginViewModel
     lateinit var v: View
 
     lateinit var txtMail: EditText
@@ -45,7 +46,7 @@ class LoginFragment : Fragment() {
     //@Suppress("DEPRECATION")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
+        loginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
     }
 
     override fun onStart() {
@@ -53,7 +54,7 @@ class LoginFragment : Fragment() {
 
         btnLogin.setOnClickListener{
             if(txtMail.text.isNotEmpty() && txtPassword.text.isNotEmpty()){
-                viewModel.loginUser(txtMail.text.toString(), txtPassword.text.toString(), v)
+                loginViewModel.loginUser(txtMail.text.toString(), txtPassword.text.toString(), v)
             }else{
                 Toast.makeText(v.context, "No deje campos vacios", Toast.LENGTH_SHORT).show()
             }
@@ -61,11 +62,6 @@ class LoginFragment : Fragment() {
 
         btnRegister.setOnClickListener{
             Navigation.findNavController(v).navigate(R.id.registerFragment)
-            /*val action = LoginFragmentDirections.actionLoginToProfile(txtEmail.text.toString())
-            v.findNavController().navigate(action)*/
         }
-
-        //viewModel.registerUser("dgiercowski@gmail.com", "demian123", v)
-
     }
 }

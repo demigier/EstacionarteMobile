@@ -8,21 +8,28 @@ import androidx.core.content.ContextCompat.getMainExecutor
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.Navigation
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
+import com.ort.estacionarte.R
 import com.ort.estacionarte.entitiescountry.User
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import android.os.Bundle
+
+
+
 
 class LoginViewModel : ViewModel() {
-    var db = Firebase.firestore
-    val auth = Firebase.auth
-    var usersList: MutableList<User> = mutableListOf()
-    lateinit var userActive: User
+    private var db = Firebase.firestore
+    private val auth = Firebase.auth
+    //var usersList: MutableList<User> = mutableListOf()
+    var userActive: User? = null
    /* init {
         getFirebaseUsers()
     }*/
@@ -33,8 +40,11 @@ class LoginViewModel : ViewModel() {
                 if (task.isSuccessful) {
                     Log.d("LoginTest", auth.currentUser.toString())
                     Toast.makeText(v.context, "Usuario logueado exitosamente", Toast.LENGTH_SHORT).show()
-                    loginFirebaseUser(auth.currentUser!!.uid)
-                    //val user = auth.currentUser
+                    getFirebaseUserData(auth.currentUser!!.uid)
+
+                    val bundle = Bundle()
+                    bundle.putString("userID", auth.currentUser!!.uid)
+                    Navigation.findNavController(v).navigate(R.id.mapFragment, bundle)
                     //updateUI(user)
                 } else {
                     Log.w("LoginTest", "signInWithEmail:failure", task.exception)
@@ -51,7 +61,10 @@ class LoginViewModel : ViewModel() {
                     Log.d("RegisterTest", "createUserWithEmail:success")
                     newUser.uid = auth.currentUser!!.uid
                     this.registerFirebaseUser(newUser, v)
-                    //userActive = auth.currentUser
+
+                    val bundle = Bundle()
+                    bundle.putString("userID", auth.currentUser!!.uid)
+                    Navigation.findNavController(v).navigate(R.id.mapFragment, bundle)
                     //updateUI(user)
                 } else {
                     if(task.exception?.message == "The email address is already in use by another account."){
@@ -65,7 +78,7 @@ class LoginViewModel : ViewModel() {
             }
     }
 
-    private fun loginFirebaseUser(searchedID: String){
+    private fun getFirebaseUserData(searchedID: String){
         var usuarioEncontrado = db.collection("Users").document(searchedID)
         usuarioEncontrado.get()
             .addOnSuccessListener { usuarioEncontrado ->
@@ -96,6 +109,7 @@ class LoginViewModel : ViewModel() {
 
     fun logOut(){
         Firebase.auth.signOut()
+        userActive = null
     }
 
 }
