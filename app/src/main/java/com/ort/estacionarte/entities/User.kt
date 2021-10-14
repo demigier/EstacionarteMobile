@@ -12,7 +12,6 @@ class User(var email: String, var name: String, var lastName: String, var phoneN
     constructor() : this("","","","")
 
     lateinit var uid: String
-    var vehicles: MutableList<String> = mutableListOf()
     var active: Boolean = true
     //lateinit var location: HashMap<String,String>
 }

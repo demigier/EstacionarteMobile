@@ -35,13 +35,13 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         v = inflater.inflate(R.layout.register_fragment, container, false)
-        txtMail = v.findViewById(R.id.txtEmailNew)
+        txtMail = v.findViewById(R.id.txtBrand)
         txtPassword = v.findViewById(R.id.txtPasswordNew)
         txtPassword2 = v.findViewById(R.id.txtPasswordNew2)
-        txtName = v.findViewById(R.id.txtNameNew)
+        txtName = v.findViewById(R.id.txtLicensePlate2)
         txtLastName = v.findViewById(R.id.txtLastNameNew)
-        txtPhoneNumber = v.findViewById(R.id.txtPhoneNumberNew)
-        btnRegister = v.findViewById(R.id.btnRegisterNew)
+        txtPhoneNumber = v.findViewById(R.id.txtModel)
+        btnRegister = v.findViewById(R.id.btnEvent)
 
         return v
     }

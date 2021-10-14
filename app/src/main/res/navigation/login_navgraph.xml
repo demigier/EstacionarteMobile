@@ -33,10 +33,46 @@
         <action
             android:id="@+id/action_mapFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <argument
+            android:name="userID"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.ort.estacionarte.fragments.ProfileFragment"
         android:label="profile_fragment"
-        tools:layout="@layout/profile_fragment" />
+        tools:layout="@layout/profile_fragment" >
+        <action
+            android:id="@+id/action_profileFragment_to_vehiclesFragment"
+            app:destination="@id/vehiclesFragment" />
+        <argument android:name="userID"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/vehiclesFragment"
+        android:name="com.ort.estacionarte.fragments.VehiclesFragment"
+        android:label="vehicles_fragment"
+        tools:layout="@layout/vehicles_fragment" >
+        <action
+            android:id="@+id/action_vehiclesFragment_to_loginFragment2"
+            app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/action_vehiclesFragment_to_vehicleDetailsFragment"
+            app:destination="@id/vehicleDetailsFragment" />
+        <argument
+            android:name="userID"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/vehicleDetailsFragment"
+        android:name="com.ort.estacionarte.fragments.VehicleDetailsFragment"
+        android:label="vehicle_details_fragment"
+        tools:layout="@layout/vehicle_details_fragment" >
+        <argument
+            android:name="vehicle"
+            app:argType="com.ort.estacionarte.entities.Vehicle" />
+        <action
+            android:id="@+id/action_vehicleDetailsFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
 </navigation>

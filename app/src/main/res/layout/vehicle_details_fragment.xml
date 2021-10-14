@@ -2,38 +2,36 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/register"
+    android:id="@+id/frameLayout4"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.RegisterFragment" >
+    tools:context=".fragments.VehicleDetailsFragment">
 
     <Button
         android:id="@+id/btnEvent"
         android:layout_width="143dp"
         android:layout_height="52dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="10dp"
-        android:backgroundTint="#29A5DE"
-        android:text="@string/btn_register"
+        android:backgroundTint="#3F51B5"
+        android:text="Editar"
+        android:textColorLink="#00BCD4"
         app:layout_constraintBottom_toTopOf="@+id/guideline5"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtModel"
+        app:layout_constraintTop_toBottomOf="@+id/txtLicensePlate2"
         tools:ignore="HardcodedText" />
 
     <TextView
         android:id="@+id/logo3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="40dp"
-        android:text="Estacionarte"
+        android:text="Mi vehiculo"
         android:textSize="34sp"
         app:layout_constraintBottom_toTopOf="@+id/txtBrand"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline4"
+        app:layout_constraintTop_toBottomOf="@+id/guideline4"
         tools:ignore="HardcodedText" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -55,43 +53,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="@string/hint_mail"
-        android:inputType="textPersonName"
-        android:minHeight="48dp"
-        app:layout_constraintBottom_toTopOf="@+id/txtPasswordNew"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logo3"
-        tools:ignore="Autofill,HardcodedText,TextFields" />
-
-    <EditText
-        android:id="@+id/txtLastNameNew"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/hint_last_name"
+        android:focusable="false"
+        android:hint="Marca"
         android:inputType="textPersonName"
         android:minHeight="48dp"
         app:layout_constraintBottom_toTopOf="@+id/txtModel"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtLicensePlate2"
-        tools:ignore="Autofill,HardcodedText" />
+        app:layout_constraintTop_toBottomOf="@+id/logo3"
+        tools:ignore="Autofill,HardcodedText,TextFields" />
 
     <EditText
         android:id="@+id/txtLicensePlate2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="@string/hint_name"
+        android:focusable="false"
+        android:hint="Patente"
         android:inputType="textPersonName"
         android:minHeight="48dp"
-        app:layout_constraintBottom_toTopOf="@+id/txtLastNameNew"
+        app:layout_constraintBottom_toTopOf="@+id/btnEvent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtPasswordNew2"
+        app:layout_constraintTop_toBottomOf="@+id/txtModel"
         tools:ignore="Autofill,HardcodedText" />
 
     <EditText
@@ -99,44 +85,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="@string/hint_phone_number"
+        android:focusable="false"
+        android:hint="Modelo"
         android:inputType="textPersonName"
-        android:minHeight="48dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnEvent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtLastNameNew"
-        tools:ignore="Autofill,HardcodedText,TextFields" />
-
-    <EditText
-        android:id="@+id/txtPasswordNew"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/hint_password"
-        android:inputType="textPassword"
-        android:minHeight="48dp"
-        app:layout_constraintBottom_toTopOf="@+id/txtPasswordNew2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtBrand"
-        tools:ignore="Autofill,HardcodedText,TextFields" />
-
-    <EditText
-        android:id="@+id/txtPasswordNew2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="@string/hint_repeat_password"
-        android:inputType="textPassword"
         android:minHeight="48dp"
         app:layout_constraintBottom_toTopOf="@+id/txtLicensePlate2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtPasswordNew"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@+id/txtBrand"
         tools:ignore="Autofill,HardcodedText,TextFields" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

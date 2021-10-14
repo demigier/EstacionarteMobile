@@ -13,6 +13,9 @@
         <entry key="app/src/main/res/layout/profile_activity.xml" value="0.3484375" />
         <entry key="app/src/main/res/layout/profile_fragment.xml" value="0.3619791666666667" />
         <entry key="app/src/main/res/layout/register_fragment.xml" value="0.24739583333333334" />
+        <entry key="app/src/main/res/layout/vehicle_add_fragment.xml" value="0.3619791666666667" />
+        <entry key="app/src/main/res/layout/vehicle_details_fragment.xml" value="0.3619791666666667" />
+        <entry key="app/src/main/res/layout/vehicle_item.xml" value="0.3619791666666667" />
         <entry key="app/src/main/res/layout/vehicles_fragment.xml" value="0.3619791666666667" />
       </map>
     </option>

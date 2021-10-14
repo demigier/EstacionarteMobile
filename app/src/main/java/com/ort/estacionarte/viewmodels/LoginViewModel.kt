@@ -44,6 +44,7 @@ class LoginViewModel : ViewModel() {
 
                     val bundle = Bundle()
                     bundle.putString("userID", auth.currentUser!!.uid)
+                    Navigation.findNavController(v).popBackStack(R.id.loginFragment, true)
                     Navigation.findNavController(v).navigate(R.id.mapFragment, bundle)
                     //updateUI(user)
                 } else {
@@ -64,6 +65,7 @@ class LoginViewModel : ViewModel() {
 
                     val bundle = Bundle()
                     bundle.putString("userID", auth.currentUser!!.uid)
+                    Navigation.findNavController(v).popBackStack(R.id.loginFragment, true)
                     Navigation.findNavController(v).navigate(R.id.mapFragment, bundle)
                     //updateUI(user)
                 } else {
