@@ -1,8 +1,12 @@
 package com.ort.estacionarte.fragments
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -46,24 +50,26 @@ class MapFragment : Fragment() {
     @SuppressLint("RestrictedApi")
     override fun onStart() {
         super.onStart()
-        var userID = arguments?.getString("userID")
 
-        if (userID != null) {
+        val sharedPref: SharedPreferences = requireContext().getSharedPreferences("Session", MODE_PRIVATE)
+        var userID = sharedPref.getString("userID","default")
+
+        //var userID = arguments?.getString("userID")
+        Log.d("Prueba", userID!!)
+        if (userID != "default") {
             scope.launch {
                 parkingViewModel.getFirebaseUserData(userID)
                 delay(700)
-
             }
         }else{
             Toast.makeText(v.context, "Error: usted no esta logueado", Toast.LENGTH_SHORT).show()
             Navigation.findNavController(v).backStack
         }
 
-        //Log.d("TestArgs", user.toString())
         btnProfile.setOnClickListener{
-            val bundle = Bundle()
-            bundle.putString("userID", userID)
-            Navigation.findNavController(v).navigate(R.id.profileFragment, bundle)
+            /*val bundle = Bundle()
+            bundle.putString("userID", userID)*/
+            Navigation.findNavController(v).navigate(R.id.profileFragment)
         }
     }
     // TODO: Implement HomeFragment

@@ -19,6 +19,8 @@ class VehiclesViewModel : ViewModel() {
     var vehiclesList: MutableList<Vehicle>? = mutableListOf()
 
     public fun getFirebaseUserVehicles(searchedID: String){
+        vehiclesList!!.clear()
+
         var i = 0
         var vehiculosEncontrados = db.collection("Vehicles")
             .whereEqualTo("userID", searchedID)
@@ -49,10 +51,10 @@ class VehiclesViewModel : ViewModel() {
             .addOnSuccessListener{ documentReference ->
                 Log.d("VehicleTest", "Document edited")
                 Toast.makeText(v.context, "Vehiculo editado exitosamente", Toast.LENGTH_SHORT).show()
+                /*val bundle = Bundle()
+                bundle.putString("userID", vehicle.userID)*/
                 Navigation.findNavController(v).popBackStack(R.id.mapFragment, false)
-                val bundle = Bundle()
-                bundle.putString("userID", vehicle.userID)
-                Navigation.findNavController(v).navigate(R.id.profileFragment, bundle)
+                Navigation.findNavController(v).navigate(R.id.profileFragment)
             }
             .addOnFailureListener { e ->
                 Log.w("VehicleTest", "Error editting document", e)

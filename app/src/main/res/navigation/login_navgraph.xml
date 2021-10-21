@@ -33,9 +33,6 @@
         <action
             android:id="@+id/action_mapFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
-        <argument
-            android:name="userID"
-            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -45,8 +42,9 @@
         <action
             android:id="@+id/action_profileFragment_to_vehiclesFragment"
             app:destination="@id/vehiclesFragment" />
-        <argument android:name="userID"
-            app:argType="string" />
+        <action
+            android:id="@+id/action_profileFragment_to_configurationFragment"
+            app:destination="@id/configurationFragment" />
     </fragment>
     <fragment
         android:id="@+id/vehiclesFragment"
@@ -59,9 +57,6 @@
         <action
             android:id="@+id/action_vehiclesFragment_to_vehicleDetailsFragment"
             app:destination="@id/vehicleDetailsFragment" />
-        <argument
-            android:name="userID"
-            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/vehicleDetailsFragment"
@@ -75,4 +70,9 @@
             android:id="@+id/action_vehicleDetailsFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/configurationFragment"
+        android:name="com.ort.estacionarte.fragments.ConfigurationFragment"
+        android:label="configuration_fragment"
+        tools:layout="@layout/configuration_fragment" />
 </navigation>

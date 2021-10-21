@@ -12,15 +12,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.os.bundleOf
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.navigation.Navigation
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ort.estacionarte.R
-import com.ort.estacionarte.activities.LoginActivity
 import com.ort.estacionarte.entities.Vehicle
-import com.ort.estacionarte.viewmodels.LoginViewModel
-import com.ort.estacionarte.viewmodels.ParkingViewModel
 import com.ort.estacionarte.viewmodels.VehiclesViewModel
 import kotlinx.coroutines.*
 
@@ -48,9 +42,9 @@ class VehicleDetailsFragment : Fragment() {
     ): View? {
         v = inflater.inflate(R.layout.vehicle_details_fragment, container, false)
         txtBrand = v.findViewById(R.id.txtBrand)
-        txtModel = v.findViewById(R.id.txtModel)
+        txtModel = v.findViewById(R.id.txtTelefonoConfig)
         txtLicensePlate = v.findViewById(R.id.txtLicensePlate2)
-        btnEvent = v.findViewById(R.id.btnEvent)
+        btnEvent = v.findViewById(R.id.btnUpdateConfig)
 
         return v
     }

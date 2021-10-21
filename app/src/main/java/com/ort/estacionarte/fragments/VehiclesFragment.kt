@@ -1,5 +1,8 @@
 package com.ort.estacionarte.fragments
 
+
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.os.Handler
@@ -32,7 +35,7 @@ class VehiclesFragment : Fragment() {
     private lateinit var vehiclesAdapter: VehiclesAdapter
     lateinit var btnAdd: FloatingActionButton
 
-    public lateinit var userID: String
+    lateinit var userID: String
 
     private val parentJob = Job()
     val scope = CoroutineScope(Dispatchers.Default + parentJob)
@@ -55,8 +58,10 @@ class VehiclesFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        val sharedPref: SharedPreferences = requireContext().getSharedPreferences("Session", Context.MODE_PRIVATE)
+        userID = sharedPref.getString("userID","default")!!
+        //userID = arguments?.getString("userID")!!
 
-        userID = arguments?.getString("userID")!!
         if (userID != null) {
             Log.d("Hola", userID)
             scope.launch {

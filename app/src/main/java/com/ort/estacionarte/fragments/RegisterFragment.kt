@@ -39,9 +39,9 @@ class RegisterFragment : Fragment() {
         txtPassword = v.findViewById(R.id.txtPasswordNew)
         txtPassword2 = v.findViewById(R.id.txtPasswordNew2)
         txtName = v.findViewById(R.id.txtLicensePlate2)
-        txtLastName = v.findViewById(R.id.txtLastNameNew)
-        txtPhoneNumber = v.findViewById(R.id.txtModel)
-        btnRegister = v.findViewById(R.id.btnEvent)
+        txtLastName = v.findViewById(R.id.txtLastNameConfig)
+        txtPhoneNumber = v.findViewById(R.id.txtTelefonoConfig)
+        btnRegister = v.findViewById(R.id.btnUpdateConfig)
 
         return v
     }
@@ -59,7 +59,7 @@ class RegisterFragment : Fragment() {
             if(txtMail.text.isNotEmpty() && txtPassword.text.isNotEmpty() && txtName.text.isNotEmpty() && txtLastName.text.isNotEmpty() && txtPhoneNumber.text.isNotEmpty() && txtPassword2.text.isNotEmpty()){
                 if(txtPassword.text.toString() == txtPassword2.text.toString()){
                     var newUser = User(txtMail.text.toString(), txtName.text.toString(), txtLastName.text.toString(), txtPhoneNumber.text.toString())
-                    loginViewModel.registerUser(newUser, txtPassword.text.toString(), v)
+                    loginViewModel.registerUser(newUser, txtPassword.text.toString(), v, requireContext())
                 }else{
                     Toast.makeText(v.context, "Las contraseñas deben coincidir", Toast.LENGTH_SHORT).show()
                 }

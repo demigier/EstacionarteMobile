@@ -54,7 +54,7 @@ class LoginFragment : Fragment() {
 
         btnLogin.setOnClickListener{
             if(txtMail.text.isNotEmpty() && txtPassword.text.isNotEmpty()){
-                loginViewModel.loginUser(txtMail.text.toString(), txtPassword.text.toString(), v)
+                loginViewModel.loginUser(txtMail.text.toString(), txtPassword.text.toString(), v, requireContext())
             }else{
                 Toast.makeText(v.context, "No deje campos vacios", Toast.LENGTH_SHORT).show()
             }

@@ -8,7 +8,7 @@
     tools:context=".fragments.VehicleDetailsFragment">
 
     <Button
-        android:id="@+id/btnEvent"
+        android:id="@+id/btnUpdateConfig"
         android:layout_width="143dp"
         android:layout_height="52dp"
         android:backgroundTint="#3F51B5"
@@ -57,7 +57,7 @@
         android:hint="Marca"
         android:inputType="textPersonName"
         android:minHeight="48dp"
-        app:layout_constraintBottom_toTopOf="@+id/txtModel"
+        app:layout_constraintBottom_toTopOf="@+id/txtTelefonoConfig"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -73,15 +73,15 @@
         android:hint="Patente"
         android:inputType="textPersonName"
         android:minHeight="48dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnEvent"
+        app:layout_constraintBottom_toTopOf="@+id/btnUpdateConfig"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtModel"
+        app:layout_constraintTop_toBottomOf="@+id/txtTelefonoConfig"
         tools:ignore="Autofill,HardcodedText" />
 
     <EditText
-        android:id="@+id/txtModel"
+        android:id="@+id/txtTelefonoConfig"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
