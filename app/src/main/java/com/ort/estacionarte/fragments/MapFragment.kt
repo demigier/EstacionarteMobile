@@ -60,6 +60,8 @@ class MapFragment : Fragment() {
             scope.launch {
                 parkingViewModel.getFirebaseUserData(userID)
                 delay(700)
+
+                parkingViewModel.getFirebaseParkingsByCoords("-34.5740708197085", "-58.48696861970849")
             }
         }else{
             Toast.makeText(v.context, "Error: usted no esta logueado", Toast.LENGTH_SHORT).show()
