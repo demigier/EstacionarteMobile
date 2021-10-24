@@ -33,6 +33,9 @@
         <action
             android:id="@+id/action_mapFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
+        <action
+            android:id="@+id/action_mapFragment_to_parkingFragment"
+            app:destination="@id/parkingFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -75,4 +78,9 @@
         android:name="com.ort.estacionarte.fragments.ConfigurationFragment"
         android:label="configuration_fragment"
         tools:layout="@layout/configuration_fragment" />
+    <fragment
+        android:id="@+id/parkingFragment"
+        android:name="com.ort.estacionarte.fragments.ParkingDetailsFragment"
+        android:label="parking_fragment"
+        tools:layout="@layout/parking_details_fragment" />
 </navigation>

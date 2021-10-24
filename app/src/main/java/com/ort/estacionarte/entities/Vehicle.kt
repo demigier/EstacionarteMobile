@@ -2,6 +2,7 @@ package com.ort.estacionarte.entities
 
 import android.os.Parcel
 import android.os.Parcelable
+import kotlin.String
 
 class Vehicle(var model: String, var brand: String, var licensePlate: String, var userID: String): Parcelable {
     constructor() : this("","","","")
