@@ -8,9 +8,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.ort.estacionarte.R
@@ -32,9 +30,12 @@ class ParkingDetailsFragment : Fragment() {
     lateinit var txtParkingAddress: TextView
     lateinit var txtParkingPhoneNumber: TextView
     lateinit var txtParkingAvailableSpots: TextView
+    lateinit var spinnerVehicles: Spinner
 
     private val parentJob = Job()
     val scope = CoroutineScope(Dispatchers.Default + parentJob)
+
+    lateinit var userID: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,8 +52,12 @@ class ParkingDetailsFragment : Fragment() {
         txtParkingAddress = v.findViewById(R.id.txtParkinAddress)
         txtParkingPhoneNumber = v.findViewById(R.id.txtParkingPhoneNumber)
         txtParkingAvailableSpots = v.findViewById(R.id.txtParkingAvailableSpots)
+        spinnerVehicles = v.findViewById(R.id.spinnerVehicle)
 
         btnReserve.isEnabled = false
+
+        val sharedPref: SharedPreferences = requireContext().getSharedPreferences("Session",Context.MODE_PRIVATE)
+        userID = sharedPref.getString("userID", "default").toString()
 
         //Coordenadas obtenidas del MapFragment del mapa
         var lat: String? = arguments?.getString("lat")
@@ -62,6 +67,21 @@ class ParkingDetailsFragment : Fragment() {
 
         //Busco el estacionamiento recibido y lo cargo en la vista
         parkingDetailsVM.getParkingInfo(lat.toString(), long.toString())
+
+       /* parkingDetailsVM.getVehicles(userID)
+
+        ArrayAdapter.createFromResource(
+            requireContext(),
+            parkingDetailsVM.vehiclesList,
+            android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            spinner.adapter = adapter
+        }*/
+
+
 
         return v
     }
@@ -75,12 +95,6 @@ class ParkingDetailsFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        val sharedPref: SharedPreferences = requireContext().getSharedPreferences(
-            "Session",
-            Context.MODE_PRIVATE
-        )
-        var userID = sharedPref.getString("userID", "default")
-
         //1) Traer datos del estacionamiento seleccionado para mostrar en pantalla
         //      Nombre, direccion, precios, horarios, puntaje.
         //2) Buscar si tiene lugares disponible -> habilitar boton de reservar.
@@ -90,36 +104,28 @@ class ParkingDetailsFragment : Fragment() {
         //  Parking.takeSlot().addUser()
         //  addReserveDocument()
         //4) Por ahora hasta ahí...
+        if(userID != "default"){
+            btnReserve.setOnClickListener {
+                parkingDetailsVM.makeReservation(userID.toString(), parkingDetailsVM.parkingAct.value?.uid.toString())
+            }
 
+            parkingDetailsVM.parkingAct.observe(viewLifecycleOwner, Observer {
+                txtParkingName.text = it.parkingName
+                txtParkingAddress.text = it.address
+                txtParkingPhoneNumber.text = it.phoneNumber
+            })
 
-        btnReserve.setOnClickListener {
-            parkingDetailsVM.makeReservation(
-                userID.toString(),
-                parkingDetailsVM.parkingAct.value?.uid.toString()
-            )
+            parkingDetailsVM.availableSpots.observe(viewLifecycleOwner, Observer {
+                txtParkingAvailableSpots.text = it.size.toString()
+
+                if (it.size > 0) btnReserve.isEnabled = true
+                Log.d("Test: ParkingDetailsFragment", "spots libres:${txtParkingAvailableSpots.text}")
+            })
+
+            parkingDetailsVM.toastMessage.observe(viewLifecycleOwner, Observer {
+                Toast.makeText(v.context, it, Toast.LENGTH_SHORT).show()
+            })
         }
-
-        parkingDetailsVM.parkingAct.observe(viewLifecycleOwner, Observer {
-            txtParkingName.text = it.parkingName
-            txtParkingAddress.text = it.address
-            txtParkingPhoneNumber.text = it.phoneNumber
-        })
-
-        parkingDetailsVM.availableSpots.observe(viewLifecycleOwner, Observer {
-            txtParkingAvailableSpots.text = it.size.toString()
-
-            if (it.size > 0)
-                btnReserve.isEnabled = true
-            Log.d(
-                "Test: ParkingDetailsFragment",
-                "spots libres:${txtParkingAvailableSpots.text}"
-            )
-
-        })
-
-        parkingDetailsVM.toastMessage.observe(viewLifecycleOwner, Observer {
-            Toast.makeText(v.context, it, Toast.LENGTH_SHORT).show()
-        })
 
     }
 

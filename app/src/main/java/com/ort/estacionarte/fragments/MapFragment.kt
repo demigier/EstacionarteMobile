@@ -79,10 +79,7 @@ class MapFragment : Fragment() {
 
             //location = MapViewModel.addressToLocation(addres)
 
-            val bundle = bundleOf(
-                "lat" to "50",
-                "long" to "50"
-            )
+            val bundle = bundleOf("lat" to "100","long" to "100")
 
             Navigation.findNavController(v).navigate(R.id.parkingFragment,bundle)
         }
