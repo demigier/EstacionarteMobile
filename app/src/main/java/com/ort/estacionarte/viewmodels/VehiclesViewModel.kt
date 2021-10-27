@@ -72,10 +72,10 @@ class VehiclesViewModel : ViewModel() {
             .addOnSuccessListener{ documentReference ->
                 Log.d("VehicleTest", "Document added")
                 Toast.makeText(v.context, "Vehiculo añadido exitosamente", Toast.LENGTH_SHORT).show()
-                val bundle = Bundle()
-                bundle.putString("userID", vehicle.userID)
+                /*val bundle = Bundle()
+                bundle.putString("userID", vehicle.userID)*/
                 Navigation.findNavController(v).popBackStack(R.id.mapFragment, false)
-                Navigation.findNavController(v).navigate(R.id.profileFragment, bundle)
+                Navigation.findNavController(v).navigate(R.id.profileFragment)
             }
             .addOnFailureListener { e ->
                 Log.w("VehicleTest", "Error adding document", e)
@@ -83,7 +83,18 @@ class VehiclesViewModel : ViewModel() {
             }
     }
 
-    /*mapOf(
-                    "age" to 21
-                "favorites.color" to "Red"  */
+    @SuppressLint("RestrictedApi")
+    public fun deleteFirebaseUserVehicle(vehicleID: String, v: View){
+        db.collection("Vehicles").document(vehicleID).delete()
+            .addOnSuccessListener{ documentReference ->
+                Log.d("VehicleTest", "Vehicle removed succesfully")
+                Toast.makeText(v.context, "Vehiculo eliminado exitosamente", Toast.LENGTH_SHORT).show()
+                Navigation.findNavController(v).popBackStack(R.id.mapFragment, false)
+                Navigation.findNavController(v).navigate(R.id.profileFragment)
+            }
+            .addOnFailureListener { e ->
+                Log.w("VehicleTest", "Error deletting document", e)
+                Toast.makeText(v.context, "No se pudo eliminar el vehiculo debido a un error", Toast.LENGTH_SHORT).show()
+            }
+    }
 }

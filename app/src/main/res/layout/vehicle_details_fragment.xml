@@ -5,6 +5,7 @@
     android:id="@+id/frameLayout4"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".fragments.VehicleDetailsFragment">
 
     <Button
@@ -14,11 +15,24 @@
         android:backgroundTint="#3F51B5"
         android:text="Editar"
         android:textColorLink="#00BCD4"
+        app:layout_constraintBottom_toTopOf="@+id/btnDelete"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtLicensePlate2"
+        tools:ignore="HardcodedText" />
+
+    <Button
+        android:id="@+id/btnDelete"
+        android:layout_width="143dp"
+        android:layout_height="52dp"
+        android:backgroundTint="#EF4A4A"
+        android:text="Eliminar"
+        android:textColorLink="#00BCD4"
         app:layout_constraintBottom_toTopOf="@+id/guideline5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtLicensePlate2"
+        app:layout_constraintTop_toBottomOf="@+id/btnUpdateConfig"
         tools:ignore="HardcodedText" />
 
     <TextView

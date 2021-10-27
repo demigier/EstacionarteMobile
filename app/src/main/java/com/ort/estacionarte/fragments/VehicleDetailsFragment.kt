@@ -12,6 +12,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.navigation.Navigation
 import com.ort.estacionarte.R
 import com.ort.estacionarte.entities.Vehicle
@@ -34,7 +35,7 @@ class VehicleDetailsFragment : Fragment() {
     lateinit var txtModel: EditText
     lateinit var txtLicensePlate: EditText
     lateinit var btnEvent: Button
-
+    lateinit var btnDelete: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +46,7 @@ class VehicleDetailsFragment : Fragment() {
         txtModel = v.findViewById(R.id.txtTelefonoConfig)
         txtLicensePlate = v.findViewById(R.id.txtLicensePlate2)
         btnEvent = v.findViewById(R.id.btnUpdateConfig)
+        btnDelete = v.findViewById(R.id.btnDelete)
 
         return v
     }
@@ -65,15 +67,17 @@ class VehicleDetailsFragment : Fragment() {
                 txtModel.setFocusableInTouchMode(true)
                 txtLicensePlate.setFocusableInTouchMode(true)
                 btnEvent.text = "Agregar"
+                btnDelete.setVisibility(View.INVISIBLE);
 
                 btnEvent.setOnClickListener{
-                    vehicleViewModel.addFirebaseUserVehicle(Vehicle(txtBrand.text.toString(), txtModel.text.toString(), txtLicensePlate.text.toString(), vehicle.userID), v)
+                    vehicleViewModel.addFirebaseUserVehicle(Vehicle(txtModel.text.toString(), txtBrand.text.toString(), txtLicensePlate.text.toString(), vehicle.userID), v)
                 }
             }else{
                 Log.d("VehicleDetailsTest", vehicle.model)
                 txtBrand.setText(vehicle.brand, TextView.BufferType.EDITABLE);
                 txtModel.setText(vehicle.model, TextView.BufferType.EDITABLE);
                 txtLicensePlate.setText(vehicle.licensePlate, TextView.BufferType.EDITABLE);
+                btnDelete.setVisibility(View.VISIBLE);
 
                 btnEvent.setOnClickListener{
                     if(btnEvent.text == "Editar"){
@@ -88,6 +92,9 @@ class VehicleDetailsFragment : Fragment() {
                         vehicle.licensePlate = txtLicensePlate.text.toString()
                         vehicleViewModel.updateFirebaseUserVehicle(vehicle, v)
                     }
+                }
+                btnDelete.setOnClickListener{
+                    vehicleViewModel.deleteFirebaseUserVehicle(vehicle.uid, v)
                 }
             }
         }else{
