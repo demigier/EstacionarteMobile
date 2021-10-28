@@ -44,43 +44,72 @@ class VehiclesViewModel : ViewModel() {
 
     @SuppressLint("RestrictedApi")
     public fun updateFirebaseUserVehicle(vehicle: Vehicle, v: View){
-        db.collection("Vehicles").document(vehicle.uid).update(mapOf(
-            "brand" to vehicle.brand,
-            "model" to vehicle.model,
-            "licensePlate" to vehicle.licensePlate))
-            .addOnSuccessListener{ documentReference ->
-                Log.d("VehicleTest", "Document edited")
-                Toast.makeText(v.context, "Vehiculo editado exitosamente", Toast.LENGTH_SHORT).show()
-                /*val bundle = Bundle()
-                bundle.putString("userID", vehicle.userID)*/
-                Navigation.findNavController(v).popBackStack(R.id.mapFragment, false)
-                Navigation.findNavController(v).navigate(R.id.profileFragment)
-            }
-            .addOnFailureListener { e ->
-                Log.w("VehicleTest", "Error editting document", e)
-                Toast.makeText(v.context, "No se pudo editar el vehiculo debido a un error", Toast.LENGTH_SHORT).show()
+        db.collection("Vehicles").whereEqualTo("licensePlate", vehicle.licensePlate).whereEqualTo("userID", vehicle.userID).get()
+            .addOnSuccessListener { vehiclesFounded ->
+                if (vehiclesFounded.documents.size == 0) {
+                    db.collection("Vehicles").document(vehicle.uid).update(
+                        mapOf(
+                            "brand" to vehicle.brand,
+                            "model" to vehicle.model,
+                            "licensePlate" to vehicle.licensePlate
+                        )
+                    )
+                        .addOnSuccessListener { documentReference ->
+                            Log.d("VehicleTest", "Document edited")
+                            Toast.makeText(
+                                v.context,
+                                "Vehiculo editado exitosamente",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            /*val bundle = Bundle()
+                    bundle.putString("userID", vehicle.userID)*/
+                            Navigation.findNavController(v).popBackStack(R.id.mapFragment, false)
+                            Navigation.findNavController(v).navigate(R.id.profileFragment)
+                        }
+                        .addOnFailureListener { e ->
+                            Log.w("VehicleTest", "Error editting document", e)
+                            Toast.makeText(
+                                v.context,
+                                "No se pudo editar el vehiculo debido a un error",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                }else{
+                    Log.w("VehicleTest", "Ya existe esa patente")
+                    Toast.makeText(v.context, "Ya tienes un vehiculo con esa patente", Toast.LENGTH_SHORT).show()
+                }
+
             }
     }
 
     @SuppressLint("RestrictedApi")
     public fun addFirebaseUserVehicle(vehicle: Vehicle, v: View){
-        db.collection("Vehicles").document().set(mapOf(
-            "brand" to vehicle.brand,
-            "model" to vehicle.model,
-            "licensePlate" to vehicle.licensePlate,
-            "userID" to vehicle.userID))
-            .addOnSuccessListener{ documentReference ->
-                Log.d("VehicleTest", "Document added")
-                Toast.makeText(v.context, "Vehiculo añadido exitosamente", Toast.LENGTH_SHORT).show()
-                /*val bundle = Bundle()
-                bundle.putString("userID", vehicle.userID)*/
-                Navigation.findNavController(v).popBackStack(R.id.mapFragment, false)
-                Navigation.findNavController(v).navigate(R.id.profileFragment)
+        db.collection("Vehicles").whereEqualTo("licensePlate", vehicle.licensePlate).whereEqualTo("userID", vehicle.userID).get()
+            .addOnSuccessListener { vehiclesFounded ->
+                if (vehiclesFounded.documents.size == 0) {
+                    db.collection("Vehicles").document().set(mapOf(
+                        "brand" to vehicle.brand,
+                        "model" to vehicle.model,
+                        "licensePlate" to vehicle.licensePlate,
+                        "userID" to vehicle.userID))
+                        .addOnSuccessListener{ documentReference ->
+                            Log.d("VehicleTest", "Document added")
+                            Toast.makeText(v.context, "Vehiculo añadido exitosamente", Toast.LENGTH_SHORT).show()
+                            /*val bundle = Bundle()
+                            bundle.putString("userID", vehicle.userID)*/
+                            Navigation.findNavController(v).popBackStack(R.id.mapFragment, false)
+                            Navigation.findNavController(v).navigate(R.id.profileFragment)
+                        }
+                        .addOnFailureListener { e ->
+                            Log.w("VehicleTest", "Error adding document", e)
+                            Toast.makeText(v.context, "No se pudo añadir el vehiculo debido a un error", Toast.LENGTH_SHORT).show()
+                        }
+                }else{
+                    Log.w("VehicleTest", "Ya existe esa patente")
+                    Toast.makeText(v.context, "Ya tienes un vehiculo con esa patente", Toast.LENGTH_SHORT).show()
+                }
             }
-            .addOnFailureListener { e ->
-                Log.w("VehicleTest", "Error adding document", e)
-                Toast.makeText(v.context, "No se pudo añadir el vehiculo debido a un error", Toast.LENGTH_SHORT).show()
-            }
+
     }
 
     @SuppressLint("RestrictedApi")

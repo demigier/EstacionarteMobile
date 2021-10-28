@@ -70,7 +70,11 @@ class VehicleDetailsFragment : Fragment() {
                 btnDelete.setVisibility(View.INVISIBLE);
 
                 btnEvent.setOnClickListener{
-                    vehicleViewModel.addFirebaseUserVehicle(Vehicle(txtModel.text.toString(), txtBrand.text.toString(), txtLicensePlate.text.toString(), vehicle.userID), v)
+                    if(txtBrand.text.toString().isNotEmpty() && txtModel.text.toString().isNotEmpty() && txtLicensePlate.text.toString().isNotEmpty()){
+                        vehicleViewModel.addFirebaseUserVehicle(Vehicle(txtModel.text.toString(), txtBrand.text.toString(), txtLicensePlate.text.toString(), vehicle.userID), v)
+                    }else{
+                        Toast.makeText(v.context, "No deje campos vacios", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }else{
                 Log.d("VehicleDetailsTest", vehicle.model)
@@ -90,7 +94,13 @@ class VehicleDetailsFragment : Fragment() {
                         vehicle.brand = txtBrand.text.toString()
                         vehicle.model = txtModel.text.toString()
                         vehicle.licensePlate = txtLicensePlate.text.toString()
-                        vehicleViewModel.updateFirebaseUserVehicle(vehicle, v)
+
+                        if(txtBrand.text.toString().isNotEmpty() && txtModel.text.toString().isNotEmpty() && txtLicensePlate.text.toString().isNotEmpty()){
+                            vehicleViewModel.updateFirebaseUserVehicle(vehicle, v)
+                        }else{
+                            Toast.makeText(v.context, "No deje campos vacios", Toast.LENGTH_SHORT).show()
+                        }
+
                     }
                 }
                 btnDelete.setOnClickListener{

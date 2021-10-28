@@ -48,12 +48,14 @@ class LoginViewModel : ViewModel() {
                     bundle.putString("userID", auth.currentUser!!.uid)
                     Navigation.findNavController(v).popBackStack(R.id.loginFragment, true)
                     Navigation.findNavController(v).navigate(R.id.mapFragment, bundle)*/
-
-                    val sharedPref: SharedPreferences = c.getSharedPreferences("Session", MODE_PRIVATE)
-                    val editor = sharedPref.edit()
-                    editor.putString("userID", auth.currentUser!!.uid)
-                    editor.apply()
-                    Navigation.findNavController(v).navigate(R.id.mapFragment)
+                    //if(userActive != null){
+                        val sharedPref: SharedPreferences = c.getSharedPreferences("Session", MODE_PRIVATE)
+                        val editor = sharedPref.edit()
+                        editor.putString("userID", auth.currentUser!!.uid)
+                        editor.apply()
+                        Navigation.findNavController(v).popBackStack(R.id.loginFragment, true)
+                        Navigation.findNavController(v).navigate(R.id.mapFragment)
+                    //}
                 } else {
                     Log.w("LoginTest", "signInWithEmail:failure", task.exception)
                     Toast.makeText(v.context, "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show()
