@@ -62,4 +62,7 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.1.1'
 
     implementation "io.grpc:grpc-okhttp:1.32.2"
+
+    //GOOGLE MAPS
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
 }

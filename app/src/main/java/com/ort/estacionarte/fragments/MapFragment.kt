@@ -11,13 +11,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.FragmentActivity
 import androidx.navigation.Navigation
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ort.estacionarte.R
 import com.ort.estacionarte.viewmodels.ParkingDetailsViewModel
 import kotlinx.coroutines.*
 
-class MapFragment : Fragment() {
+
+
+
+class MapFragment : Fragment(), OnMapReadyCallback {
 
     companion object {
         fun newInstance() = MapFragment()
@@ -32,6 +39,8 @@ class MapFragment : Fragment() {
     lateinit var btnProfile: FloatingActionButton
     lateinit var btnToParking: FloatingActionButton
 
+    private lateinit var map: GoogleMap
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,6 +48,10 @@ class MapFragment : Fragment() {
         v = inflater.inflate(R.layout.map_fragment, container, false)
         btnProfile = v.findViewById(R.id.btnAdd)
         btnToParking = v.findViewById(R.id.btnToParking)
+        //createMapFragment()
+
+        val mapFragment = childFragmentManager.findFragmentById(R.id.mapItem) as SupportMapFragment?
+        mapFragment!!.getMapAsync(this)
 
         return v
     }
@@ -55,22 +68,6 @@ class MapFragment : Fragment() {
         val sharedPref: SharedPreferences = requireContext().getSharedPreferences("Session", MODE_PRIVATE)
         var userID = sharedPref.getString("userID","default")
 
-        //var userID = arguments?.getString("userID")
-
-        Log.d("Prueba", userID!!)
-  /*     if (userID != "default") {
-            scope.launch {
-                parkingViewModel.getFirebaseUserData(userID)
-                delay(700)
-
-                parkingViewModel.getFirebaseParkingsByCoords("-34.5740708197085", "-58.48696861970849")
-            }
-        }else{
-            Toast.makeText(v.context, "Error: usted no esta logueado", Toast.LENGTH_SHORT).show()
-            Navigation.findNavController(v).backStack
-        }
-*/
-
         btnProfile.setOnClickListener {
             Navigation.findNavController(v).navigate(R.id.profileFragment)
         }
@@ -84,5 +81,20 @@ class MapFragment : Fragment() {
             Navigation.findNavController(v).navigate(R.id.parkingFragment,bundle)
         }
     }
-    // TODO: Implement HomeFragment
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        Log.d("TestMap", "HOla")
+        //map = googleMap
+        map = googleMap
+    }
+
+    /*private fun createMapFragment() {
+        //val mapFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.fragmentMap) as SupportMapFragment?
+        val mapFragment = childFragmentManager.findFragmentById(R.id.mapItem) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+
+        /*val mapFragment = childFragmentManager.findFragmentById(R.id.fragmentMap) as SupportMapFragment?
+
+        mapFragment!!.getMapAsync(this)*/
+    }*/
 }

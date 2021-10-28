@@ -12,7 +12,8 @@
         <entry key="app/src/main/res/layout/home_activity.xml" value="0.3619791666666667" />
         <entry key="app/src/main/res/layout/login_activity.xml" value="0.25" />
         <entry key="app/src/main/res/layout/login_fragment.xml" value="0.22" />
-        <entry key="app/src/main/res/layout/map_fragment.xml" value="0.3619791666666667" />
+        <entry key="app/src/main/res/layout/map_fragment.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/map_item.xml" value="0.22" />
         <entry key="app/src/main/res/layout/parking_details_fragment.xml" value="0.33" />
         <entry key="app/src/main/res/layout/parking_fragment.xml" value="0.27311522048364156" />
         <entry key="app/src/main/res/layout/profile_activity.xml" value="0.3484375" />
