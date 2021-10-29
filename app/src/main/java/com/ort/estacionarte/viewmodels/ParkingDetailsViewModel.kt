@@ -22,6 +22,7 @@ class ParkingDetailsViewModel : ViewModel() {
     var userAct: User? = null
     var parkingAct = MutableLiveData<Parking>()
     var availableSpots = MutableLiveData<MutableList<String>>()
+    var parkingList = MutableLiveData<MutableList<Parking>>()
     var toastMessage = MutableLiveData<kotlin.String>()
     //Variables para corrutinas
     //private val parentJob = Job()
@@ -83,7 +84,7 @@ class ParkingDetailsViewModel : ViewModel() {
 
     }
 
-    fun getParkingInfo(lat: String, long: String) {
+    fun getParkingInfo(lat: Double, long: Double) {
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -102,7 +103,7 @@ class ParkingDetailsViewModel : ViewModel() {
         }
     }
 
-    suspend fun getParkingByLocation(lat: String, long: String): Parking? {
+    suspend fun getParkingByLocation(lat: Double, long: Double): Parking? {
         var pAux: Parking? = null
 
         var docs = db.collection("ParkingUsers")
@@ -181,7 +182,7 @@ class ParkingDetailsViewModel : ViewModel() {
         return vehiclesList
     }
 
-    suspend fun hasReservations(userId: String): Boolean? {
+    private suspend fun hasReservations(userId: String): Boolean? {
         var hasReservations = false
         var docs = db.collection("Reservations")
             .limit(1)
@@ -203,6 +204,32 @@ class ParkingDetailsViewModel : ViewModel() {
         return hasReservations
     }
 
+    fun getParkings() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try{
+                var pList: MutableList<Parking> = mutableListOf()
+
+                var docs = db.collection("ParkingUsers")
+                    .get()
+                    .await()
+                var i = 0
+                if (docs != null) {
+                    for (parking in docs) {
+                        pList.add(parking.toObject())
+                        pList[i].uid = parking.id
+                        i++
+                        /*pAux = parking.toObject()
+                        pAux.uid = parking.id*/
+                    }
+                    parkingList.postValue(pList)
+                } else {
+                    Log.d("Test: ParkingDetailsVM", "No existe un Estacionameinto en esa localización.")
+                }
+            }catch (e: Exception){
+                Log.d("ParkingDetailsVM", e.message.toString())
+            }
+        }
+    }
 
 }
 

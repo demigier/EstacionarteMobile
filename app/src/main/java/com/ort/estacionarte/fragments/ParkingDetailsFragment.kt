@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.gms.maps.model.LatLng
 import com.ort.estacionarte.R
 import com.ort.estacionarte.viewmodels.ParkingDetailsViewModel
 import kotlinx.coroutines.*
@@ -60,13 +61,13 @@ class ParkingDetailsFragment : Fragment() {
         userID = sharedPref.getString("userID", "default").toString()
 
         //Coordenadas obtenidas del MapFragment del mapa
-        var lat: String? = arguments?.getString("lat")
-        var long: String? = arguments?.getString("long")
+        var lat: Double? = arguments?.getDouble("lat")
+        var long: Double? = arguments?.getDouble("long")
 
         Log.d("Test: ParkingFragment", "lat: $lat long: $long")
 
         //Busco el estacionamiento recibido y lo cargo en la vista
-        parkingDetailsVM.getParkingInfo(lat.toString(), long.toString())
+        parkingDetailsVM.getParkingInfo(lat!!, long!!)
 
        /* parkingDetailsVM.getVehicles(userID)
 
