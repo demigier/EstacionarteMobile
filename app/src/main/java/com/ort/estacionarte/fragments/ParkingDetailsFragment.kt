@@ -1,6 +1,8 @@
 package com.ort.estacionarte.fragments
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
@@ -124,7 +126,21 @@ class ParkingDetailsFragment : Fragment() {
             })
 
             parkingDetailsVM.toastMessage.observe(viewLifecycleOwner, Observer {
-                Toast.makeText(v.context, it, Toast.LENGTH_SHORT).show()
+                //Toast.makeText(v.context, it, Toast.LENGTH_SHORT).show()
+
+                val builder: AlertDialog.Builder? = activity?.let {
+                    AlertDialog.Builder(it)
+                }
+                builder?.setMessage(it)
+                    ?.setTitle("Atencion")
+                builder?.apply {
+                    setNegativeButton("Aceptar",
+                        DialogInterface.OnClickListener { dialog, id ->
+                            dialog.cancel()
+                        })
+                }
+                builder?.create()
+                builder?.show()
             })
         }
 

@@ -47,7 +47,13 @@ class VehiclesViewModel : ViewModel() {
     public fun updateFirebaseUserVehicle(vehicle: Vehicle, v: View){
         db.collection("Vehicles").whereEqualTo("licensePlate", vehicle.licensePlate).whereEqualTo("userID", vehicle.userID).get()
             .addOnSuccessListener { vehiclesFounded ->
-                if (vehiclesFounded.documents.size == 0) {
+                var count = 0
+                for(v in vehiclesFounded){
+                    if(v.id == vehicle.uid){
+                        count++
+                    }
+                }
+                if (vehiclesFounded.documents.size == 0 || count == 1) {
                     db.collection("Vehicles").document(vehicle.uid).update(
                         mapOf(
                             "brand" to vehicle.brand,
