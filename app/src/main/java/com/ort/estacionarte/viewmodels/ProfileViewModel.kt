@@ -64,7 +64,8 @@ class ProfileViewModel : ViewModel() {
         editor.remove("userID")
         editor.apply()
 
-        Navigation.findNavController(v).popBackStack(R.id.loginFragment, true)
+        //Navigation.findNavController(v).popBackStack(R.id.loginFragment, true)
+        Navigation.findNavController(v).popBackStack(R.id.mapFragment, true)
         Navigation.findNavController(v).navigate(R.id.loginFragment)
     }
 }

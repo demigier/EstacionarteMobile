@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.os.Handler
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +16,10 @@ import androidx.navigation.Navigation
 import com.ort.estacionarte.R
 import com.ort.estacionarte.entitiescountry.User
 import com.ort.estacionarte.viewmodels.ProfileViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class ConfigurationFragment : Fragment() {
 
@@ -23,6 +29,9 @@ class ConfigurationFragment : Fragment() {
 
     private lateinit var profileViewModel: ProfileViewModel
     lateinit var v: View
+
+    private val parentJob = Job()
+    val scope = CoroutineScope(Dispatchers.Default + parentJob)
 
     lateinit var txtName: EditText
     lateinit var txtLastName: EditText
@@ -59,23 +68,30 @@ class ConfigurationFragment : Fragment() {
         var userID = sharedPref.getString("userID","default")
 
         if(userID != "default"){
-            txtName.setText(profileViewModel.userActive!!.name, TextView.BufferType.EDITABLE);
-            txtLastName.setText(profileViewModel.userActive!!.lastName, TextView.BufferType.EDITABLE);
-            txtPhoneNumber.setText(profileViewModel.userActive!!.phoneNumber, TextView.BufferType.EDITABLE);
+            scope.launch {
+                profileViewModel.getFirebaseUserData(userID.toString())
+            }
 
-            btnUpdate.setOnClickListener{
-                if(txtName.text.isNotEmpty() && txtLastName.text.isNotEmpty() && txtPhoneNumber.text.isNotEmpty()){
-                    profileViewModel.updateUser(txtName.text.toString(), txtLastName.text.toString(), txtPhoneNumber.text.toString(), userID!!, v, requireContext())
-                }else{
-                    Toast.makeText(v.context, "No deje campos vacios", Toast.LENGTH_SHORT).show()
+            val handler = Handler()
+            handler.postDelayed(java.lang.Runnable {
+                txtName.setText(profileViewModel.userActive!!.name, TextView.BufferType.EDITABLE);
+                txtLastName.setText(profileViewModel.userActive!!.lastName, TextView.BufferType.EDITABLE);
+                txtPhoneNumber.setText(profileViewModel.userActive!!.phoneNumber, TextView.BufferType.EDITABLE);
+
+                btnUpdate.setOnClickListener{
+                    if(txtName.text.isNotEmpty() && txtLastName.text.isNotEmpty() && txtPhoneNumber.text.isNotEmpty()){
+                        profileViewModel.updateUser(txtName.text.toString(), txtLastName.text.toString(), txtPhoneNumber.text.toString(), userID!!, v, requireContext())
+                    }else{
+                        Toast.makeText(v.context, "No deje campos vacios", Toast.LENGTH_SHORT).show()
+                    }
+                    /*val action = LoginDirections.actionLoginToProfile(txtEmail.text.toString())
+                    v.findNavController().navigate(action)*/
                 }
-                /*val action = LoginDirections.actionLoginToProfile(txtEmail.text.toString())
-                v.findNavController().navigate(action)*/
-            }
 
-            txtLogout.setOnClickListener{
-                profileViewModel.logOut(requireContext(), v)
-            }
+                txtLogout.setOnClickListener{
+                    profileViewModel.logOut(requireContext(), v)
+                }
+            }, 600)
         }else{
             Toast.makeText(v.context, "Error: usted no esta logueado", Toast.LENGTH_SHORT).show()
             Navigation.findNavController(v).backStack

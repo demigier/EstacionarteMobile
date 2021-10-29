@@ -1,5 +1,7 @@
 package com.ort.estacionarte.fragments
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -61,13 +63,31 @@ class RegisterFragment : Fragment() {
                     var newUser = User(txtMail.text.toString(), txtName.text.toString(), txtLastName.text.toString(), txtPhoneNumber.text.toString())
                     loginViewModel.registerUser(newUser, txtPassword.text.toString(), v, requireContext())
                 }else{
-                    Toast.makeText(v.context, "Las contraseñas deben coincidir", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(v.context, "Las contraseñas deben coincidir", Toast.LENGTH_SHORT).show()
+                    sendMessage("Las contraseñas deben coincidir", "Atencion")
                 }
             }else{
-                Toast.makeText(v.context, "No deje campos vacios", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(v.context, "No deje campos vacios", Toast.LENGTH_SHORT).show()
+                sendMessage("No deje campos vacios", "Atencion")
             }
             /*val action = LoginDirections.actionLoginToProfile(txtEmail.text.toString())
             v.findNavController().navigate(action)*/
         }
+    }
+
+    private fun sendMessage(msg: String, title: String){
+        val builder: AlertDialog.Builder? = activity?.let {
+            AlertDialog.Builder(it)
+        }
+        builder?.setMessage(msg)
+            ?.setTitle(title)
+        builder?.apply {
+            setNegativeButton("Aceptar",
+                DialogInterface.OnClickListener { dialog, id ->
+                    dialog.cancel()
+                })
+        }
+        builder?.create()
+        builder?.show()
     }
 }

@@ -75,7 +75,8 @@ class VehicleDetailsFragment : Fragment() {
                     if(txtBrand.text.toString().isNotEmpty() && txtModel.text.toString().isNotEmpty() && txtLicensePlate.text.toString().isNotEmpty()){
                         vehicleViewModel.addFirebaseUserVehicle(Vehicle(txtModel.text.toString(), txtBrand.text.toString(), txtLicensePlate.text.toString(), vehicle.userID), v)
                     }else{
-                        Toast.makeText(v.context, "No deje campos vacios", Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(v.context, "No deje campos vacios", Toast.LENGTH_SHORT).show()
+                        sendMessage("No deje campos vacios", "Atencion")
                     }
                 }
             }else{
@@ -100,7 +101,8 @@ class VehicleDetailsFragment : Fragment() {
                         if(txtBrand.text.toString().isNotEmpty() && txtModel.text.toString().isNotEmpty() && txtLicensePlate.text.toString().isNotEmpty()){
                             vehicleViewModel.updateFirebaseUserVehicle(vehicle, v)
                         }else{
-                            Toast.makeText(v.context, "No deje campos vacios", Toast.LENGTH_SHORT).show()
+                            //Toast.makeText(v.context, "No deje campos vacios", Toast.LENGTH_SHORT).show()
+                            sendMessage("No deje campos vacios", "Atencion")
                         }
 
                     }
@@ -126,9 +128,26 @@ class VehicleDetailsFragment : Fragment() {
                 }
             }
         }else{
-            Toast.makeText(v.context, "Error", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(v.context, "Error", Toast.LENGTH_SHORT).show()
+            sendMessage("Error no identificado", "Error")
             Navigation.findNavController(v).backStack
         }
     }
-    // TODO: Implement VehicleDetailsFragment
+
+
+    private fun sendMessage(msg: String, title: String){
+        val builder: AlertDialog.Builder? = activity?.let {
+            AlertDialog.Builder(it)
+        }
+        builder?.setMessage(msg)
+            ?.setTitle(title)
+        builder?.apply {
+            setNegativeButton("Aceptar",
+                DialogInterface.OnClickListener { dialog, id ->
+                    dialog.cancel()
+                })
+        }
+        builder?.create()
+        builder?.show()
+    }
 }
