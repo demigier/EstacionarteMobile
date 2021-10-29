@@ -1,6 +1,8 @@
 package com.ort.estacionarte.fragments
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.DialogInterface
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -104,7 +106,23 @@ class VehicleDetailsFragment : Fragment() {
                     }
                 }
                 btnDelete.setOnClickListener{
-                    vehicleViewModel.deleteFirebaseUserVehicle(vehicle.uid, v)
+                    val builder: AlertDialog.Builder? = activity?.let {
+                        AlertDialog.Builder(it)
+                    }
+                    builder?.setMessage("Esta seguro que desea eliminar su vehiculo")
+                        ?.setTitle("ELiminar vehiculo")
+                    builder?.apply {
+                        setPositiveButton("Aceptar",
+                            DialogInterface.OnClickListener { dialog, id ->
+                                vehicleViewModel.deleteFirebaseUserVehicle(vehicle.uid, v)
+                            })
+                        setNegativeButton("Cancelar",
+                            DialogInterface.OnClickListener { dialog, id ->
+                                dialog.cancel()
+                            })
+                    }
+                    builder?.create()
+                    builder?.show()
                 }
             }
         }else{

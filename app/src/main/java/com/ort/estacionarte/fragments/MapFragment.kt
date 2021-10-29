@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.location.Location
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -19,6 +20,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -106,7 +108,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
         map.uiSettings.isCompassEnabled = true
         map.uiSettings.isMapToolbarEnabled = true
         map.uiSettings.isTiltGesturesEnabled = true
-
+        //map.moveCamera(CameraUpdateFactory.newLatLng(map.))
         parkingDetailsViewModel.getParkings()
 
         parkingDetailsViewModel.parkingList.observe(viewLifecycleOwner, Observer {parkingList ->

@@ -24,6 +24,7 @@ class VehiclesViewModel : ViewModel() {
         var i = 0
         var vehiculosEncontrados = db.collection("Vehicles")
             .whereEqualTo("userID", searchedID)
+            .whereEqualTo("active", true)
         vehiculosEncontrados.get()
             .addOnSuccessListener { vehiclesFounded ->
                 if (vehiclesFounded != null) {
@@ -91,7 +92,8 @@ class VehiclesViewModel : ViewModel() {
                         "brand" to vehicle.brand,
                         "model" to vehicle.model,
                         "licensePlate" to vehicle.licensePlate,
-                        "userID" to vehicle.userID))
+                        "userID" to vehicle.userID,
+                        "active" to true))
                         .addOnSuccessListener{ documentReference ->
                             Log.d("VehicleTest", "Document added")
                             Toast.makeText(v.context, "Vehiculo añadido exitosamente", Toast.LENGTH_SHORT).show()
@@ -114,7 +116,19 @@ class VehiclesViewModel : ViewModel() {
 
     @SuppressLint("RestrictedApi")
     public fun deleteFirebaseUserVehicle(vehicleID: String, v: View){
-        db.collection("Vehicles").document(vehicleID).delete()
+        /*db.collection("Vehicles").document(vehicleID).delete()
+            .addOnSuccessListener{ documentReference ->
+                Log.d("VehicleTest", "Vehicle removed succesfully")
+                Toast.makeText(v.context, "Vehiculo eliminado exitosamente", Toast.LENGTH_SHORT).show()
+                Navigation.findNavController(v).popBackStack(R.id.mapFragment, false)
+                Navigation.findNavController(v).navigate(R.id.profileFragment)
+            }
+            .addOnFailureListener { e ->
+                Log.w("VehicleTest", "Error deletting document", e)
+                Toast.makeText(v.context, "No se pudo eliminar el vehiculo debido a un error", Toast.LENGTH_SHORT).show()
+            }*/
+
+        db.collection("Vehicles").document(vehicleID).update("active", false)
             .addOnSuccessListener{ documentReference ->
                 Log.d("VehicleTest", "Vehicle removed succesfully")
                 Toast.makeText(v.context, "Vehiculo eliminado exitosamente", Toast.LENGTH_SHORT).show()

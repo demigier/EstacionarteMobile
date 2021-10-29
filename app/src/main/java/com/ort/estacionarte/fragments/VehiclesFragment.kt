@@ -66,7 +66,7 @@ class VehiclesFragment : Fragment() {
             Log.d("Hola", userID)
             scope.launch {
                 vehiclesViewModel.getFirebaseUserVehicles(userID)
-                delay(400)
+                delay(500)
                 //enviar vehiculos al adapter
 
                 vehiclesAdapter = VehiclesAdapter(vehiclesViewModel.vehiclesList!!, { item ->
