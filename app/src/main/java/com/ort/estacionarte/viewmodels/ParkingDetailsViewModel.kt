@@ -65,9 +65,8 @@ class ParkingDetailsViewModel : ViewModel() {
                         .document(spots[0])
                         .update(mapOf(
                             "available" to false,
-                            "parkingID" to parkingUid,
-                            "vehicleID" to vehiclesList[0].uid
-                        )) //faltan los demas datos
+                            "parkingID" to parkingUid
+                        ))
                         .await()
 
                     sendToast("Reserva realizada exitosamente")
@@ -135,6 +134,7 @@ class ParkingDetailsViewModel : ViewModel() {
             .limit(10)
             .whereEqualTo("parkingID", parkingUid)
             .whereEqualTo("available", true)
+            .whereEqualTo("active", true)
             .get()
             .await()
 

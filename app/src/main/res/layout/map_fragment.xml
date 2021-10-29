@@ -5,11 +5,12 @@
     android:layout_height="match_parent"
     tools:context=".fragments.MapFragment">
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:id="@+id/mapItem"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        tools:layout="@layout/map_fragment" />
 
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -17,32 +18,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".fragments.MapFragment">
-
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:text="MAPA"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnAdd2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:layout_margin="16dp"
-            android:src="@drawable/profile"
-            app:backgroundTint="#29A5DE"
-            app:borderWidth="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline3"
-            app:layout_constraintTop_toTopOf="@+id/guideline2"
-            app:maxImageSize="28dp"
-            tools:ignore="SpeakableTextPresentCheck" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/btnAdd"
@@ -66,24 +41,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintGuide_begin="622dp" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/btnToParking"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:layout_margin="16dp"
-            android:src="?attr/actionModePasteDrawable"
-            app:backgroundTint="#29A5DE"
-            app:borderWidth="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/guideline2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.508"
-            app:layout_constraintStart_toStartOf="@+id/guideline3"
-            app:layout_constraintTop_toTopOf="@+id/guideline12"
-            app:maxImageSize="28dp"
-            app:rippleColor="@color/black"
-            tools:ignore="SpeakableTextPresentCheck" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline12"

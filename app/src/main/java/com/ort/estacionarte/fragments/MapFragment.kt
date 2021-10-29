@@ -2,10 +2,14 @@ package com.ort.estacionarte.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.location.Location
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.drawable.Drawable
+import android.location.*
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -20,13 +24,8 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ort.estacionarte.R
 import com.ort.estacionarte.entities.Parking
@@ -50,7 +49,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
     val scope = CoroutineScope(Dispatchers.Default + parentJob)
 
     lateinit var btnProfile: FloatingActionButton
-    lateinit var btnToParking: FloatingActionButton
 
     lateinit var userID: String
     private lateinit var map: GoogleMap
@@ -63,7 +61,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
     ): View? {
         v = inflater.inflate(R.layout.map_fragment, container, false)
         btnProfile = v.findViewById(R.id.btnAdd)
-        btnToParking = v.findViewById(R.id.btnToParking)
 
         createMapFragment()
 
@@ -87,28 +84,28 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
         btnProfile.setOnClickListener {
             Navigation.findNavController(v).navigate(R.id.profileFragment)
         }
-
-        btnToParking.setOnClickListener {
-            //location = MapViewModel.addressToLocation(addres)
-            val bundle = bundleOf("lat" to 100,"long" to 100)
-
-            Navigation.findNavController(v).navigate(R.id.parkingFragment,bundle)
-        }
     }
 
     //CALLBACK DE GOOGLEMAPS
+    @Suppress("DEPRECATION")
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         enableLocation()
 
-        map.uiSettings.isZoomControlsEnabled = true
+        map.uiSettings.isZoomControlsEnabled = false
         map.uiSettings.isZoomGesturesEnabled = true
         map.uiSettings.isRotateGesturesEnabled = true
         map.uiSettings.isScrollGesturesEnabledDuringRotateOrZoom = true
         map.uiSettings.isCompassEnabled = true
         map.uiSettings.isMapToolbarEnabled = true
         map.uiSettings.isTiltGesturesEnabled = true
+
+        //map.uiSettings.setAllGesturesEnabled(true)
+
         //map.moveCamera(CameraUpdateFactory.newLatLng(map.))
+        /*var location = LocationRequest.CREATOR
+        Log.d("location", location.getLatitude())*/
+
         parkingDetailsViewModel.getParkings()
 
         parkingDetailsViewModel.parkingList.observe(viewLifecycleOwner, Observer {parkingList ->
@@ -119,6 +116,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
                         .position(marker)
                         .draggable(false)
                         .title(parking.parkingName)
+                        .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.parking))
                         .snippet("Direccion: " + parking.address)
                 )
 
@@ -138,6 +136,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
     private fun createMapFragment() {
         val mapFragment = childFragmentManager.findFragmentById(R.id.mapItem) as SupportMapFragment?
         mapFragment!!.getMapAsync(this)
+    }
+
+    private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor{
+        var vectorDrawable = ContextCompat.getDrawable(context, vectorResId) as Drawable
+        vectorDrawable.setBounds(0,0,vectorDrawable.intrinsicWidth,vectorDrawable.intrinsicHeight)
+        var bitmap = Bitmap.createBitmap(vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888) as Bitmap
+        var canvas = Canvas(bitmap)
+        vectorDrawable.draw(canvas)
+
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 
     //PERMISOS DE UBICACION
