@@ -1,8 +1,10 @@
 package com.ort.estacionarte.fragments
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +12,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
 import androidx.navigation.Navigation
@@ -28,6 +33,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     companion object {
         fun newInstance() = MapFragment()
+        const val REQUEST_CODE_LOCATION = 0
     }
 
     private lateinit var parkingDetailsViewModel: ParkingDetailsViewModel
@@ -48,10 +54,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         v = inflater.inflate(R.layout.map_fragment, container, false)
         btnProfile = v.findViewById(R.id.btnAdd)
         btnToParking = v.findViewById(R.id.btnToParking)
-        //createMapFragment()
 
-        val mapFragment = childFragmentManager.findFragmentById(R.id.mapItem) as SupportMapFragment?
-        mapFragment!!.getMapAsync(this)
+        createMapFragment()
 
         return v
     }
@@ -82,19 +86,58 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        Log.d("TestMap", "HOla")
-        //map = googleMap
-        map = googleMap
+    private fun isPermissionsGranted() = ContextCompat.checkSelfPermission(
+        requireContext(),Manifest.permission.ACCESS_FINE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED
+
+    @SuppressLint("MissingPermission")
+    private fun enableLocation() {
+        if (!::map.isInitialized) return
+        if (isPermissionsGranted()) {
+            map.isMyLocationEnabled = true
+        } else {
+            requestLocationPermission()
+        }
     }
 
-    /*private fun createMapFragment() {
-        //val mapFragment = (activity as FragmentActivity).supportFragmentManager.findFragmentById(R.id.fragmentMap) as SupportMapFragment?
-        val mapFragment = childFragmentManager.findFragmentById(R.id.mapItem) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+    private fun requestLocationPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION)) {
+            //Ubicacion denegada al abrir app
+            Toast.makeText(requireContext(), "Ve a ajustes y acepta los permisos de ubicacion", Toast.LENGTH_SHORT).show()
+        } else {
+            ActivityCompat.requestPermissions(requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                REQUEST_CODE_LOCATION)
+        }
+    }
 
-        /*val mapFragment = childFragmentManager.findFragmentById(R.id.fragmentMap) as SupportMapFragment?
+    @SuppressLint("MissingPermission")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when(requestCode){
+            REQUEST_CODE_LOCATION -> if(grantResults.isNotEmpty() && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+                map.isMyLocationEnabled = true
+            }else{
+                Log.d("TestLocation", "Pedir2")
+                Toast.makeText(requireContext(), "Para activar la localización ve a ajustes y acepta los permisos de ubicacion", Toast.LENGTH_SHORT).show()
+            }
+            else -> {}
+        }
+    }
 
-        mapFragment!!.getMapAsync(this)*/
-    }*/
+
+    override fun onMapReady(googleMap: GoogleMap) {
+        //map = googleMap
+        map = googleMap
+        enableLocation()
+    }
+
+    private fun createMapFragment() {
+                val mapFragment = childFragmentManager.findFragmentById(R.id.mapItem) as SupportMapFragment?
+        mapFragment!!.getMapAsync(this)
+    }
 }
