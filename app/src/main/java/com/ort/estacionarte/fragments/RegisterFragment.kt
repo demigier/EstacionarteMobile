@@ -1,8 +1,9 @@
 package com.ort.estacionarte.fragments
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
-import androidx.lifecycle.ViewModelProvider
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,8 +11,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
 import com.ort.estacionarte.R
+import com.ort.estacionarte.adapters.SingleMsg
 import com.ort.estacionarte.entitiescountry.User
 import com.ort.estacionarte.viewmodels.LoginViewModel
 
@@ -21,7 +25,9 @@ class RegisterFragment : Fragment() {
         fun newInstance() = RegisterFragment()
     }
 
-    private lateinit var loginViewModel: LoginViewModel
+    private val loginViewModel: LoginViewModel by activityViewModels()
+
+    //private lateinit var loginViewModel: LoginViewModel
     lateinit var v: View
 
     lateinit var txtMail: EditText
@@ -37,6 +43,7 @@ class RegisterFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         v = inflater.inflate(R.layout.register_fragment, container, false)
+
         txtMail = v.findViewById(R.id.txtBrand)
         txtPassword = v.findViewById(R.id.txtPasswordNew)
         txtPassword2 = v.findViewById(R.id.txtPasswordNew2)
@@ -48,34 +55,45 @@ class RegisterFragment : Fragment() {
         return v
     }
 
-    //@Suppress("DEPRECATION")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        loginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
-    }
-
+    /*    //@Suppress("DEPRECATION")
+        override fun onActivityCreated(savedInstanceState: Bundle?) {
+            super.onActivityCreated(savedInstanceState)
+            loginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
+        }
+    */
     override fun onStart() {
         super.onStart()
+        loginViewModel.currentUser.observe(viewLifecycleOwner, Observer { user ->
+            if (user != null) {
+                saveInSharedPreferences("Session", mapOf("userID" to user.uid))
+                //var mapa = getFromSharedPreferences("Session")
 
-        btnRegister.setOnClickListener{
-            if(txtMail.text.isNotEmpty() && txtPassword.text.isNotEmpty() && txtName.text.isNotEmpty() && txtLastName.text.isNotEmpty() && txtPhoneNumber.text.isNotEmpty() && txtPassword2.text.isNotEmpty()){
-                if(txtPassword.text.toString() == txtPassword2.text.toString()){
-                    var newUser = User(txtMail.text.toString(), txtName.text.toString(), txtLastName.text.toString(), txtPhoneNumber.text.toString())
-                    loginViewModel.registerUser(newUser, txtPassword.text.toString(), v, requireContext())
-                }else{
-                    //Toast.makeText(v.context, "Las contraseñas deben coincidir", Toast.LENGTH_SHORT).show()
-                    sendMessage("Las contraseñas deben coincidir", "Atencion")
-                }
-            }else{
-                //Toast.makeText(v.context, "No deje campos vacios", Toast.LENGTH_SHORT).show()
-                sendMessage("No deje campos vacios", "Atencion")
+                Navigation.findNavController(v).popBackStack(R.id.loginFragment, true)
+                Navigation.findNavController(v).navigate(R.id.mapFragment)
             }
-            /*val action = LoginDirections.actionLoginToProfile(txtEmail.text.toString())
-            v.findNavController().navigate(action)*/
+        })
+
+        loginViewModel.msgToRegister.observe(viewLifecycleOwner, Observer { smsg ->
+            //Toast.makeText(v.context, it, Toast.LENGTH_SHORT).show()
+            if(smsg.isNew())
+                sendAlertMessage(smsg.readMsg(), "Atención")
+        })
+
+
+        btnRegister.setOnClickListener {
+            if (validateInput()) {
+                var newUser = User(
+                    txtMail.text.toString(),
+                    txtName.text.toString(),
+                    txtLastName.text.toString(),
+                    txtPhoneNumber.text.toString()
+                )
+                loginViewModel.registerUser(newUser, txtPassword.text.toString())
+            }
         }
     }
 
-    private fun sendMessage(msg: String, title: String){
+    private fun sendAlertMessage(msg: String, title: String) {
         val builder: AlertDialog.Builder? = activity?.let {
             AlertDialog.Builder(it)
         }
@@ -90,4 +108,48 @@ class RegisterFragment : Fragment() {
         builder?.create()
         builder?.show()
     }
+
+    private fun validateInput(): Boolean {
+        var validData: Boolean = false
+
+        if (txtMail.text.isEmpty() || txtPassword.text.isEmpty() || txtName.text.isEmpty() || txtLastName.text.isEmpty() || txtPhoneNumber.text.isEmpty()) {
+            loginViewModel.msgToRegister.value = SingleMsg("No deje campos vacios")
+
+        } else if (txtPassword.text.toString() != txtPassword2.text.toString()) {
+            loginViewModel.msgToRegister.value = SingleMsg("Las contraseñas deben coincidir")
+
+        } else {
+            //Faltaría chequear que el telefono cumpla con un formato específico.
+            //Y que los nombres no contengan nros. y caracteres especiales, etc.
+            validData = true
+        }
+
+        return validData
+    }
+
+    //Funciones para manejo de las SP
+    private fun saveInSharedPreferences(tag: String, values: Map<String, Any>) {
+        val sharedPref: SharedPreferences = requireContext().getSharedPreferences(
+            tag,
+            Context.MODE_PRIVATE
+        )
+        val editor = sharedPref.edit()
+
+        values.forEach { (key, value) ->
+            when (value) {
+                is Boolean -> editor.putBoolean(key, value)
+                is Int -> editor.putInt(key, value)
+                is Long -> editor.putLong(key, value)
+                is Float -> editor.putFloat(key, value)
+                else -> editor.putString(key, value.toString())
+            }
+        }
+        editor.apply()
+    }
+
+    private fun getFromSharedPreferences(tag: String): MutableMap<String, *>? {
+        return requireContext().getSharedPreferences(tag, Context.MODE_PRIVATE).all
+    }
+
+
 }

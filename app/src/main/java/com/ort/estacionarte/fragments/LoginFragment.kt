@@ -1,8 +1,9 @@
 package com.ort.estacionarte.fragments
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
-import androidx.lifecycle.ViewModelProvider
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -10,10 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
-import android.widget.Toast
-import androidx.core.os.bundleOf
-import androidx.core.widget.doOnTextChanged
-import androidx.navigation.NavController
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import com.ort.estacionarte.R
 import com.ort.estacionarte.viewmodels.LoginViewModel
@@ -24,7 +23,9 @@ class LoginFragment : Fragment() {
         fun newInstance() = LoginFragment()
     }
 
-    private lateinit var loginViewModel: LoginViewModel
+    private val loginViewModel: LoginViewModel by activityViewModels()
+
+    //private lateinit var loginViewModel: LoginViewModel
     lateinit var v: View
 
     lateinit var txtMail: EditText
@@ -32,11 +33,21 @@ class LoginFragment : Fragment() {
     lateinit var btnLogin: Button
     lateinit var btnRegister: Button
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        //loginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
+
+        //Esta linea obtiene el usuario logueado de la base, pero sigue mostrando un toque el login
+        loginViewModel.getCurrentUser()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         v = inflater.inflate(R.layout.login_fragment, container, false)
+
         txtMail = v.findViewById(R.id.txtMail)
         txtPassword = v.findViewById(R.id.txtPassword)
         btnLogin = v.findViewById(R.id.btnLogin)
@@ -45,30 +56,36 @@ class LoginFragment : Fragment() {
         return v
     }
 
-    //@Suppress("DEPRECATION")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        loginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
-    }
-
     override fun onStart() {
         super.onStart()
 
-        btnLogin.setOnClickListener{
-            if(txtMail.text.isNotEmpty() && txtPassword.text.isNotEmpty()){
-                loginViewModel.loginUser(txtMail.text.toString(), txtPassword.text.toString(), v, requireContext())
-            }else{
-                //Toast.makeText(v.context, "No deje campos vacios", Toast.LENGTH_SHORT).show()
-                sendMessage("No deje campos vacios", "Atencion")
+        loginViewModel.currentUser.observe(viewLifecycleOwner, Observer { currentUser ->
+            if (currentUser != null) {
+                saveInSharedPreferences("Session", mapOf("userID" to currentUser.uid))
+                //var map = getFromSharedPreferences("Session")
+
+                Navigation.findNavController(v).popBackStack(R.id.loginFragment, true)
+                Navigation.findNavController(v).navigate(R.id.mapFragment)
             }
+        })
+
+        loginViewModel.msgToLogin.observe(viewLifecycleOwner, Observer { smsg ->
+            //Toast.makeText(v.context, msg, Toast.LENGTH_SHORT).show()
+            if (smsg.isNew())
+                sendAlertMessage(smsg.readMsg(), "Atencion")
+        })
+
+        btnLogin.setOnClickListener {
+            //if (validateInput()) //no hace falta, lo resuelve Auth
+            loginViewModel.loginUser(txtMail.text.toString(), txtPassword.text.toString())
         }
 
-        btnRegister.setOnClickListener{
+        btnRegister.setOnClickListener {
             Navigation.findNavController(v).navigate(R.id.registerFragment)
         }
     }
 
-    private fun sendMessage(msg: String, title: String){
+    private fun sendAlertMessage(msg: String, title: String) {
         val builder: AlertDialog.Builder? = activity?.let {
             AlertDialog.Builder(it)
         }
@@ -83,4 +100,33 @@ class LoginFragment : Fragment() {
         builder?.create()
         builder?.show()
     }
+
+    private fun validateInput(): Boolean {
+        return txtMail.text.isNotEmpty() && txtPassword.text.isNotEmpty()
+    }
+
+    //Funciones para manejo de las SP
+    private fun saveInSharedPreferences(tag: String, values: Map<String, Any>) {
+        val sharedPref: SharedPreferences = requireContext().getSharedPreferences(
+            tag,
+            Context.MODE_PRIVATE
+        )
+        val editor = sharedPref.edit()
+
+        values.forEach { (key, value) ->
+            when (value) {
+                is Boolean -> editor.putBoolean(key, value)
+                is Int -> editor.putInt(key, value)
+                is Long -> editor.putLong(key, value)
+                is Float -> editor.putFloat(key, value)
+                else -> editor.putString(key, value.toString())
+            }
+        }
+        editor.apply()
+    }
+
+    private fun getFromSharedPreferences(tag: String): MutableMap<String, *>? {
+        return requireContext().getSharedPreferences(tag, Context.MODE_PRIVATE).all
+    }
+
 }

@@ -134,7 +134,6 @@ class VehicleDetailsFragment : Fragment() {
         }
     }
 
-
     private fun sendMessage(msg: String, title: String){
         val builder: AlertDialog.Builder? = activity?.let {
             AlertDialog.Builder(it)
