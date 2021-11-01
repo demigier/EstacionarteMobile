@@ -8,5 +8,5 @@ class Parking(
     var phoneNumber: String,
     var cuit: String
 ) {
-    constructor() : this("", "", "", hashMapOf(), "","")
+    constructor() : this("", "", "", hashMapOf(), "", "")
 }

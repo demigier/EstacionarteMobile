@@ -11,11 +11,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import com.google.android.gms.maps.model.LatLng
 import com.ort.estacionarte.R
+import com.ort.estacionarte.viewmodels.LoginViewModel
 import com.ort.estacionarte.viewmodels.ParkingDetailsViewModel
+import com.ort.estacionarte.viewmodels.ReservationsViewModel
 import kotlinx.coroutines.*
 
 class ParkingDetailsFragment : Fragment() {
@@ -25,7 +26,10 @@ class ParkingDetailsFragment : Fragment() {
     }
 
     //Declaro vistas, vm y variables aux
-    private lateinit var parkingDetailsVM: ParkingDetailsViewModel
+    private val loginVM: LoginViewModel by activityViewModels()
+    private val reservationsVM: ReservationsViewModel by activityViewModels()
+    private val parkingDetailsVM: ParkingDetailsViewModel by activityViewModels()
+
     lateinit var v: View
 
     lateinit var btnReserve: Button
@@ -48,7 +52,7 @@ class ParkingDetailsFragment : Fragment() {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.parking_details_fragment, container, false)
 
-        parkingDetailsVM = ViewModelProvider(this).get(ParkingDetailsViewModel::class.java)
+        //parkingDetailsVM = ViewModelProvider(this).get(ParkingDetailsViewModel::class.java)
 
         btnReserve = v.findViewById(R.id.btnReserve)
         txtParkingName = v.findViewById(R.id.txtParkingName)
@@ -59,7 +63,8 @@ class ParkingDetailsFragment : Fragment() {
 
         btnReserve.isEnabled = false
 
-        val sharedPref: SharedPreferences = requireContext().getSharedPreferences("Session",Context.MODE_PRIVATE)
+        val sharedPref: SharedPreferences =
+            requireContext().getSharedPreferences("Session", Context.MODE_PRIVATE)
         userID = sharedPref.getString("userID", "default").toString()
 
         //Coordenadas obtenidas del MapFragment del mapa
@@ -71,30 +76,22 @@ class ParkingDetailsFragment : Fragment() {
         //Busco el estacionamiento recibido y lo cargo en la vista
         parkingDetailsVM.getParkingInfo(lat!!, long!!)
 
-       /* parkingDetailsVM.getVehicles(userID)
+        /* parkingDetailsVM.getVehicles(userID)
 
-        ArrayAdapter.createFromResource(
-            requireContext(),
-            parkingDetailsVM.vehiclesList,
-            android.R.layout.simple_spinner_item
-        ).also { adapter ->
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            // Apply the adapter to the spinner
-            spinner.adapter = adapter
-        }*/
-
-
+         ArrayAdapter.createFromResource(
+             requireContext(),
+             parkingDetailsVM.vehiclesList,
+             android.R.layout.simple_spinner_item
+         ).also { adapter ->
+             // Specify the layout to use when the list of choices appears
+             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+             // Apply the adapter to the spinner
+             spinner.adapter = adapter
+         }*/
 
         return v
     }
 
-    /*    //@Suppress("DEPRECATION")
-        override fun onActivityCreated(savedInstanceState: Bundle?) {
-            super.onActivityCreated(savedInstanceState)
-
-        }
-    */
     override fun onStart() {
         super.onStart()
 
@@ -107,9 +104,13 @@ class ParkingDetailsFragment : Fragment() {
         //  Parking.takeSlot().addUser()
         //  addReserveDocument()
         //4) Por ahora hasta ahí...
-        if(userID != "default"){
+        if (loginVM.currentUser.value != null) { //userID != "default"
             btnReserve.setOnClickListener {
-                parkingDetailsVM.makeReservation(userID.toString(), parkingDetailsVM.parkingAct.value?.uid.toString())
+                reservationsVM.makeReservation(
+                    userID.toString(),
+                    parkingDetailsVM.parkingAct.value?.uid.toString(),
+                    "unAuto"
+                )
             }
 
             parkingDetailsVM.parkingAct.observe(viewLifecycleOwner, Observer {
@@ -122,28 +123,34 @@ class ParkingDetailsFragment : Fragment() {
                 txtParkingAvailableSpots.text = it.size.toString()
 
                 if (it.size > 0) btnReserve.isEnabled = true
-                Log.d("Test: ParkingDetailsFragment", "spots libres:${txtParkingAvailableSpots.text}")
+                Log.d(
+                    "Test: ParkingDetailsFragment",
+                    "spots libres:${txtParkingAvailableSpots.text}"
+                )
             })
 
-            parkingDetailsVM.toastMessage.observe(viewLifecycleOwner, Observer {
+            reservationsVM.msgToParkDetFrag.observe(viewLifecycleOwner, Observer { smsg ->
                 //Toast.makeText(v.context, it, Toast.LENGTH_SHORT).show()
-
-                val builder: AlertDialog.Builder? = activity?.let {
-                    AlertDialog.Builder(it)
-                }
-                builder?.setMessage(it)
-                    ?.setTitle("Atencion")
-                builder?.apply {
-                    setNegativeButton("Aceptar",
-                        DialogInterface.OnClickListener { dialog, id ->
-                            dialog.cancel()
-                        })
-                }
-                builder?.create()
-                builder?.show()
+                if(smsg.isNew())
+                    sendAlertMessage(smsg.readMsg(), "Atención")
             })
         }
 
     }
 
+    private fun sendAlertMessage(msg: String, title: String) {
+        val builder: AlertDialog.Builder? = activity?.let {
+            AlertDialog.Builder(it)
+        }
+        builder?.setMessage(msg)
+            ?.setTitle(title)
+        builder?.apply {
+            setNegativeButton("Aceptar",
+                DialogInterface.OnClickListener { dialog, id ->
+                    dialog.cancel()
+                })
+        }
+        builder?.create()
+        builder?.show()
+    }
 }

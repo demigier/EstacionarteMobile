@@ -36,7 +36,7 @@ class VehiclesAdapter(private var vehicleList: MutableList<Vehicle>, val onItemC
 
         @SuppressLint("SetTextI18n")
         fun setModelBrand(model: String, brand: String) {
-            val txt: TextView = view.findViewById(R.id.txtUsername)
+            val txt: TextView = view.findViewById(R.id.txtUserName)
             txt.text = "$model $brand"
         }
         /*fun setBrand(brand: String) {

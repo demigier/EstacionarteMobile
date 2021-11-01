@@ -24,6 +24,7 @@ class ParkingDetailsViewModel : ViewModel() {
     var availableSpots = MutableLiveData<MutableList<String>>()
     var parkingList = MutableLiveData<MutableList<Parking>>()
     var toastMessage = MutableLiveData<kotlin.String>()
+    //private lateinit var spotsSnapshot:
     //Variables para corrutinas
     //private val parentJob = Job()
     //val scope = CoroutineScope(Dispatchers.Default + parentJob)
@@ -35,23 +36,23 @@ class ParkingDetailsViewModel : ViewModel() {
 
     //Métodos
     @SuppressLint("NewApi")
-    fun makeReservation(userId: String, parkingUid: String) {
+/*  fun makeReservation(userID: String, parkingID: String) {
         //0) En algún momento hay que chequear que el ususarion no tenga una reserva vigente.
         //1) Obtener un spot del estacionamiento: Uso la lista ya obtenida o la armo nuevamente?
         //2) Pasar el spot a no disponible y generar la reserva con el userID, parkingID, y spotID
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                var reserved = hasReservations(userId)
+                var reserved = hasReservations(userID)
                 if(reserved == false){
                     var spots = getParkingSpots(parkingAct.value!!.uid)
-                    var vehiclesList = getFirebaseUserVehicles(userId)
+                    var vehiclesList = getFirebaseUserVehicles(userID)
 
                     db.collection("Reservations")
                         .document()
                         .set(mapOf(
-                        "parkingID" to parkingUid,
+                        "parkingID" to parkingID,
                         "parkingSpotID" to spots!![0],
-                        "userID" to userId,
+                        "userID" to userID,
                         "vehicleID" to vehiclesList[0].uid,
                         "reservationDate" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")),
                         "userArrivedDate" to null,
@@ -65,7 +66,7 @@ class ParkingDetailsViewModel : ViewModel() {
                         .document(spots[0])
                         .update(mapOf(
                             "available" to false,
-                            "parkingID" to parkingUid
+                            "parkingID" to parkingID
                         ))
                         .await()
 
@@ -82,6 +83,7 @@ class ParkingDetailsViewModel : ViewModel() {
         //db.
 
     }
+*/
 
     fun getParkingInfo(lat: Double, long: Double) {
 
@@ -92,6 +94,7 @@ class ParkingDetailsViewModel : ViewModel() {
                 Log.d("ParkingDetailsVM", parking.parkingName.toString())
 
                 var spots = getParkingSpots(parking.uid)
+                //makeSpotsSnapshot
                 availableSpots.postValue(spots!!)
 
                 Log.d("Test: ParkingDetailsVM", "spots libres:${spots.size}")
@@ -229,6 +232,10 @@ class ParkingDetailsViewModel : ViewModel() {
                 Log.d("ParkingDetailsVM", e.message.toString())
             }
         }
+    }
+
+    private fun makeSpotsSnapshot(parkinID: String){
+        // TODO: 1/11/21
     }
 
 }

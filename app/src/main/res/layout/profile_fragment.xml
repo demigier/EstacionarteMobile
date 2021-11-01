@@ -18,15 +18,17 @@
         app:borderWidth="0dp"
         app:layout_constraintBottom_toTopOf="@+id/txtVehicles"
         app:layout_constraintEnd_toStartOf="@+id/btnConfig"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline8"
+        app:layout_constraintVertical_chainStyle="spread"
         app:maxImageSize="28dp"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnConfig"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
         android:src="@drawable/settings"
@@ -34,6 +36,7 @@
         app:borderWidth="0dp"
         app:layout_constraintBottom_toTopOf="@+id/txtVehicles2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/btnVehicles"
         app:layout_constraintTop_toTopOf="@+id/guideline8"
         app:maxImageSize="28dp"
@@ -44,12 +47,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="208dp" />
+        app:layout_constraintGuide_percent="0.15" />
 
     <ImageView
         android:id="@+id/imgFondo"
-        android:layout_width="414dp"
-        android:layout_height="207dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="#00BCD4"
         android:contentDescription="TODO"
         android:src="@drawable/block"
@@ -61,7 +64,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/txtUsername"
+        android:id="@+id/txtUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="________"
@@ -78,46 +81,109 @@
         android:text="Tus reservas"
         android:textColor="#000000"
         android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
+        app:layout_constraintBottom_toTopOf="@+id/guideline9"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline8"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="@+id/guideline15" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="413dp"
-        android:layout_height="361dp"
+        android:layout_width="400dp"
+        android:layout_height="215dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline9" />
+        app:layout_constraintTop_toBottomOf="@+id/cardReservation" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="360dp" />
+        app:layout_constraintGuide_percent="0.45" />
 
     <TextView
         android:id="@+id/txtVehicles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="92dp"
-        android:layout_marginTop="12dp"
         android:text="Vehiculos"
+        app:layout_constraintEnd_toStartOf="@+id/txtVehicles2"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnVehicles" />
+        tools:layout_editor_absoluteY="224dp" />
 
     <TextView
         android:id="@+id/txtVehicles2"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="76dp"
+        android:layout_height="19dp"
         android:text="Configuracion"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnConfig" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/txtVehicles"
+        tools:layout_editor_absoluteY="224dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline15"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintGuide_percent="0.35"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardReservation"
+        android:layout_width="400dp"
+        android:layout_height="150dp"
+        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline9">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Reserva vigente:" />
+
+            <TextView
+                android:id="@+id/txtReservPName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Estacionamiento:" />
+
+            <TextView
+                android:id="@+id/txtReservPAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Dirección:" />
+
+            <TextView
+                android:id="@+id/txtReservPPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Telefono:" />
+
+            <TextView
+                android:id="@+id/txtReservVehicle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Patente:" />
+
+            <Button
+                android:id="@+id/btnReservCancel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Button" />
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -139,6 +139,7 @@ class ConfigurationFragment : Fragment() {
         txtLogout.setOnClickListener {
             loginVM.logOut()
             //Falta navegar hasta el login
+            Navigation.findNavController(v).popBackStack(R.id.configurationFragment, true)
             Navigation.findNavController(v).navigate(R.id.loginFragment)
         }
 

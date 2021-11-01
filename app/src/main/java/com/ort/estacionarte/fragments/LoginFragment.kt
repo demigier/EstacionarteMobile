@@ -16,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import com.ort.estacionarte.R
 import com.ort.estacionarte.viewmodels.LoginViewModel
+import com.ort.estacionarte.viewmodels.ReservationsViewModel
 
 class LoginFragment : Fragment() {
 
@@ -24,6 +25,7 @@ class LoginFragment : Fragment() {
     }
 
     private val loginViewModel: LoginViewModel by activityViewModels()
+    private val reservatiosViewModel: ReservationsViewModel by activityViewModels()
 
     //private lateinit var loginViewModel: LoginViewModel
     lateinit var v: View
@@ -63,7 +65,7 @@ class LoginFragment : Fragment() {
             if (currentUser != null) {
                 saveInSharedPreferences("Session", mapOf("userID" to currentUser.uid))
                 //var map = getFromSharedPreferences("Session")
-
+                reservatiosViewModel.getCurrentReservation(currentUser.uid)
                 Navigation.findNavController(v).popBackStack(R.id.loginFragment, true)
                 Navigation.findNavController(v).navigate(R.id.mapFragment)
             }

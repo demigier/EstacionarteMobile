@@ -149,7 +149,6 @@ class LoginViewModel : ViewModel() {
             }
     }
 
-
     private suspend fun getFirebaseUserData(userID: String): User? {
         var doc = db.collection(USERS_COLLECTION).document(userID).get().await()
 
