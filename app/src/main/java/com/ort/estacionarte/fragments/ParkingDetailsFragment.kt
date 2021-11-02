@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.ort.estacionarte.R
@@ -37,7 +39,6 @@ class ParkingDetailsFragment : Fragment() {
     lateinit var txtParkingAddress: TextView
     lateinit var txtParkingPhoneNumber: TextView
     lateinit var txtParkingAvailableSpots: TextView
-    lateinit var spinnerVehicles: Spinner
 
     private val parentJob = Job()
     val scope = CoroutineScope(Dispatchers.Default + parentJob)
@@ -59,7 +60,6 @@ class ParkingDetailsFragment : Fragment() {
         txtParkingAddress = v.findViewById(R.id.txtParkinAddress)
         txtParkingPhoneNumber = v.findViewById(R.id.txtParkingPhoneNumber)
         txtParkingAvailableSpots = v.findViewById(R.id.txtParkingAvailableSpots)
-        spinnerVehicles = v.findViewById(R.id.spinnerVehicle)
 
         btnReserve.isEnabled = false
 
@@ -76,22 +76,13 @@ class ParkingDetailsFragment : Fragment() {
         //Busco el estacionamiento recibido y lo cargo en la vista
         parkingDetailsVM.getParkingInfo(lat!!, long!!)
 
-        /* parkingDetailsVM.getVehicles(userID)
+        // parkingDetailsVM.getVehicles(userID)
 
-         ArrayAdapter.createFromResource(
-             requireContext(),
-             parkingDetailsVM.vehiclesList,
-             android.R.layout.simple_spinner_item
-         ).also { adapter ->
-             // Specify the layout to use when the list of choices appears
-             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-             // Apply the adapter to the spinner
-             spinner.adapter = adapter
-         }*/
 
         return v
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onStart() {
         super.onStart()
 
@@ -109,7 +100,7 @@ class ParkingDetailsFragment : Fragment() {
                 reservationsVM.makeReservation(
                     userID.toString(),
                     parkingDetailsVM.parkingAct.value?.uid.toString(),
-                    "unAuto"
+                    "6yeWT1Src7OgCbdvzjaf"
                 )
             }
 

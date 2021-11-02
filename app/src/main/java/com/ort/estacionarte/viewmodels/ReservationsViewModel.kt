@@ -1,18 +1,24 @@
 package com.ort.estacionarte.viewmodels
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.ort.estacionarte.adapters.SingleMsg
 import com.ort.estacionarte.entities.Reservation
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -26,7 +32,9 @@ class ReservationsViewModel : ViewModel() {
     private val VEHICLES_COL = "Vehicles"
 
     var currentReservation: MutableLiveData<Reservation?> = MutableLiveData(null)
-    var currentReservationID: String? = null
+    //var currentReservationID: String? = null
+
+    var reservationsList: MutableLiveData<MutableList<Reservation?>> = MutableLiveData(mutableListOf())
 
     //"ParkingName", "ParkingAddress","ParkingPhoneNumber", "VehicleLicensePlate"
     var currentReservationExtraData: MutableMap<String, String> = mutableMapOf(
@@ -49,7 +57,7 @@ class ReservationsViewModel : ViewModel() {
             .addOnSuccessListener { docs ->
                 for (reserv in docs) {
                     currentReservation.value = reserv.toObject()
-                    currentReservationID = reserv.id
+                    currentReservation.value!!.uid = reserv.id
                 }
                 if (currentReservation.value != null) {
                     /*getReservationExtraData(
@@ -63,6 +71,7 @@ class ReservationsViewModel : ViewModel() {
             }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun makeReservation(userID: String, parkingID: String, vehicleID: String) {
         //0) Previo a realizar la reserva hay que chequear que el ususarion no tenga una reserva vigente.
         //1) Despues, hay que obtener un spot del estacionamiento.
@@ -88,16 +97,28 @@ class ReservationsViewModel : ViewModel() {
                             .await()
 
                         // Creo la reserva en la base.
-                        val res = Reservation(
+                        /*val res = Reservation(
                             true,
                             userID,
                             parkingID,
                             vehicleID,
                             spotID,
-                            SimpleDateFormat("dd-MM-yyyy hh:mm").format(Calendar.getInstance().time),
+                            LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")),
                             null,
                             null,
                             null
+                        )*/
+
+                        val res = mapOf(
+                            "active" to true,
+                            "userID" to userID,
+                            "parkingID" to parkingID,
+                            "vehicleID" to vehicleID,
+                            "spotID" to spotID,
+                            "reservationDate" to  LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")),
+                            "userArrivedDate" to null,
+                            "userLeftDate" to null,
+                            "cancelationDate" to null
                         )
 
                         val doc = db.collection(RESERVATIONS_COL)
@@ -106,7 +127,7 @@ class ReservationsViewModel : ViewModel() {
                         doc.set(res)
                             .await()
 
-                        currentReservationID = doc.id
+                        //currentReservation.value!!.uid = doc.id
 
                         Log.d(
                             "TEST: ReservationsVM -> makeReservation($userID, $parkingID, $vehicleID): ",
@@ -114,7 +135,7 @@ class ReservationsViewModel : ViewModel() {
                         )
                         // guardar reserva, en currentReservation y generar snapshot
                         // https://firebase.google.com/docs/firestore/query-data/listen
-                        currentReservation.postValue(res)
+                        //currentReservation.postValue(res)
                         //getReservationExtraData(res.parkingID, res.vehicleID)
                         //generarSnapshot(res.id)
                         sendMsgToFront(
@@ -149,9 +170,9 @@ class ReservationsViewModel : ViewModel() {
         //Esto debería implementarse en una transacción
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                if (currentReservation.value != null && currentReservationID != null) {
+                if (currentReservation.value != null && currentReservation.value!!.uid != null) {
                     db.collection(RESERVATIONS_COL)
-                        .document(currentReservationID!!)
+                        .document(currentReservation.value!!.uid)
                         .update(
                             mapOf(
                                 "active" to false,
@@ -171,7 +192,7 @@ class ReservationsViewModel : ViewModel() {
                         .await()
 
                     currentReservation.postValue(null)
-                    currentReservationID = null
+                    currentReservation.value!!.uid = ""
                     currentReservationExtraData = hashMapOf()
 
                     Log.d(
@@ -233,23 +254,22 @@ class ReservationsViewModel : ViewModel() {
         return hasReservations
     }
 
-    private fun getReservationExtraData(parkingID: String, vehicleID: String) {
+    private suspend fun getReservationParking(parkingID: String/*, vehicleID: String*/, index: Int, list: MutableList<Reservation?>) {
         try {
-            db.collection(PARKINGS_COL).document(parkingID).get()
-                .addOnSuccessListener {
-                    currentReservationExtraData["ParkingName"] =
-                        it?.data!!["parkingName"].toString()
-                    currentReservationExtraData["ParkingAddress"] = it?.data!!["address"].toString()
-                    currentReservationExtraData["ParkingPhoneNumber"] =
-                        it?.data!!["phoneNumber"].toString()
-                }
-            //"ParkingName", "ParkingAddress","ParkingPhoneNumber", "VehicleLicensePlate"
+            var it = db.collection(PARKINGS_COL).document(parkingID).get()
+                .await()
+                    list[index]!!.parking = it.toObject()!!
+                    list[index]!!.parking.uid = it.id
+                    Log.d("ReservationsTest", it.data.toString())
+                    //currentReservation.value!!.parking = it.toObject()!!
 
-            db.collection(VEHICLES_COL).document(vehicleID).get()
-                .addOnSuccessListener {
-                    currentReservationExtraData["VehicleLicensePlate"] =
-                        it?.data!!["licensePlate"].toString()
-                }
+            /*Log.d("ReservationsTest3", vehicleID)
+            var it2 = db.collection(VEHICLES_COL).document(vehicleID).get()
+                .await()
+                    Log.d("ReservationsTest2", it2.data.toString())
+                    list[index]!!.vehicle = it2.toObject()!!
+                    list[index]!!.vehicle.uid = it2.id*/
+                    //currentReservation.value!!.vehicle = it.toObject()!!
 
         } catch (e: Exception) {
             Log.d(
@@ -260,7 +280,63 @@ class ReservationsViewModel : ViewModel() {
                 msgToProfFrag, SingleMsg("Error al traer los datos extra")
             )
         }
+    }
 
+    private suspend fun getReservationVehicle(/*parkingID: String, */vehicleID: String, index: Int, list: MutableList<Reservation?>) {
+        try {
+           /* var it = db.collection(PARKINGS_COL).document(parkingID).get()
+                .await()
+            list[index]!!.parking = it.toObject()!!
+            list[index]!!.parking.uid = it.id
+            Log.d("ReservationsTest", it.data.toString())*/
+            //currentReservation.value!!.parking = it.toObject()!!
+
+            Log.d("ReservationsTest3", vehicleID)
+            var it2 = db.collection(VEHICLES_COL).document(vehicleID).get()
+                .await()
+            Log.d("ReservationsTest2", it2.data.toString())
+            list[index]!!.vehicle = it2.toObject()!!
+            list[index]!!.vehicle.uid = it2.id
+            //currentReservation.value!!.vehicle = it.toObject()!!
+
+        } catch (e: Exception) {
+            Log.d(
+                "TEST: ReservationsVM -> getReservationExtraData(): ",
+                "Error al traer los datos extra: ${e.message}"
+            )
+            sendMsgToFront(
+                msgToProfFrag, SingleMsg("Error al traer los datos extra")
+            )
+        }
+    }
+
+    fun getAllReservations(userID: String) {
+        viewModelScope.launch {
+            var list: MutableList<Reservation?> = mutableListOf()
+            try {
+                Log.d("ReservationsTest",userID)
+                reservationsList.value!!.clear()
+                var docs = db.collection("Reservations")
+                    .whereEqualTo("userID", userID)
+                    .orderBy("active", Query.Direction.DESCENDING)
+                    .get()
+                    .await()
+                        for (reserv in docs) {
+                            list.add(reserv.toObject())
+                            list[list.size - 1]!!.uid = reserv.id
+                            Log.d("ReservationID", reserv.id)
+                            getReservationParking(list[list.size - 1]!!.parkingID, list.size - 1, list)
+                            getReservationVehicle(list[list.size - 1]!!.vehicleID, list.size - 1, list)
+                            if(list[list.size - 1]!!.active == true){
+                                currentReservation.value = list[list.size - 1]
+                            }
+                        }
+                reservationsList.postValue(list)
+            }
+            catch (e: java.lang.Exception){
+                sendMsgToFront(msgToProfFrag, SingleMsg("Error al intentar traer la reserva"))
+            }
+        }
 
     }
 

@@ -8,15 +8,16 @@ class Reservation(
     var parkingID: String,
     var vehicleID: String,
     var parkingSpotID: String,
-    var reservationDate: String?,
+    var reservationDate: String,
     var userArrivedDate: String?,
     var userLeftDate: String?,
     var cancelationDate: String?,
 ) {
     constructor() : this(
-        false, "", "", "", "", null, null, null, null
+        false, "", "", "", "", "", null, null, null
     )
 
+    lateinit var uid: String
     lateinit var parking: Parking
     lateinit var vehicle: Vehicle
 }

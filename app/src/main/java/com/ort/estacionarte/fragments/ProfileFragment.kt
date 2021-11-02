@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
 import android.view.*
 import android.widget.Button
 import androidx.fragment.app.Fragment
@@ -12,10 +13,14 @@ import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ort.estacionarte.R
+import com.ort.estacionarte.adapters.ReservationsAdapter
 import com.ort.estacionarte.viewmodels.LoginViewModel
 import com.ort.estacionarte.viewmodels.ReservationsViewModel
+import kotlinx.coroutines.*
 
 class ProfileFragment : Fragment() {
 
@@ -23,10 +28,8 @@ class ProfileFragment : Fragment() {
         fun newInstance() = ProfileFragment()
     }
 
-    //private val profileViewModel: ProfileViewModel by activityViewModels()
     private val loginVM: LoginViewModel by activityViewModels()
     private val reservationsVM: ReservationsViewModel by activityViewModels()
-    //private lateinit var profileViewModel: ProfileViewModel
 
     lateinit var v: View
 
@@ -39,6 +42,11 @@ class ProfileFragment : Fragment() {
     lateinit var txtReservPPhone: TextView
     lateinit var txtReservVehicle: TextView
 
+    private lateinit var recyclerViewReservations: RecyclerView
+    private lateinit var reservationsAdapter: ReservationsAdapter
+
+    private val parentJob = Job()
+    val scope = CoroutineScope(Dispatchers.Default + parentJob)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,15 +57,8 @@ class ProfileFragment : Fragment() {
 
         btnVehicles = v.findViewById(R.id.btnVehicles)
         btnConfig = v.findViewById(R.id.btnConfig)
-        btnCancel = v.findViewById(R.id.btnReservCancel)
         txtUsername = v.findViewById(R.id.txtUserName)
-        txtReservPName = v.findViewById(R.id.txtUserName)
-        txtReservPAddress = v.findViewById(R.id.txtReservPAddress)
-        txtReservPPhone = v.findViewById(R.id.txtReservPPhone)
-        txtReservVehicle= v.findViewById(R.id.txtReservVehicle)
-
-        //Reservation Card
-        txtReservPName = v.findViewById(R.id.txtReservPName)
+        recyclerViewReservations = v.findViewById(R.id.recyclerViewReservas)
 
         //loginViewModel.currentUser.value?.let { Log.d("ProfileF -> currnetUser:", it.name) }
         //var userID = getFromSharedPreferences("Session")?.get("userID").toString()
@@ -70,16 +71,6 @@ class ProfileFragment : Fragment() {
             }
         })
 
-        reservationsVM.currentReservation.observe(viewLifecycleOwner, Observer { cr ->
-            btnCancel.isEnabled = (cr != null)
-            /*txtReservPName.text = "Estacionamiento: "+reservationsVM.currentReservationExtraData["ParkingName"].toString()
-            txtReservPAddress.text = "Dirección: "+ reservationsVM.currentReservationExtraData["ParkingAddress"].toString()
-            txtReservPPhone.text = "Teléfono: "+reservationsVM.currentReservationExtraData["ParkingPhoneNumber"].toString()
-            txtReservVehicle.text = "Vehículo: "+reservationsVM.currentReservationExtraData["VehicleLicensePlate"].toString()
-        */
-        })
-
-
         reservationsVM.msgToProfFrag.observe(viewLifecycleOwner, Observer{ smsg ->
             if (smsg.isNew())
                 sendAlertMessage(smsg.readMsg(), "Atencion")
@@ -90,6 +81,40 @@ class ProfileFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        reservationsVM.getAllReservations(loginVM.currentUser.value!!.uid)
+        reservationsVM.reservationsList.observe(viewLifecycleOwner, Observer { reservationsList ->
+            if(reservationsList.size > 0){
+                reservationsAdapter = ReservationsAdapter(reservationsVM.reservationsList.value!!, { item ->
+                    onItemClick(item)
+                }, requireContext())
+
+                recyclerViewReservations.setHasFixedSize(true)
+                var linearLayoutManager = LinearLayoutManager(context)
+                recyclerViewReservations.layoutManager = linearLayoutManager
+
+                recyclerViewReservations.adapter = reservationsAdapter
+            }
+        })
+
+       /* scope.launch {
+            reservationsVM.getAllReservations(loginVM.currentUser.value!!.uid)
+            delay(500)
+            //enviar vehiculos al adapter
+
+
+            reservationsAdapter = ReservationsAdapter(reservationsVM.reservationsList.value!!, { item ->
+                onItemClick(item)
+            }, requireContext())
+        }*/
+
+        /*recyclerViewReservations.setHasFixedSize(true)
+        var linearLayoutManager = LinearLayoutManager(context)
+        recyclerViewReservations.layoutManager = linearLayoutManager*/
+
+       /* val handler = Handler()
+        handler.postDelayed(java.lang.Runnable {
+            recyclerViewReservations.adapter = reservationsAdapter
+        }, 4000)*/
 
         btnVehicles.setOnClickListener {
             Navigation.findNavController(v).navigate(R.id.vehiclesFragment)
@@ -99,8 +124,14 @@ class ProfileFragment : Fragment() {
             Navigation.findNavController(v).navigate(R.id.configurationFragment)
         }
 
-        btnCancel.setOnClickListener{
+       /* btnCancel.setOnClickListener{
                 reservationsVM.cancelCurrentReservation()
+        }*/
+    }
+
+    private fun onItemClick(item: Int) {
+        if(reservationsVM.reservationsList.value!![item]!!.active == true){
+            reservationsVM.cancelCurrentReservation()
         }
     }
 

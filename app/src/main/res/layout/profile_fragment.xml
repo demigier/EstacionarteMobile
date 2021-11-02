@@ -9,8 +9,8 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnVehicles"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
         android:src="@drawable/car"
@@ -88,14 +88,15 @@
         app:layout_constraintTop_toTopOf="@+id/guideline15" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="400dp"
-        android:layout_height="215dp"
+        android:id="@+id/recyclerViewReservas"
+        android:layout_width="414dp"
+        android:layout_height="401dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardReservation" />
+        app:layout_constraintTop_toBottomOf="@+id/txtTitleList"
+        app:layout_constraintVertical_bias="1.0" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline9"
@@ -106,23 +107,23 @@
 
     <TextView
         android:id="@+id/txtVehicles"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="64dp"
+        android:layout_height="21dp"
+        android:layout_marginStart="92dp"
         android:text="Vehiculos"
-        app:layout_constraintEnd_toStartOf="@+id/txtVehicles2"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintBottom_toTopOf="@+id/guideline15"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="224dp" />
+        app:layout_constraintTop_toBottomOf="@+id/btnVehicles" />
 
     <TextView
         android:id="@+id/txtVehicles2"
         android:layout_width="wrap_content"
         android:layout_height="19dp"
+        android:layout_marginEnd="76dp"
         android:text="Configuracion"
+        app:layout_constraintBottom_toTopOf="@+id/guideline15"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/txtVehicles"
-        tools:layout_editor_absoluteY="224dp" />
+        app:layout_constraintTop_toBottomOf="@+id/btnConfig" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline15"
@@ -133,57 +134,6 @@
         app:layout_constraintGuide_percent="0.35"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardReservation"
-        android:layout_width="400dp"
-        android:layout_height="150dp"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline9">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Reserva vigente:" />
-
-            <TextView
-                android:id="@+id/txtReservPName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Estacionamiento:" />
-
-            <TextView
-                android:id="@+id/txtReservPAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Dirección:" />
-
-            <TextView
-                android:id="@+id/txtReservPPhone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Telefono:" />
-
-            <TextView
-                android:id="@+id/txtReservVehicle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Patente:" />
-
-            <Button
-                android:id="@+id/btnReservCancel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Button" />
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
