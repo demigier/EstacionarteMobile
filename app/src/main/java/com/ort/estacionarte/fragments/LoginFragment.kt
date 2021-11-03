@@ -17,6 +17,7 @@ import androidx.navigation.Navigation
 import com.ort.estacionarte.R
 import com.ort.estacionarte.viewmodels.LoginViewModel
 import com.ort.estacionarte.viewmodels.ReservationsViewModel
+import com.ort.estacionarte.viewmodels.VehiclesViewModel
 
 class LoginFragment : Fragment() {
 
@@ -24,8 +25,9 @@ class LoginFragment : Fragment() {
         fun newInstance() = LoginFragment()
     }
 
-    private val loginViewModel: LoginViewModel by activityViewModels()
-    private val reservatiosViewModel: ReservationsViewModel by activityViewModels()
+    private val loginVM: LoginViewModel by activityViewModels()
+    private val reservatiosVM: ReservationsViewModel by activityViewModels()
+    private val vehiclesVM: VehiclesViewModel by activityViewModels()
 
     //private lateinit var loginViewModel: LoginViewModel
     lateinit var v: View
@@ -41,7 +43,7 @@ class LoginFragment : Fragment() {
         //loginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
 
         //Esta linea obtiene el usuario logueado de la base, pero sigue mostrando un toque el login
-        loginViewModel.getCurrentUser()
+        loginVM.getCurrentUser()
     }
 
     override fun onCreateView(
@@ -61,17 +63,18 @@ class LoginFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
-        loginViewModel.currentUser.observe(viewLifecycleOwner, Observer { currentUser ->
+        loginVM.currentUser.observe(viewLifecycleOwner, Observer { currentUser ->
             if (currentUser != null) {
                 saveInSharedPreferences("Session", mapOf("userID" to currentUser.uid))
                 //var map = getFromSharedPreferences("Session")
-                reservatiosViewModel.getCurrentReservation(currentUser.uid)
+                reservatiosVM.getCurrentReservation(currentUser.uid)
+                //vehiclesVM.getUserVehicles(loginViewModel.currentUser.value!!.uid)
                 Navigation.findNavController(v).popBackStack(R.id.loginFragment, true)
                 Navigation.findNavController(v).navigate(R.id.mapFragment)
             }
         })
 
-        loginViewModel.msgToLogin.observe(viewLifecycleOwner, Observer { smsg ->
+        loginVM.msgToLogin.observe(viewLifecycleOwner, Observer { smsg ->
             //Toast.makeText(v.context, msg, Toast.LENGTH_SHORT).show()
             if (smsg.isNew())
                 sendAlertMessage(smsg.readMsg(), "Atencion")
@@ -79,7 +82,7 @@ class LoginFragment : Fragment() {
 
         btnLogin.setOnClickListener {
             //if (validateInput()) //no hace falta, lo resuelve Auth
-            loginViewModel.loginUser(txtMail.text.toString(), txtPassword.text.toString())
+            loginVM.loginUser(txtMail.text.toString(), txtPassword.text.toString())
         }
 
         btnRegister.setOnClickListener {

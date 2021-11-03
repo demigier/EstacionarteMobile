@@ -13,14 +13,12 @@ import com.google.firebase.ktx.Firebase
 import com.ort.estacionarte.adapters.SingleMsg
 import com.ort.estacionarte.entities.Reservation
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.collections.HashMap
 
 class ReservationsViewModel : ViewModel() {
     private var db = Firebase.firestore
@@ -114,7 +112,7 @@ class ReservationsViewModel : ViewModel() {
                             "userID" to userID,
                             "parkingID" to parkingID,
                             "vehicleID" to vehicleID,
-                            "spotID" to spotID,
+                            "parkingSpotID" to spotID,  //Acá antes decía spotID en lugar de parkingSpotID
                             "reservationDate" to  LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")),
                             "userArrivedDate" to null,
                             "userLeftDate" to null,

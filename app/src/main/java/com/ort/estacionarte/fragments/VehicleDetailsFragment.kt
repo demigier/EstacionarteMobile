@@ -3,6 +3,7 @@ package com.ort.estacionarte.fragments
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.os.Build
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
@@ -13,8 +14,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
-import androidx.core.view.isVisible
+import androidx.annotation.RequiresApi
+import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import com.ort.estacionarte.R
 import com.ort.estacionarte.entities.Vehicle
@@ -49,6 +50,7 @@ class VehicleDetailsFragment : Fragment() {
         txtLicensePlate = v.findViewById(R.id.txtLicensePlate2)
         btnEvent = v.findViewById(R.id.btnUpdateConfig)
         btnDelete = v.findViewById(R.id.btnDelete)
+        //btnDelete.setVisibility(View.INVISIBLE);
 
         return v
     }
@@ -61,53 +63,81 @@ class VehicleDetailsFragment : Fragment() {
     @SuppressLint("RestrictedApi")
     override fun onStart() {
         super.onStart()
-        var vehicle = arguments?.getParcelable<Vehicle>("vehicle")
+        var vehicle = arguments?.getParcelable<Vehicle>("VEHICLE")
+        var mode = arguments?.getString("MODE")
 
         if (vehicle != null) {
-            if(vehicle.licensePlate == "edit"){
+            if (mode == "CREATE") {
                 txtBrand.setFocusableInTouchMode(true)
                 txtModel.setFocusableInTouchMode(true)
                 txtLicensePlate.setFocusableInTouchMode(true)
                 btnEvent.text = "Agregar"
                 btnDelete.setVisibility(View.INVISIBLE);
 
-                btnEvent.setOnClickListener{
-                    if(txtBrand.text.toString().isNotEmpty() && txtModel.text.toString().isNotEmpty() && txtLicensePlate.text.toString().isNotEmpty()){
-                        vehicleViewModel.addFirebaseUserVehicle(Vehicle(txtModel.text.toString(), txtBrand.text.toString(), txtLicensePlate.text.toString(), vehicle.userID), v)
-                    }else{
+                btnEvent.setOnClickListener {
+                    if (txtBrand.text.toString().isNotEmpty() && txtModel.text.toString()
+                            .isNotEmpty() && txtLicensePlate.text.toString().isNotEmpty()
+                    ) {
+                        vehicleViewModel.addUserVehicle(
+                            Vehicle(
+                                txtModel.text.toString(),
+                                txtBrand.text.toString(),
+                                txtLicensePlate.text.toString().toUpperCase(),
+                                vehicle.userID
+                            )
+                        )
+
+                        txtBrand.isFocusable = false
+                        txtModel.isFocusable = false
+                        txtLicensePlate.isFocusable = false
+                        btnEvent.setVisibility(View.INVISIBLE)
+                        btnDelete.setVisibility(View.INVISIBLE)
+
+                    } else {
                         //Toast.makeText(v.context, "No deje campos vacios", Toast.LENGTH_SHORT).show()
-                        sendMessage("No deje campos vacios", "Atencion")
+                        sendAlertMessage("No deje campos vacios", "Atencion")
                     }
                 }
-            }else{
+            } else { //mode == "EDIT"
                 Log.d("VehicleDetailsTest", vehicle.model)
                 txtBrand.setText(vehicle.brand, TextView.BufferType.EDITABLE);
                 txtModel.setText(vehicle.model, TextView.BufferType.EDITABLE);
                 txtLicensePlate.setText(vehicle.licensePlate, TextView.BufferType.EDITABLE);
                 btnDelete.setVisibility(View.VISIBLE);
 
-                btnEvent.setOnClickListener{
-                    if(btnEvent.text == "Editar"){
+                btnEvent.setOnClickListener {
+                    if (btnEvent.text == "Editar") {
                         btnEvent.text = "Guardar"
+                        btnDelete.setVisibility(View.VISIBLE);
                         //btnEvent.background.setTint("#3F51B5")
                         txtBrand.setFocusableInTouchMode(true)
                         txtModel.setFocusableInTouchMode(true)
                         txtLicensePlate.setFocusableInTouchMode(true)
-                    }else if(btnEvent.text == "Guardar"){
+
+                    } else if (btnEvent.text == "Guardar") {
                         vehicle.brand = txtBrand.text.toString()
                         vehicle.model = txtModel.text.toString()
                         vehicle.licensePlate = txtLicensePlate.text.toString()
 
-                        if(txtBrand.text.toString().isNotEmpty() && txtModel.text.toString().isNotEmpty() && txtLicensePlate.text.toString().isNotEmpty()){
-                            vehicleViewModel.updateFirebaseUserVehicle(vehicle, v)
-                        }else{
+                        if (txtBrand.text.toString().isNotEmpty() && txtModel.text.toString()
+                                .isNotEmpty() && txtLicensePlate.text.toString().isNotEmpty()
+                        ) {
+                            vehicleViewModel.updateUserVehicle(vehicle)
+
+                            //Vuelvo al estado de edicion
+                            txtBrand.isFocusable = false
+                            txtModel.isFocusable = false
+                            txtLicensePlate.isFocusable = false
+                            btnEvent.text == "Editar"
+
+                        } else {
                             //Toast.makeText(v.context, "No deje campos vacios", Toast.LENGTH_SHORT).show()
-                            sendMessage("No deje campos vacios", "Atencion")
+                            sendAlertMessage("No deje campos vacios", "Atencion")
                         }
 
                     }
                 }
-                btnDelete.setOnClickListener{
+                btnDelete.setOnClickListener {
                     val builder: AlertDialog.Builder? = activity?.let {
                         AlertDialog.Builder(it)
                     }
@@ -116,7 +146,13 @@ class VehicleDetailsFragment : Fragment() {
                     builder?.apply {
                         setPositiveButton("Aceptar",
                             DialogInterface.OnClickListener { dialog, id ->
-                                vehicleViewModel.deleteFirebaseUserVehicle(vehicle.uid, v)
+                                vehicleViewModel.deleteUserVehicle(vehicle.uid/*, v*/)
+
+                                txtBrand.isFocusable = false
+                                txtModel.isFocusable = false
+                                txtLicensePlate.isFocusable = false
+                                btnEvent.setVisibility(View.INVISIBLE)
+                                btnDelete.setVisibility(View.INVISIBLE)
                             })
                         setNegativeButton("Cancelar",
                             DialogInterface.OnClickListener { dialog, id ->
@@ -127,14 +163,20 @@ class VehicleDetailsFragment : Fragment() {
                     builder?.show()
                 }
             }
-        }else{
+        } else {
             //Toast.makeText(v.context, "Error", Toast.LENGTH_SHORT).show()
-            sendMessage("Error no identificado", "Error")
+            sendAlertMessage("Error no identificado", "Error")
             Navigation.findNavController(v).backStack
         }
+
+        vehicleViewModel.msgToVehiclesDetFrag.observe(viewLifecycleOwner, Observer { smsg ->
+            //Toast.makeText(v.context, msg, Toast.LENGTH_SHORT).show()
+            if (smsg.isNew())
+                sendAlertMessage(smsg.readMsg(), "Atencion")
+        })
     }
 
-    private fun sendMessage(msg: String, title: String){
+    private fun sendAlertMessage(msg: String, title: String) {
         val builder: AlertDialog.Builder? = activity?.let {
             AlertDialog.Builder(it)
         }
