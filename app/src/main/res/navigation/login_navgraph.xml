@@ -77,7 +77,11 @@
         android:id="@+id/configurationFragment"
         android:name="com.ort.estacionarte.fragments.ConfigurationFragment"
         android:label="configuration_fragment"
-        tools:layout="@layout/configuration_fragment" />
+        tools:layout="@layout/configuration_fragment" >
+        <action
+            android:id="@+id/action_configurationFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
+    </fragment>
     <fragment
         android:id="@+id/parkingFragment"
         android:name="com.ort.estacionarte.fragments.ParkingDetailsFragment"

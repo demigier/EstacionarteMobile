@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,7 +30,6 @@ class VehiclesViewModel : ViewModel() {
 
     var msgToVehiclesFrag = MutableLiveData<SingleMsg>()
     var msgToVehiclesDetFrag = MutableLiveData<SingleMsg>()
-
     //init {    }
 
     //Se llama desde VehiclesFragment
@@ -184,7 +184,8 @@ class VehiclesViewModel : ViewModel() {
                         break
                     }
                 }*/
-
+                Log.d("VehicleTest",query.documents.toString())
+                Log.d("VehicleTest","cantidad de vehiculos repetidos:" + query.documents.toString())
                 if (query.documents.size == 0) {
                     val query2 = db.collection(VEHICLES_COL).document()
                         .set(

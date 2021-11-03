@@ -131,7 +131,23 @@ class ProfileFragment : Fragment() {
 
     private fun onItemClick(item: Int) {
         if(reservationsVM.reservationsList.value!![item]!!.active == true){
-            reservationsVM.cancelCurrentReservation()
+            val builder: AlertDialog.Builder? = activity?.let {
+                AlertDialog.Builder(it)
+            }
+            builder?.setMessage("Esta seguro que desea cancelar la reserva?")
+                ?.setTitle("Cancelar reserva")
+            builder?.apply {
+                setPositiveButton("Aceptar",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        reservationsVM.cancelCurrentReservation()
+                    })
+                setNegativeButton("Cancelar",
+                    DialogInterface.OnClickListener { dialog, id ->
+                        dialog.cancel()
+                    })
+            }
+            builder?.create()
+            builder?.show()
         }
     }
 

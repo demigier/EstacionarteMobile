@@ -66,19 +66,8 @@ class ConfigurationFragment : Fragment() {
         txtName.isFocusableInTouchMode = editMode
         txtLastName.isFocusableInTouchMode = editMode
         txtPhoneNumber.isFocusableInTouchMode = editMode
-
-/*      txtName.setBackgroundColor(Color.LTGRAY);
-        txtLastName.setBackgroundColor(Color.LTGRAY);
-        txtPhoneNumber.setBackgroundColor(Color.LTGRAY);
-*/
         return v
     }
-
-/*    //@Suppress("DEPRECATION")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        //profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
-    } */
 
     override fun onStart() {
         super.onStart()
@@ -113,16 +102,15 @@ class ConfigurationFragment : Fragment() {
                     editMode = !editMode
                     btnUpdate.text = "Editar"
                     btnUpdate.setBackgroundColor(Color.RED);
+
+                    Navigation.findNavController(v).popBackStack(R.id.configurationFragment, true)
+                    Navigation.findNavController(v).navigate(R.id.profileFragment)
                 }
             } else {
                 editMode = !editMode
                 btnUpdate.text = "Guardar"
                 btnUpdate.setBackgroundColor(Color.BLUE);
 
-/*              txtName.setBackgroundColor(Color.TRANSPARENT)
-                txtLastName.setBackgroundColor(Color.TRANSPARENT)
-                txtPhoneNumber.setBackgroundColor(Color.TRANSPARENT)
-*/
                 txtName.isFocusableInTouchMode = editMode
                 txtLastName.isFocusableInTouchMode = editMode
                 txtPhoneNumber.isFocusableInTouchMode = editMode
@@ -138,8 +126,8 @@ class ConfigurationFragment : Fragment() {
 
         txtLogout.setOnClickListener {
             loginVM.logOut()
-            //Falta navegar hasta el login
-            Navigation.findNavController(v).popBackStack(R.id.configurationFragment, true)
+            //Navigation.findNavController(v).popBackStack(R.id.configurationFragment, true)
+            Navigation.findNavController(v).popBackStack(R.id.mapFragment, true)
             Navigation.findNavController(v).navigate(R.id.loginFragment)
         }
 
@@ -152,7 +140,7 @@ class ConfigurationFragment : Fragment() {
             loginVM.msgToConfFrag.value = SingleMsg("No deje campos vacios")
 
         } else {
-            //Faltaría chequear que el telefono cumpla con un formato específico.
+            //Faltaría chequear que el telefono cumpla con un formato específico con regex.
             //Y que los nombres no contengan nros. y caracteres especiales, etc.
             validData = true
         }

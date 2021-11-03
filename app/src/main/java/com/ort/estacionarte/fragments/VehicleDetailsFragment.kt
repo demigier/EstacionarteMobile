@@ -78,21 +78,14 @@ class VehicleDetailsFragment : Fragment() {
                     if (txtBrand.text.toString().isNotEmpty() && txtModel.text.toString()
                             .isNotEmpty() && txtLicensePlate.text.toString().isNotEmpty()
                     ) {
-                        vehicleViewModel.addUserVehicle(
-                            Vehicle(
-                                txtModel.text.toString(),
-                                txtBrand.text.toString(),
-                                txtLicensePlate.text.toString().toUpperCase(),
-                                vehicle.userID
-                            )
-                        )
-
-                        txtBrand.isFocusable = false
+                        vehicleViewModel.addUserVehicle(Vehicle(txtModel.text.toString(), txtBrand.text.toString(), txtLicensePlate.text.toString().toUpperCase(), vehicle.userID))
+                        /*txtBrand.isFocusable = false
                         txtModel.isFocusable = false
                         txtLicensePlate.isFocusable = false
                         btnEvent.setVisibility(View.INVISIBLE)
-                        btnDelete.setVisibility(View.INVISIBLE)
-
+                        btnDelete.setVisibility(View.INVISIBLE)*/
+                  /*      Navigation.findNavController(v).popBackStack(R.id.vehiclesFragment, true)
+                        Navigation.findNavController(v).navigate(R.id.profileFragment)*/
                     } else {
                         //Toast.makeText(v.context, "No deje campos vacios", Toast.LENGTH_SHORT).show()
                         sendAlertMessage("No deje campos vacios", "Atencion")
@@ -125,11 +118,12 @@ class VehicleDetailsFragment : Fragment() {
                             vehicleViewModel.updateUserVehicle(vehicle)
 
                             //Vuelvo al estado de edicion
-                            txtBrand.isFocusable = false
+                            /*txtBrand.isFocusable = false
                             txtModel.isFocusable = false
                             txtLicensePlate.isFocusable = false
-                            btnEvent.text == "Editar"
-
+                            btnEvent.text == "Editar"*/
+                          /*  Navigation.findNavController(v).popBackStack(R.id.vehicleDetailsFragment, true)
+                            Navigation.findNavController(v).navigate(R.id.profileFragment)*/
                         } else {
                             //Toast.makeText(v.context, "No deje campos vacios", Toast.LENGTH_SHORT).show()
                             sendAlertMessage("No deje campos vacios", "Atencion")
@@ -148,11 +142,13 @@ class VehicleDetailsFragment : Fragment() {
                             DialogInterface.OnClickListener { dialog, id ->
                                 vehicleViewModel.deleteUserVehicle(vehicle.uid/*, v*/)
 
-                                txtBrand.isFocusable = false
+                                /*txtBrand.isFocusable = false
                                 txtModel.isFocusable = false
                                 txtLicensePlate.isFocusable = false
                                 btnEvent.setVisibility(View.INVISIBLE)
-                                btnDelete.setVisibility(View.INVISIBLE)
+                                btnDelete.setVisibility(View.INVISIBLE)*/
+                               /* Navigation.findNavController(v).popBackStack(R.id.vehicleDetailsFragment, true)
+                                Navigation.findNavController(v).navigate(R.id.profileFragment)*/
                             })
                         setNegativeButton("Cancelar",
                             DialogInterface.OnClickListener { dialog, id ->
@@ -171,8 +167,9 @@ class VehicleDetailsFragment : Fragment() {
 
         vehicleViewModel.msgToVehiclesDetFrag.observe(viewLifecycleOwner, Observer { smsg ->
             //Toast.makeText(v.context, msg, Toast.LENGTH_SHORT).show()
-            if (smsg.isNew())
+            if (smsg.isNew()) {
                 sendAlertMessage(smsg.readMsg(), "Atencion")
+            }
         })
     }
 
@@ -185,7 +182,11 @@ class VehicleDetailsFragment : Fragment() {
         builder?.apply {
             setNegativeButton("Aceptar",
                 DialogInterface.OnClickListener { dialog, id ->
-                    dialog.cancel()
+                    if(msg == "Vehiculo añadido exitosamente" || msg == "Vehiculo editado exitosamente" || msg == "Vehiculo eliminado exitosamente"){
+                        Navigation.findNavController(v).popBackStack(R.id.profileFragment, true)
+                        Navigation.findNavController(v).navigate(R.id.profileFragment)
+                    }
+                    //dialog.cancel()
                 })
         }
         builder?.create()
