@@ -17,7 +17,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.ListView
+import android.widget.SearchView
 import android.widget.Toast
+import android.widget.SearchView.OnQueryTextListener
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
@@ -31,8 +35,7 @@ import com.ort.estacionarte.R
 import com.ort.estacionarte.entities.Parking
 import com.ort.estacionarte.viewmodels.ParkingDetailsViewModel
 import kotlinx.coroutines.*
-
-
+import java.io.IOException
 
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
@@ -49,7 +52,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
     val scope = CoroutineScope(Dispatchers.Default + parentJob)
 
     lateinit var btnProfile: FloatingActionButton
+    lateinit var searchView: SearchView//search_address
+    lateinit var listView: ListView
+    var addresNamesList: MutableList<String> = mutableListOf()
+    lateinit var adapter: ArrayAdapter<*>
 
+    var lastSearchAddress: String? = null
+    var lastSearchMarker: Marker? = null
     lateinit var userID: String
     private lateinit var map: GoogleMap
 
@@ -61,8 +70,63 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
     ): View? {
         v = inflater.inflate(R.layout.map_fragment, container, false)
         btnProfile = v.findViewById(R.id.btnAdd)
+        searchView = v.findViewById(R.id.search_address)
+        listView = v.findViewById(R.id.list_view)
+
+        adapter = ArrayAdapter(requireContext(),android.R.layout.simple_list_item_1,addresNamesList)
+        listView.adapter = adapter
 
         createMapFragment()
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+
+                if (searchView.query.toString() != null && lastSearchAddress != searchView.query.toString()) {
+                    lastSearchAddress = searchView.query.toString()
+
+                    var geocoder = Geocoder(requireContext())
+                    lastSearchMarker?.remove()
+                    //addresNamesList.clear()
+
+                    try {
+                        var addressObtained: MutableList<Address> = geocoder.getFromLocationName(lastSearchAddress, 5)
+                        //adapter.notifyDataSetChanged()
+
+                        if (addressObtained.size > 0) {
+
+/*                            for (a in addressObtained) {
+                                addresNamesList.add(a.getAddressLine(0))
+                            }
+                            adapter.notifyDataSetChanged()
+*/
+                            var latLong = LatLng(addressObtained[0].latitude, addressObtained[0].longitude)
+
+                            lastSearchMarker = map.addMarker(
+                                MarkerOptions().position(latLong).title(lastSearchAddress)
+                            )
+                            map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLong, 15F))
+                        } else {
+                            Toast.makeText(
+                                requireContext(),
+                                "Dirección no encontrada",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    } catch (e: IOException) {
+                        Log.d("Error maps location", e.message.toString())
+                        e.printStackTrace()
+                    }
+                }
+
+                return false
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+
+                return false
+            }
+
+        })
 
         return v
     }
@@ -73,8 +137,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
 
         parkingDetailsViewModel = ViewModelProvider(this).get(ParkingDetailsViewModel::class.java)
 
-        val sharedPref: SharedPreferences = requireContext().getSharedPreferences("Session", MODE_PRIVATE)
-        userID = sharedPref.getString("userID","default").toString()
+        val sharedPref: SharedPreferences =
+            requireContext().getSharedPreferences("Session", MODE_PRIVATE)
+        userID = sharedPref.getString("userID", "default").toString()
 
         btnProfile.setOnClickListener {
             Navigation.findNavController(v).navigate(R.id.profileFragment)
@@ -101,8 +166,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
 
         parkingDetailsViewModel.getParkings()
 
-        parkingDetailsViewModel.parkingList.observe(viewLifecycleOwner, Observer {parkingList ->
-            for (parking in parkingList){
+        parkingDetailsViewModel.parkingList.observe(viewLifecycleOwner, Observer { parkingList ->
+            for (parking in parkingList) {
                 val marker = LatLng(parking.location["lat"]!!, parking.location["long"]!!)
                 map.addMarker(
                     MarkerOptions()
@@ -121,7 +186,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
 
     //EVENTO DE CLICK EN MARKER
     override fun onInfoWindowClick(marker: Marker) {
-        val location = bundleOf("lat" to marker.position.latitude,"long" to marker.position.longitude)
+        val location =
+            bundleOf("lat" to marker.position.latitude, "long" to marker.position.longitude)
         Navigation.findNavController(v).navigate(R.id.parkingFragment, location)
     }
 
@@ -131,10 +197,19 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
         mapFragment!!.getMapAsync(this)
     }
 
-    private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor{
+    private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor {
         var vectorDrawable = ContextCompat.getDrawable(context, vectorResId) as Drawable
-        vectorDrawable.setBounds(0,0,vectorDrawable.intrinsicWidth,vectorDrawable.intrinsicHeight)
-        var bitmap = Bitmap.createBitmap(vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight, Bitmap.Config.ARGB_8888) as Bitmap
+        vectorDrawable.setBounds(
+            0,
+            0,
+            vectorDrawable.intrinsicWidth,
+            vectorDrawable.intrinsicHeight
+        )
+        var bitmap = Bitmap.createBitmap(
+            vectorDrawable.intrinsicWidth,
+            vectorDrawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        ) as Bitmap
         var canvas = Canvas(bitmap)
         vectorDrawable.draw(canvas)
 
@@ -143,7 +218,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
 
     //PERMISOS DE UBICACION
     private fun isPermissionsGranted() = ContextCompat.checkSelfPermission(
-        requireContext(),Manifest.permission.ACCESS_FINE_LOCATION
+        requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
     ) == PackageManager.PERMISSION_GRANTED
 
     @SuppressLint("MissingPermission")
@@ -157,14 +232,23 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
     }
 
     private fun requestLocationPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION)) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        ) {
             //Ubicacion denegada al abrir app
-            Toast.makeText(requireContext(), "Ve a ajustes y acepta los permisos de ubicacion", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                requireContext(),
+                "Ve a ajustes y acepta los permisos de ubicacion",
+                Toast.LENGTH_SHORT
+            ).show()
         } else {
-            ActivityCompat.requestPermissions(requireActivity(),
+            ActivityCompat.requestPermissions(
+                requireActivity(),
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                REQUEST_CODE_LOCATION)
+                REQUEST_CODE_LOCATION
+            )
         }
     }
 
@@ -174,14 +258,19 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        when(requestCode){
-            REQUEST_CODE_LOCATION -> if(grantResults.isNotEmpty() && grantResults[0]==PackageManager.PERMISSION_GRANTED){
+        when (requestCode) {
+            REQUEST_CODE_LOCATION -> if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 map.isMyLocationEnabled = true
-            }else{
+            } else {
                 Log.d("TestLocation", "Pedir2")
-                Toast.makeText(requireContext(), "Para activar la localización ve a ajustes y acepta los permisos de ubicacion", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Para activar la localización ve a ajustes y acepta los permisos de ubicacion",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-            else -> {}
+            else -> {
+            }
         }
     }
 }
