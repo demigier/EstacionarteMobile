@@ -19,9 +19,11 @@ import com.ort.estacionarte.R
 import com.ort.estacionarte.viewmodels.LoginViewModel
 import com.ort.estacionarte.viewmodels.ParkingDetailsViewModel
 import com.ort.estacionarte.viewmodels.ReservationsViewModel
+import com.ort.estacionarte.viewmodels.VehiclesViewModel
 import kotlinx.coroutines.*
+import java.time.OffsetDateTime
 
-class ParkingDetailsFragment : Fragment() {
+class ParkingDetailsFragment : Fragment(), AdapterView.OnItemClickListener {
 
     companion object {
         fun newInstance() = ParkingDetailsFragment()
@@ -31,6 +33,7 @@ class ParkingDetailsFragment : Fragment() {
     private val loginVM: LoginViewModel by activityViewModels()
     private val reservationsVM: ReservationsViewModel by activityViewModels()
     private val parkingDetailsVM: ParkingDetailsViewModel by activityViewModels()
+    private val vehiclesVM: VehiclesViewModel by activityViewModels()
 
     lateinit var v: View
 
@@ -39,6 +42,9 @@ class ParkingDetailsFragment : Fragment() {
     lateinit var txtParkingAddress: TextView
     lateinit var txtParkingPhoneNumber: TextView
     lateinit var txtParkingAvailableSpots: TextView
+    lateinit var autoCompleteVehicles: AutoCompleteTextView
+
+    var selectedVehicle: String = ""
 
     private val parentJob = Job()
     val scope = CoroutineScope(Dispatchers.Default + parentJob)
@@ -60,6 +66,7 @@ class ParkingDetailsFragment : Fragment() {
         txtParkingAddress = v.findViewById(R.id.txtParkinAddress)
         txtParkingPhoneNumber = v.findViewById(R.id.txtParkingPhoneNumber)
         txtParkingAvailableSpots = v.findViewById(R.id.txtParkingAvailableSpots)
+        autoCompleteVehicles = v.findViewById(R.id.autoCompleteVehicles)
 
         btnReserve.isEnabled = false
 
@@ -77,7 +84,7 @@ class ParkingDetailsFragment : Fragment() {
         parkingDetailsVM.getParkingInfo(lat!!, long!!)
 
         // parkingDetailsVM.getVehicles(userID)
-
+        vehiclesVM.getUserVehicles(userID)
 
         return v
     }
@@ -86,6 +93,21 @@ class ParkingDetailsFragment : Fragment() {
     override fun onStart() {
         super.onStart()
 
+
+        vehiclesVM.vehiclesList.observe(viewLifecycleOwner, Observer { vehicles ->
+            //Toast.makeText(v.context, it, Toast.LENGTH_SHORT).show()
+            if(vehicles.size > 0){
+                var items= arrayListOf<String>()
+                for (v in vehicles){
+                    items.add(v.licensePlate)
+                }
+                val adapter = ArrayAdapter(requireContext(), R.layout.vehicle_select_item, items)
+                autoCompleteVehicles.setAdapter(adapter)
+                autoCompleteVehicles.onItemClickListener = this@ParkingDetailsFragment
+            }else{
+                sendAlertMessage("Para reservas, debes agregar al menos un vehiculo en tu perfil", "Atencion")
+            }
+        })
         //1) Traer datos del estacionamiento seleccionado para mostrar en pantalla
         //      Nombre, direccion, precios, horarios, puntaje.
         //2) Buscar si tiene lugares disponible -> habilitar boton de reservar.
@@ -97,11 +119,12 @@ class ParkingDetailsFragment : Fragment() {
         //4) Por ahora hasta ahí...
         if (loginVM.currentUser.value != null) { //userID != "default"
             btnReserve.setOnClickListener {
-                reservationsVM.makeReservation(
-                    userID.toString(),
-                    parkingDetailsVM.parkingAct.value?.uid.toString(),
-                    "6yeWT1Src7OgCbdvzjaf"
-                )
+                if(selectedVehicle != ""){
+                    reservationsVM.makeReservation(userID.toString(),parkingDetailsVM.parkingAct.value?.uid.toString(),selectedVehicle)
+                    //reservationsVM.makeReservation(userID.toString(),parkingDetailsVM.parkingAct.value?.uid.toString(),"6yeWT1Src7OgCbdvzjaf")
+                }else{
+                    sendAlertMessage("Debe seleccionar un vehiculo","Atencion")
+                }
             }
 
             parkingDetailsVM.parkingAct.observe(viewLifecycleOwner, Observer {
@@ -143,5 +166,15 @@ class ParkingDetailsFragment : Fragment() {
         }
         builder?.create()
         builder?.show()
+    }
+
+    override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+        //selectedVehicle = parent?.getItemAtPosition(position).toString()
+        if(vehiclesVM.vehiclesList.value != null){
+            if(vehiclesVM.vehiclesList.value?.size!! > 0){
+                selectedVehicle = vehiclesVM.vehiclesList.value!![position].uid
+            }
+        }
+        //Toast.makeText(requireContext(), item, Toast.LENGTH_LONG).show()
     }
 }

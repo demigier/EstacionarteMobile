@@ -67,11 +67,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
         return v
     }
 
-    /*override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        //parkingDetailsViewModel = ViewModelProvider(this).get(ParkingDetailsViewModel::class.java)
-    }*/
-
     @SuppressLint("RestrictedApi")
     override fun onStart() {
         super.onStart()
@@ -99,8 +94,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
         map.uiSettings.isCompassEnabled = true
         map.uiSettings.isMapToolbarEnabled = true
         map.uiSettings.isTiltGesturesEnabled = true
-
-        //map.uiSettings.setAllGesturesEnabled(true)
 
         //map.moveCamera(CameraUpdateFactory.newLatLng(map.))
         /*var location = LocationRequest.CREATOR

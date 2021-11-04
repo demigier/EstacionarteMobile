@@ -164,6 +164,7 @@ class ReservationsViewModel : ViewModel() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun cancelCurrentReservation() {
         //Esto debería implementarse en una transacción
         viewModelScope.launch(Dispatchers.IO) {
@@ -174,11 +175,9 @@ class ReservationsViewModel : ViewModel() {
                         .update(
                             mapOf(
                                 "active" to false,
-                                "cancelationDate" to SimpleDateFormat("dd-MM-yyyy hh:mm").format(
-                                    Calendar.getInstance().time
+                                "cancelationDate" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"))
                                 )
-                            )
-                        ).await()
+                            ).await()
 
                     db.collection(SPOTS_COL)
                         .document(currentReservation.value!!.parkingSpotID)
@@ -189,6 +188,7 @@ class ReservationsViewModel : ViewModel() {
                         )
                         .await()
 
+                    getAllReservations(currentReservation.value!!.userID)
                     currentReservation.postValue(null)
                     currentReservation.value!!.uid = ""
                     currentReservationExtraData = hashMapOf()
@@ -197,7 +197,7 @@ class ReservationsViewModel : ViewModel() {
                         "TEST: ReservationsVM -> cancelCurrentReservation(): ",
                         "Reserva cancelada"
                     )
-                    sendMsgToFront(msgToProfFrag, SingleMsg("La reserva fue cancelada"))
+                    sendMsgToFront(msgToProfFrag, SingleMsg("La reserva fue cancelada exitosamente"))
                 }
             } catch (e: Exception) {
                 Log.d(
