@@ -26,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="57dp" />
+        app:layout_constraintGuide_percent="0.07934336" />
 
     <EditText
         android:id="@+id/txtMail"
@@ -93,7 +93,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="687dp" />
+        app:layout_constraintGuide_percent="0.9411765" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

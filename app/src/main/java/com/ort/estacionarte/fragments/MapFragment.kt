@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -12,6 +13,7 @@ import android.graphics.drawable.Drawable
 import android.location.*
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -32,6 +34,8 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ort.estacionarte.R
+import com.ort.estacionarte.activities.HomeActivity
+import com.ort.estacionarte.activities.LoginActivity
 import com.ort.estacionarte.entities.Parking
 import com.ort.estacionarte.viewmodels.ParkingDetailsViewModel
 import kotlinx.coroutines.*
@@ -64,6 +68,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
 
     private lateinit var parkingList: MutableList<Parking>
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -94,7 +99,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
 
                         if (addressObtained.size > 0) {
 
-/*                            for (a in addressObtained) {
+/*                          for (a in addressObtained) {
                                 addresNamesList.add(a.getAddressLine(0))
                             }
                             adapter.notifyDataSetChanged()
@@ -160,7 +165,19 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
         map.uiSettings.isMapToolbarEnabled = true
         map.uiSettings.isTiltGesturesEnabled = true
 
-        //map.moveCamera(CameraUpdateFactory.newLatLng(map.))
+        //map.moveCamera(CameraUpdateFactory.newLatLng(map.)
+        /*if(map.isMyLocationEnabled){
+            lateinit var location: Location
+            Handler().postDelayed({
+                location = map.myLocation
+            }, 1500)
+            Handler().postDelayed({
+                Log.d("LocationTest", location.latitude.toString())
+                var latLng = LatLng(location.latitude, location.longitude)
+                map.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
+            }, 3000)
+        }*/
         /*var location = LocationRequest.CREATOR
         Log.d("location", location.getLatitude())*/
 

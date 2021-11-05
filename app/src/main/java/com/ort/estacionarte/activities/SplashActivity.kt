@@ -19,7 +19,6 @@ class SplashActivity : AppCompatActivity() {
         var userID = sharedPref.getString("userID","default")
         Log.d("test", userID!!)
         Handler().postDelayed({
-
             if(userID != "default"){
                 Log.d("TestRedirect", userID)
                 startActivity(Intent(this, HomeActivity::class.java))

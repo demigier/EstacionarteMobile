@@ -1,6 +1,7 @@
 package com.ort.estacionarte.adapters
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,15 +32,16 @@ class ReservationsAdapter(private var reservationsList: MutableList<Reservation?
         holder.setReservationDate(reservationsList[position]?.reservationDate.toString())
         var type = "nada"
         var altDate = ""
-        if(reservationsList[position]?.userArrivedDate != null){
-            type = "llegada"
-            altDate = reservationsList[position]?.userArrivedDate.toString()
-        }else if(reservationsList[position]?.userLeftDate != null){
+        if(reservationsList[position]?.userLeftDate != null){
             type = "finalizacion"
+            Log.d("test",type)
             altDate = reservationsList[position]?.userLeftDate.toString()
         }else if(reservationsList[position]?.cancelationDate != null){
             type = "cancelacion"
             altDate = reservationsList[position]?.cancelationDate.toString()
+        }else if(reservationsList[position]?.userArrivedDate != null){
+            type = "llegada"
+            altDate = reservationsList[position]?.userArrivedDate.toString()
         }
         holder.setAlternativeDate(altDate, type)
         holder.getCancelationButton().setOnClickListener() {
@@ -76,11 +78,11 @@ class ReservationsAdapter(private var reservationsList: MutableList<Reservation?
         }
         fun setAlternativeDate(altDate: String, type: String) {
             val txt: TextView = view.findViewById(R.id.txtReservAltDate)
-            if (type == "cancelacion") {
+            /*if (type == "cancelacion") {
 
             } else if (type == "cancelacion") {
                 txt.text = "Fecha cancelacion: $altDate"
-            }
+            }*/
             when (type) {
                 "cancelacion" -> txt.text = "Fecha cancelacion: $altDate"
                 "finalizacion" ->  txt.text = "Fecha finalizacion: $altDate"

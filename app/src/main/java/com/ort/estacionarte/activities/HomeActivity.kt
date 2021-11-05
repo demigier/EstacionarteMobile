@@ -2,6 +2,7 @@ package com.ort.estacionarte.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import com.ort.estacionarte.R
 
 class HomeActivity : AppCompatActivity() {
