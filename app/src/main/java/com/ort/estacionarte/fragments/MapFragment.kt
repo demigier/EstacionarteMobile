@@ -30,6 +30,8 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -68,7 +70,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
 
     private lateinit var parkingList: MutableList<Parking>
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -78,33 +79,36 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
         searchView = v.findViewById(R.id.search_address)
         listView = v.findViewById(R.id.list_view)
 
-        adapter = ArrayAdapter(requireContext(),android.R.layout.simple_list_item_1,addresNamesList)
+        adapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, addresNamesList)
         listView.adapter = adapter
 
         createMapFragment()
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-
-                if (searchView.query.toString() != null && lastSearchAddress != searchView.query.toString()) {
+                searchView.clearFocus()
+                if (searchView.query.toString() != null) {
                     lastSearchAddress = searchView.query.toString()
 
                     var geocoder = Geocoder(requireContext())
-                    lastSearchMarker?.remove()
                     //addresNamesList.clear()
 
                     try {
-                        var addressObtained: MutableList<Address> = geocoder.getFromLocationName(lastSearchAddress, 5)
+                        var addressObtained: MutableList<Address> =
+                            geocoder.getFromLocationName(lastSearchAddress, 5)
                         //adapter.notifyDataSetChanged()
 
                         if (addressObtained.size > 0) {
+                            lastSearchMarker?.remove()
 
 /*                          for (a in addressObtained) {
                                 addresNamesList.add(a.getAddressLine(0))
                             }
                             adapter.notifyDataSetChanged()
 */
-                            var latLong = LatLng(addressObtained[0].latitude, addressObtained[0].longitude)
+                            var latLong =
+                                LatLng(addressObtained[0].latitude, addressObtained[0].longitude)
 
                             lastSearchMarker = map.addMarker(
                                 MarkerOptions().position(latLong).title(lastSearchAddress)
@@ -120,6 +124,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
                     } catch (e: IOException) {
                         Log.d("Error maps location", e.message.toString())
                         e.printStackTrace()
+                    } catch (iae: IllegalArgumentException) {
+                        Log.d("Error maps location", iae.message.toString())
                     }
                 }
 
@@ -130,7 +136,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
 
                 return false
             }
-
         })
 
         return v
@@ -156,6 +161,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         enableLocation()
+        putCameraOnCurrentLocation()
 
         map.uiSettings.isZoomControlsEnabled = false
         map.uiSettings.isZoomGesturesEnabled = true
@@ -164,22 +170,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
         map.uiSettings.isCompassEnabled = true
         map.uiSettings.isMapToolbarEnabled = true
         map.uiSettings.isTiltGesturesEnabled = true
-
-        //map.moveCamera(CameraUpdateFactory.newLatLng(map.)
-        /*if(map.isMyLocationEnabled){
-            lateinit var location: Location
-            Handler().postDelayed({
-                location = map.myLocation
-            }, 1500)
-            Handler().postDelayed({
-                Log.d("LocationTest", location.latitude.toString())
-                var latLng = LatLng(location.latitude, location.longitude)
-                map.moveCamera(CameraUpdateFactory.newLatLng(latLng))
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15F))
-            }, 3000)
-        }*/
-        /*var location = LocationRequest.CREATOR
-        Log.d("location", location.getLatitude())*/
 
         parkingDetailsViewModel.getParkings()
 
@@ -194,11 +184,21 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
                         .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.parking))
                         .snippet("Direccion: " + parking.address)
                 )
-
             }
-
         })
         googleMap.setOnInfoWindowClickListener(this)
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun putCameraOnCurrentLocation() {
+        if (lastSearchMarker == null) {
+            var flp = LocationServices.getFusedLocationProviderClient(requireContext())
+
+            flp.lastLocation.addOnSuccessListener { location ->
+                val latLong = LatLng(location.latitude, location.longitude)
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLong, 15F))
+            }
+        }
     }
 
     //EVENTO DE CLICK EN MARKER

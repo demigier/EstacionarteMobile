@@ -93,7 +93,6 @@ class ParkingDetailsFragment : Fragment(), AdapterView.OnItemClickListener {
     override fun onStart() {
         super.onStart()
 
-
         vehiclesVM.vehiclesList.observe(viewLifecycleOwner, Observer { vehicles ->
             //Toast.makeText(v.context, it, Toast.LENGTH_SHORT).show()
             if(vehicles.size > 0){

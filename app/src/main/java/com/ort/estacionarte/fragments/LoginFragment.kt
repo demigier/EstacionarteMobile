@@ -26,7 +26,7 @@ class LoginFragment : Fragment() {
     }
 
     private val loginVM: LoginViewModel by activityViewModels()
-    private val reservatiosVM: ReservationsViewModel by activityViewModels()
+    private val reservationsVM: ReservationsViewModel by activityViewModels()
     private val vehiclesVM: VehiclesViewModel by activityViewModels()
 
     //private lateinit var loginViewModel: LoginViewModel
@@ -67,8 +67,9 @@ class LoginFragment : Fragment() {
             if (currentUser != null) {
                 saveInSharedPreferences("Session", mapOf("userID" to currentUser.uid))
                 //var map = getFromSharedPreferences("Session")
-                reservatiosVM.getCurrentReservation(currentUser.uid)
-                //vehiclesVM.getUserVehicles(loginViewModel.currentUser.value!!.uid)
+                //reservationsVM.getCurrentReservation(currentUser.uid)
+                reservationsVM.getAllReservations(currentUser.uid)
+                vehiclesVM.getUserVehicles(currentUser.uid)
                 Navigation.findNavController(v).popBackStack(R.id.loginFragment, true)
                 Navigation.findNavController(v).navigate(R.id.mapFragment)
             }

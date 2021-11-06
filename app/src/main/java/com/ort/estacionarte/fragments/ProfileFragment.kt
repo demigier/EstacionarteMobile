@@ -1,15 +1,18 @@
 package com.ort.estacionarte.fragments
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
@@ -76,25 +79,34 @@ class ProfileFragment : Fragment() {
                 sendAlertMessage(smsg.readMsg(), "Atencion")
         })
 
+        //Seteos del RecyclerView de reservas
+        reservationsAdapter = ReservationsAdapter(reservationsVM.reservationsList.value!!, { item ->
+            onItemClick(item)
+        }, requireContext())
+        recyclerViewReservations.setHasFixedSize(false) //Cambie esto a false
+        var linearLayoutManager = LinearLayoutManager(context)
+        recyclerViewReservations.layoutManager = linearLayoutManager
+        recyclerViewReservations.adapter = reservationsAdapter
+
+        reservationsVM.reservationsList.observe(viewLifecycleOwner, Observer { reservationsList ->
+            if(reservationsList.size > 0){
+                recyclerViewReservations.adapter!!.notifyDataSetChanged()
+                /*reservationsAdapter = ReservationsAdapter(reservationsList, { item ->
+                    onItemClick(item)
+                }, requireContext())
+                recyclerViewReservations.adapter = reservationsAdapter*/
+
+            }
+        })
+
+
         return v
     }
 
     override fun onStart() {
         super.onStart()
-        reservationsVM.getAllReservations(loginVM.currentUser.value!!.uid)
-        reservationsVM.reservationsList.observe(viewLifecycleOwner, Observer { reservationsList ->
-            if(reservationsList.size > 0){
-                reservationsAdapter = ReservationsAdapter(reservationsVM.reservationsList.value!!, { item ->
-                    onItemClick(item)
-                }, requireContext())
+        //reservationsVM.getAllReservations(loginVM.currentUser.value!!.uid)
 
-                recyclerViewReservations.setHasFixedSize(true)
-                var linearLayoutManager = LinearLayoutManager(context)
-                recyclerViewReservations.layoutManager = linearLayoutManager
-
-                recyclerViewReservations.adapter = reservationsAdapter
-            }
-        })
 
        /* scope.launch {
             reservationsVM.getAllReservations(loginVM.currentUser.value!!.uid)
@@ -129,6 +141,7 @@ class ProfileFragment : Fragment() {
         }*/
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun onItemClick(item: Int) {
         if(reservationsVM.reservationsList.value!![item]!!.active == true){
             val builder: AlertDialog.Builder? = activity?.let {

@@ -12,7 +12,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ort.estacionarte.R
 import com.ort.estacionarte.entities.Reservation
 
-class ReservationsAdapter(private var reservationsList: MutableList<Reservation?>, val onItemClick: (Int) -> Unit, private val context: Context) :
+class ReservationsAdapter(private var reservationsList: MutableList<Reservation>, val onItemClick: (Int) -> Unit, private val context: Context) :
     RecyclerView.Adapter<ReservationsAdapter.ReservationHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReservationHolder {
@@ -49,6 +49,8 @@ class ReservationsAdapter(private var reservationsList: MutableList<Reservation?
         }
         if(reservationsList[position]?.active == true){
             holder.showCancelButton()
+        }else{
+            holder.hideCancelButton()
         }
     }
 
@@ -58,23 +60,23 @@ class ReservationsAdapter(private var reservationsList: MutableList<Reservation?
         @SuppressLint("SetTextI18n")
         fun setParkingName(name: String) {
             val txt: TextView = view.findViewById(R.id.txtReservPName)
-            txt.text = "${txt.text} $name"
+            txt.text = "Estacionamiento $name"
         }
         fun setAddress(address: String) {
             val txt: TextView = view.findViewById(R.id.txtReservPAddress)
-            txt.text = "${txt.text} $address"
+            txt.text = "Dirección: $address"
         }
         fun setVehicle(vehicleModel: String, vehicleBrand: String) {
             val txt: TextView = view.findViewById(R.id.txtReservVehicle)
-            txt.text = "${txt.text} $vehicleBrand $vehicleModel"
+            txt.text = "Vehículo: $vehicleBrand $vehicleModel"
         }
         fun setLicense(licensePlate: String) {
             val txt: TextView = view.findViewById(R.id.txtReservLicense)
-            txt.text = "${txt.text} $licensePlate"
+            txt.text = "Patente: $licensePlate"
         }
         fun setReservationDate(date: String) {
             val txt: TextView = view.findViewById(R.id.txtReservDate)
-            txt.text = "${txt.text} $date"
+            txt.text = "Fecha de reserva: $date"
         }
         fun setAlternativeDate(altDate: String, type: String) {
             val txt: TextView = view.findViewById(R.id.txtReservAltDate)
@@ -97,6 +99,11 @@ class ReservationsAdapter(private var reservationsList: MutableList<Reservation?
             val btn: FloatingActionButton = view.findViewById(R.id.btnReservCancel)
             btn.visibility = View.VISIBLE
         }
+        fun hideCancelButton() {
+            val btn: FloatingActionButton = view.findViewById(R.id.btnReservCancel)
+            btn.visibility = View.INVISIBLE
+        }
+
         fun getCancelationButton(): FloatingActionButton {
             val btn: FloatingActionButton = view.findViewById(R.id.btnReservCancel)
             return btn
