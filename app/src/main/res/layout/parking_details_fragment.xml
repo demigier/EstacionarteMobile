@@ -31,6 +31,8 @@
     <androidx.cardview.widget.CardView
         android:layout_width="346dp"
         android:layout_height="400dp"
+        app:cardElevation="0dp"
+        app:cardMaxElevation="0dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline13"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.492"
@@ -39,7 +41,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@drawable/input_design">
 
             <TextView
                 android:id="@+id/txtParkingAvailableSpots"

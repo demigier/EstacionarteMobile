@@ -14,7 +14,7 @@
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
         android:src="@drawable/car"
-        app:backgroundTint="#CDD2D5"
+        app:backgroundTint="#6200EE"
         app:borderWidth="0dp"
         app:layout_constraintBottom_toTopOf="@+id/txtVehicles"
         app:layout_constraintEnd_toStartOf="@+id/btnConfig"
@@ -32,7 +32,7 @@
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
         android:src="@drawable/settings"
-        app:backgroundTint="#FFCDD2D5"
+        app:backgroundTint="#6200EE"
         app:borderWidth="0dp"
         app:layout_constraintBottom_toTopOf="@+id/txtVehicles2"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,19 +49,16 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.15" />
 
-    <ImageView
+    <View
         android:id="@+id/imgFondo"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#00BCD4"
-        android:contentDescription="TODO"
-        android:src="@drawable/block"
+        android:background="@drawable/back_splash"
         app:layout_constraintBottom_toTopOf="@+id/guideline8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/txtUserName"

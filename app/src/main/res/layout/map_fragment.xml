@@ -26,7 +26,7 @@
             android:layout_gravity="end|bottom"
             android:layout_margin="16dp"
             android:src="@drawable/profile"
-            app:backgroundTint="#29A5DE"
+            app:backgroundTint="#6200EE"
             app:borderWidth="0dp"
             app:layout_constraintBottom_toTopOf="@+id/guideline16"
             app:layout_constraintEnd_toEndOf="@+id/guideline23"
@@ -40,13 +40,14 @@
         <SearchView
             android:id="@+id/search_address"
             android:layout_width="251dp"
-            android:layout_height="39dp"
-            android:layout_margin="15dp"
-            android:background="@color/white"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/search_design"
             android:elevation="5dp"
             android:iconifiedByDefault="false"
+            android:queryBackground="@color/white"
             android:queryHint="Ingresá una dirección"
-
             app:layout_constraintBottom_toTopOf="@+id/guideline5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -86,7 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="521dp" />
+            app:layout_constraintGuide_begin="294dp" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline3"

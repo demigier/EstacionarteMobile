@@ -7,13 +7,23 @@
     android:layout_height="match_parent"
     tools:context=".fragments.ConfigurationFragment">
 
+    <View
+        android:id="@+id/backVehicle"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:background="@drawable/title_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/btnUpdateConfig"
         android:layout_width="143dp"
         android:layout_height="52dp"
-        android:backgroundTint="#29A5DE"
         android:text="Guardar"
-        app:layout_constraintBottom_toTopOf="@+id/guideline5"
+        android:backgroundTint="#6200EE"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/txtLogout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtTelefonoConfig"
@@ -25,11 +35,14 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"
         android:text="Configuracion"
+        android:textColor="#D1CCCC"
         android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/txtNameConfig"
+        app:layout_constraintBottom_toBottomOf="@+id/backVehicle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.373"
+        app:layout_constraintStart_toStartOf="@+id/guideline11"
         app:layout_constraintTop_toTopOf="@+id/guideline4"
+        app:layout_constraintVertical_bias="0.0"
         tools:ignore="HardcodedText" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -49,14 +62,18 @@
 
     <EditText
         android:id="@+id/txtLastNameConfig"
-        android:layout_width="wrap_content"
+        android:layout_width="276dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="-20dp"
         android:layout_marginBottom="-20dp"
+        android:background="@drawable/input_design"
+        android:drawableLeft="@drawable/name_logo_24"
+        android:drawablePadding="10dp"
         android:ems="10"
         android:hint="@string/hint_last_name"
         android:inputType="textPersonName"
         android:minHeight="48dp"
+        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/txtTelefonoConfig"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -65,28 +82,37 @@
 
     <EditText
         android:id="@+id/txtNameConfig"
-        android:layout_width="wrap_content"
+        android:layout_width="276dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:layout_marginBottom="-20dp"
+        android:background="@drawable/input_design"
+        android:drawableLeft="@drawable/name_logo_24"
+        android:drawablePadding="10dp"
         android:ems="10"
         android:hint="@string/hint_name"
         android:inputType="textPersonName"
         android:minHeight="48dp"
+        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/txtLastNameConfig"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logo3"
+        app:layout_constraintTop_toBottomOf="@+id/backVehicle"
         tools:ignore="Autofill,HardcodedText" />
 
     <EditText
         android:id="@+id/txtTelefonoConfig"
-        android:layout_width="wrap_content"
+        android:layout_width="276dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="-20dp"
+        android:background="@drawable/input_design"
+        android:drawableLeft="@drawable/phone_logo_24"
+        android:drawablePadding="10dp"
         android:ems="10"
         android:hint="@string/hint_phone_number"
         android:inputType="textPersonName"
         android:minHeight="48dp"
+        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/btnUpdateConfig"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -97,11 +123,12 @@
         android:id="@+id/txtLogout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:text="Cerrar sesion"
-        app:layout_constraintBottom_toTopOf="@+id/guideline4"
-        app:layout_constraintEnd_toStartOf="@+id/guideline11"
+        app:layout_constraintBottom_toTopOf="@+id/guideline5"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/btnUpdateConfig" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline11"

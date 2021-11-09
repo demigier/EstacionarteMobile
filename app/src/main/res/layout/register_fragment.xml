@@ -7,14 +7,24 @@
     android:layout_height="match_parent"
     tools:context=".fragments.RegisterFragment" >
 
+    <View
+        android:id="@+id/backVehicle"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:background="@drawable/title_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/btnUpdateConfig"
         android:layout_width="143dp"
         android:layout_height="52dp"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="10dp"
-        android:backgroundTint="#29A5DE"
-        android:text="@string/btn_register"
+        android:text="Registrarme"
+        android:backgroundTint="#6200EE"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/guideline5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,15 +35,23 @@
         android:id="@+id/logo3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="40dp"
         android:text="Estacionarte"
         android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/txtBrand"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline4"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/loginText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Registro"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline28"
+        app:layout_constraintEnd_toStartOf="@+id/guideline29"
         tools:ignore="HardcodedText" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -52,26 +70,35 @@
 
     <EditText
         android:id="@+id/txtBrand"
-        android:layout_width="wrap_content"
+        android:layout_width="276dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="34dp"
+        android:background="@drawable/input_design"
+        android:drawableLeft="@drawable/email_icon_24"
+        android:drawablePadding="10dp"
         android:ems="10"
         android:hint="@string/hint_mail"
         android:inputType="textPersonName"
         android:minHeight="48dp"
+        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/txtPasswordNew"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logo3"
+        app:layout_constraintTop_toBottomOf="@+id/backVehicle"
         tools:ignore="Autofill,HardcodedText,TextFields" />
 
     <EditText
         android:id="@+id/txtLastNameConfig"
-        android:layout_width="wrap_content"
+        android:layout_width="276dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/input_design"
+        android:drawableLeft="@drawable/name_logo_24"
+        android:drawablePadding="10dp"
         android:ems="10"
         android:hint="@string/hint_last_name"
         android:inputType="textPersonName"
         android:minHeight="48dp"
+        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/txtTelefonoConfig"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
@@ -81,12 +108,16 @@
 
     <EditText
         android:id="@+id/txtLicensePlate2"
-        android:layout_width="wrap_content"
+        android:layout_width="276dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/input_design"
+        android:drawableLeft="@drawable/name_logo_24"
+        android:drawablePadding="10dp"
         android:ems="10"
         android:hint="@string/hint_name"
         android:inputType="textPersonName"
         android:minHeight="48dp"
+        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/txtLastNameConfig"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
@@ -96,12 +127,16 @@
 
     <EditText
         android:id="@+id/txtTelefonoConfig"
-        android:layout_width="wrap_content"
+        android:layout_width="276dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/input_design"
+        android:drawableLeft="@drawable/phone_logo_24"
+        android:drawablePadding="10dp"
         android:ems="10"
         android:hint="@string/hint_phone_number"
         android:inputType="textPersonName"
         android:minHeight="48dp"
+        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/btnUpdateConfig"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
@@ -111,12 +146,16 @@
 
     <EditText
         android:id="@+id/txtPasswordNew"
-        android:layout_width="wrap_content"
+        android:layout_width="276dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/input_design"
+        android:drawableLeft="@drawable/pass_logo_24"
+        android:drawablePadding="10dp"
         android:ems="10"
         android:hint="@string/hint_password"
         android:inputType="textPassword"
         android:minHeight="48dp"
+        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/txtPasswordNew2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -125,12 +164,16 @@
 
     <EditText
         android:id="@+id/txtPasswordNew2"
-        android:layout_width="wrap_content"
+        android:layout_width="276dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/input_design"
+        android:drawableLeft="@drawable/pass_logo_24"
+        android:drawablePadding="10dp"
         android:ems="10"
         android:hint="@string/hint_repeat_password"
         android:inputType="textPassword"
         android:minHeight="48dp"
+        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/txtLicensePlate2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
@@ -138,5 +181,19 @@
         app:layout_constraintTop_toBottomOf="@+id/txtPasswordNew"
         app:layout_constraintVertical_bias="0.0"
         tools:ignore="Autofill,HardcodedText,TextFields" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline29"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.91" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline28"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.23" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

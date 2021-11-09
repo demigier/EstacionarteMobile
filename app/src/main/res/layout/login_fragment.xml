@@ -7,18 +7,38 @@
     android:layout_height="match_parent"
     tools:context=".fragments.LoginFragment">
 
+    <View
+        android:id="@+id/backVehicle"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:background="@drawable/title_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
         android:text="Estacionarte"
         android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/txtMail"
+        app:layout_constraintBottom_toTopOf="@+id/backVehicle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline6"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/loginText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline26"
+        app:layout_constraintEnd_toStartOf="@+id/guideline25"
         tools:ignore="HardcodedText" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -30,31 +50,41 @@
 
     <EditText
         android:id="@+id/txtMail"
-        android:layout_width="wrap_content"
+        android:layout_width="276dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="90dp"
+        android:layout_marginTop="120dp"
         android:height="48dp"
+        android:background="@drawable/input_design"
+        android:drawableLeft="@drawable/email_icon_24"
+        android:drawablePadding="10dp"
         android:ems="10"
         android:hint="@string/hint_mail"
         android:inputType="textEmailAddress"
         android:minHeight="48dp"
+        android:padding="10dp"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/txtPassword"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.508"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logo"
+        app:layout_constraintTop_toBottomOf="@+id/backVehicle"
         tools:ignore="Autofill,HardcodedText,TouchTargetSizeCheck,TouchTargetSizeCheck,TouchTargetSizeCheck,TouchTargetSizeCheck,TouchTargetSizeCheck,TouchTargetSizeCheck,TouchTargetSizeCheck,TouchTargetSizeCheck" />
 
     <EditText
         android:id="@+id/txtPassword"
-        android:layout_width="wrap_content"
+        android:layout_width="276dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         android:height="48dp"
+        android:background="@drawable/input_design"
+        android:drawableLeft="@drawable/pass_logo_24"
+        android:drawablePadding="10dp"
         android:ems="10"
         android:hint="@string/hint_password"
         android:inputType="textPassword"
         android:minHeight="48dp"
+        android:padding="10dp"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/btnLogin"
         app:layout_constraintEnd_toEndOf="parent"
@@ -66,26 +96,40 @@
         android:id="@+id/btnLogin"
         android:layout_width="143dp"
         android:layout_height="52dp"
-        android:layout_marginTop="50dp"
-        android:backgroundTint="#29A5DE"
+        android:backgroundTint="#6200EE"
+        android:textColor="@color/white"
         android:text="@string/btn_login"
-        app:layout_constraintBottom_toTopOf="@+id/btnRegister"
+        app:layout_constraintBottom_toTopOf="@+id/txtDescReg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtPassword"
         tools:ignore="HardcodedText" />
 
-    <Button
-        android:id="@+id/btnRegister"
-        android:layout_width="143dp"
-        android:layout_height="52dp"
-        android:layout_marginTop="-10dp"
-        android:backgroundTint="#29A5DE"
-        android:text="@string/btn_register"
-        app:layout_constraintBottom_toTopOf="@+id/guideline7"
+    <TextView
+        android:id="@+id/txtDescReg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="116dp"
+        android:layout_marginBottom="1dp"
+        android:text="Aun no estas registrado?"
+        android:textColor="#565555"
+        app:layout_constraintBottom_toTopOf="@+id/btnRegister"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnLogin"
+        app:layout_constraintTop_toBottomOf="@+id/btnLogin" />
+
+    <TextView
+        android:id="@+id/btnRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="@string/btn_register"
+        android:textColor="#6F1CE5"
+        app:layout_constraintBottom_toTopOf="@+id/guideline7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+
+        app:layout_constraintStart_toStartOf="parent"
         tools:ignore="HardcodedText" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -94,6 +138,20 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.9411765" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline25"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.91" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline26"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.23" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

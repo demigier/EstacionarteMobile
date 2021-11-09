@@ -8,11 +8,21 @@
     android:background="#FFFFFF"
     tools:context=".fragments.VehicleDetailsFragment">
 
+    <View
+        android:id="@+id/backVehicle"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:background="@drawable/title_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/btnUpdateConfig"
         android:layout_width="143dp"
         android:layout_height="52dp"
-        android:backgroundTint="#3F51B5"
+        android:backgroundTint="#6200EE"
+        android:textColor="@color/white"
         android:text="Editar"
         android:textColorLink="#00BCD4"
         app:layout_constraintBottom_toTopOf="@+id/btnDelete"
@@ -40,12 +50,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Mi vehiculo"
+        android:textColor="#D1CCCC"
         android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/txtBrand"
+        app:layout_constraintBottom_toTopOf="@+id/backVehicle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.31"
+        app:layout_constraintStart_toStartOf="@+id/guideline11"
         app:layout_constraintTop_toBottomOf="@+id/guideline4"
+        app:layout_constraintVertical_bias="0.0"
         tools:ignore="HardcodedText" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -66,16 +78,21 @@
         android:id="@+id/txtBrand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:ems="10"
         android:focusable="false"
         android:hint="Marca"
         android:inputType="textPersonName"
         android:minHeight="48dp"
+        android:background="@drawable/input_design"
+        android:drawableLeft="@drawable/car_logo_24"
+        android:drawablePadding="10dp"
+        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/txtTelefonoConfig"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logo3"
+        app:layout_constraintTop_toBottomOf="@+id/backVehicle"
         tools:ignore="Autofill,HardcodedText,TextFields" />
 
     <EditText
@@ -87,6 +104,10 @@
         android:hint="Patente"
         android:inputType="textPersonName"
         android:minHeight="48dp"
+        android:background="@drawable/input_design"
+        android:drawableLeft="@drawable/license_logo_24"
+        android:drawablePadding="10dp"
+        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/btnUpdateConfig"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -103,11 +124,22 @@
         android:hint="Modelo"
         android:inputType="textPersonName"
         android:minHeight="48dp"
+        android:background="@drawable/input_design"
+        android:drawableLeft="@drawable/car_logo_24"
+        android:drawablePadding="10dp"
+        android:padding="10dp"
         app:layout_constraintBottom_toTopOf="@+id/txtLicensePlate2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtBrand"
         tools:ignore="Autofill,HardcodedText,TextFields" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.22871046" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

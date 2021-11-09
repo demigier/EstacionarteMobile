@@ -19,10 +19,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import android.widget.SearchView
-import android.widget.Toast
+import android.widget.*
 import android.widget.SearchView.OnQueryTextListener
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -172,6 +169,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
         map.uiSettings.isTiltGesturesEnabled = true
 
         parkingDetailsViewModel.getParkings()
+
+        if(map.isMyLocationEnabled){
+            val locationButton= (v.findViewById<View>(Integer.parseInt("1")).parent as View).findViewById<View>(Integer.parseInt("2"))
+            val rlp=locationButton.layoutParams as (RelativeLayout.LayoutParams)
+            rlp.setMargins(0,40,30,0);
+
+            val toolBar= (v.findViewById<View>(Integer.parseInt("1")).parent as View).findViewById<View>(Integer.parseInt("4"))
+            val rlp2=toolBar.layoutParams as (RelativeLayout.LayoutParams)
+            rlp2.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
+            rlp2.addRule(RelativeLayout.ALIGN_PARENT_LEFT)
+            rlp2.setMargins(100,40,0,100)
+        }
 
         parkingDetailsViewModel.parkingList.observe(viewLifecycleOwner, Observer { parkingList ->
             for (parking in parkingList) {

@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
@@ -35,7 +36,7 @@ class LoginFragment : Fragment() {
     lateinit var txtMail: EditText
     lateinit var txtPassword: EditText
     lateinit var btnLogin: Button
-    lateinit var btnRegister: Button
+    lateinit var btnRegister: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
