@@ -16,7 +16,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="111dp"
+        android:layout_height="146dp"
+        app:layout_constraintBottom_toBottomOf="@+id/backVehicle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo" />
+
+    <!--<TextView
         android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,7 +38,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline6"
         app:layout_constraintVertical_bias="0.0"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText" />-->
 
     <TextView
         android:id="@+id/loginText"
