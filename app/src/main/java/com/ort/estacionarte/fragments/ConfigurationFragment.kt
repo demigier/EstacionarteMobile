@@ -16,6 +16,8 @@ import com.ort.estacionarte.R
 import com.ort.estacionarte.adapters.SingleMsg
 import com.ort.estacionarte.entitiescountry.User
 import com.ort.estacionarte.viewmodels.LoginViewModel
+import com.ort.estacionarte.viewmodels.ReservationsViewModel
+import com.ort.estacionarte.viewmodels.VehiclesViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -27,12 +29,10 @@ class ConfigurationFragment : Fragment() {
     }
 
     private val loginVM: LoginViewModel by activityViewModels()
+    private val reservationsVM: ReservationsViewModel by activityViewModels()
+    private val vehiclesVM: VehiclesViewModel by activityViewModels()
 
-    //private lateinit var profileViewModel: ProfileViewModel
     lateinit var v: View
-
-    private val parentJob = Job()
-    val scope = CoroutineScope(Dispatchers.Default + parentJob)
 
     lateinit var txtName: EditText
     lateinit var txtLastName: EditText
@@ -71,21 +71,7 @@ class ConfigurationFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-/*
-        val sharedPref: SharedPreferences = requireContext().getSharedPreferences("Session", Context.MODE_PRIVATE)
-        var userID = sharedPref.getString("userID","default")
 
-        if(userID != "default"){
-            scope.launch {
-                profileViewModel.getFirebaseUserData(userID.toString())
-            }
-
-            val handler = Handler()
-            handler.postDelayed(java.lang.Runnable {
-                txtName.setText(profileViewModel.currentUser!!.name, TextView.BufferType.EDITABLE);
-                txtLastName.setText(profileViewModel.currentUser!!.lastName, TextView.BufferType.EDITABLE);
-                txtPhoneNumber.setText(profileViewModel.currentUser!!.phoneNumber, TextView.BufferType.EDITABLE);
-*/
         btnUpdate.setOnClickListener {
             if (editMode) {
                 if (validateInput()) {
@@ -103,8 +89,8 @@ class ConfigurationFragment : Fragment() {
                     btnUpdate.text = "Editar"
                     btnUpdate.setBackgroundColor(Color.RED);
 
-                    Navigation.findNavController(v).popBackStack(R.id.configurationFragment, true)
-                    Navigation.findNavController(v).navigate(R.id.profileFragment)
+                    //Navigation.findNavController(v).popBackStack(R.id.configurationFragment, true)
+                    //Navigation.findNavController(v).navigate(R.id.profileFragment)
                 }
             } else {
                 editMode = !editMode
@@ -115,26 +101,27 @@ class ConfigurationFragment : Fragment() {
                 txtLastName.isFocusableInTouchMode = editMode
                 txtPhoneNumber.isFocusableInTouchMode = editMode
             }
-
         }
 
         loginVM.msgToConfFrag.observe(viewLifecycleOwner, Observer { smsg ->
-            //Toast.makeText(v.context, msg, Toast.LENGTH_SHORT).show()
-            if(smsg.isNew())
-                sendAlertMessage(smsg.readMsg(), "Atención")
+            if (smsg.isNew()) {
+                if(!smsg.isErrorMsg()){
+                    //Si no hubo error, informo y navego al profileFragment
+                    sendAlertMessage(smsg.readMsg(), "Atención", { navigateToProfile() })
+                }else{
+                    sendAlertMessage(smsg.readMsg(), "Atención")
+                }
+            }
         })
 
         txtLogout.setOnClickListener {
-            loginVM.logOut()
-            //Navigation.findNavController(v).popBackStack(R.id.configurationFragment, true)
-            Navigation.findNavController(v).popBackStack(R.id.mapFragment, true)
-            Navigation.findNavController(v).navigate(R.id.loginFragment)
+            sendConfirmAlert("¿Desea cerrar la sesión?", "Atención") { logOut() }
         }
 
     }
 
     private fun validateInput(): Boolean {
-        var validData: Boolean = false
+        var validData = false
 
         if (txtName.text.isEmpty() || txtLastName.text.isEmpty() || txtPhoneNumber.text.isEmpty()) {
             loginVM.msgToConfFrag.value = SingleMsg("No deje campos vacios")
@@ -148,7 +135,19 @@ class ConfigurationFragment : Fragment() {
         return validData
     }
 
-    private fun sendAlertMessage(msg: String, title: String) {
+    private fun logOut() {
+        //Se resetean la info del ususario
+        loginVM.logOut()
+        reservationsVM.reservationsList.value = mutableListOf()
+        reservationsVM.currentReservation.value = null
+        vehiclesVM.vehiclesList.value = mutableListOf()
+
+        //Navegar hasta loginFragment
+        Navigation.findNavController(v).popBackStack(R.id.mapFragment, true)
+        Navigation.findNavController(v).navigate(R.id.loginFragment)
+    }
+
+    private fun sendAlertMessage(msg: String, title: String, callback: (() -> Unit)? = null) {
         val builder: AlertDialog.Builder? = activity?.let {
             AlertDialog.Builder(it)
         }
@@ -157,10 +156,39 @@ class ConfigurationFragment : Fragment() {
         builder?.apply {
             setNegativeButton("Aceptar",
                 DialogInterface.OnClickListener { dialog, id ->
+                    if (callback != null) {
+                        callback()
+                    }
                     dialog.cancel()
                 })
         }
         builder?.create()
         builder?.show()
     }
+
+    private fun sendConfirmAlert(msg: String, title: String,callback: () -> Unit) {
+        val builder: AlertDialog.Builder? = activity?.let {
+            AlertDialog.Builder(it)
+        }
+        builder?.setMessage(msg)
+            ?.setTitle(title)
+        builder?.apply {
+            setPositiveButton("Aceptar",
+                DialogInterface.OnClickListener { dialog, id ->
+                    callback()
+                })
+            setNegativeButton("Cancelar",
+                DialogInterface.OnClickListener { dialog, id ->
+                    dialog.cancel()
+                })
+        }
+        builder?.create()
+        builder?.show()
+    }
+
+    fun navigateToProfile(){
+        Navigation.findNavController(v).popBackStack(R.id.profileFragment, true)
+        Navigation.findNavController(v).navigate(R.id.profileFragment)
+    }
+
 }

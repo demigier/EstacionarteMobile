@@ -1,6 +1,6 @@
 package com.ort.estacionarte.adapters
 
-class SingleMsg(private var msg: String) {
+class SingleMsg(private var msg: String, private var isError: Boolean = false) {
     private var new: Boolean = true
 
     fun readMsg(): String {
@@ -15,6 +15,10 @@ class SingleMsg(private var msg: String) {
 
     fun isNew(): Boolean {
         return new
+    }
+
+    fun isErrorMsg(): Boolean {
+        return isError
     }
 
 }

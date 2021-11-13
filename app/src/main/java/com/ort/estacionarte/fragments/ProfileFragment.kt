@@ -51,6 +51,7 @@ class ProfileFragment : Fragment() {
     private val parentJob = Job()
     val scope = CoroutineScope(Dispatchers.Default + parentJob)
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -68,7 +69,6 @@ class ProfileFragment : Fragment() {
         //profileViewModel.currentUser.value = loginViewModel.currentUser.value
 
         loginVM.currentUser.observe(viewLifecycleOwner, Observer { currentUser ->
-
             if (currentUser != null) {
                 txtUsername.text = currentUser.lastName + " " + currentUser.name
             }
@@ -90,43 +90,21 @@ class ProfileFragment : Fragment() {
 
         reservationsVM.reservationsList.observe(viewLifecycleOwner, Observer { reservationsList ->
             if(reservationsList.size > 0){
-                recyclerViewReservations.adapter!!.notifyDataSetChanged()
-                /*reservationsAdapter = ReservationsAdapter(reservationsList, { item ->
+                //recyclerViewReservations.adapter!!.notifyDataSetChanged()
+
+                reservationsAdapter = ReservationsAdapter(reservationsList, { item ->
                     onItemClick(item)
                 }, requireContext())
-                recyclerViewReservations.adapter = reservationsAdapter*/
-
+                recyclerViewReservations.adapter = reservationsAdapter
             }
         })
-
 
         return v
     }
 
     override fun onStart() {
         super.onStart()
-        //reservationsVM.getAllReservations(loginVM.currentUser.value!!.uid)
-
-
-       /* scope.launch {
-            reservationsVM.getAllReservations(loginVM.currentUser.value!!.uid)
-            delay(500)
-            //enviar vehiculos al adapter
-
-
-            reservationsAdapter = ReservationsAdapter(reservationsVM.reservationsList.value!!, { item ->
-                onItemClick(item)
-            }, requireContext())
-        }*/
-
-        /*recyclerViewReservations.setHasFixedSize(true)
-        var linearLayoutManager = LinearLayoutManager(context)
-        recyclerViewReservations.layoutManager = linearLayoutManager*/
-
-       /* val handler = Handler()
-        handler.postDelayed(java.lang.Runnable {
-            recyclerViewReservations.adapter = reservationsAdapter
-        }, 4000)*/
+        reservationsVM.getAllReservations(loginVM.currentUser.value!!.uid)
 
         btnVehicles.setOnClickListener {
             Navigation.findNavController(v).navigate(R.id.vehiclesFragment)
@@ -135,15 +113,11 @@ class ProfileFragment : Fragment() {
         btnConfig.setOnClickListener {
             Navigation.findNavController(v).navigate(R.id.configurationFragment)
         }
-
-       /* btnCancel.setOnClickListener{
-                reservationsVM.cancelCurrentReservation()
-        }*/
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun onItemClick(item: Int) {
-        if(reservationsVM.reservationsList.value!![item]!!.active == true){
+        if(reservationsVM.reservationsList.value!![item].active){
             val builder: AlertDialog.Builder? = activity?.let {
                 AlertDialog.Builder(it)
             }

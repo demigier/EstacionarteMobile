@@ -79,7 +79,10 @@ class LoginViewModel : ViewModel() {
             } catch (tmr: FirebaseTooManyRequestsException) {
                 //FirebaseTooManyRequestsException: We have blocked all requests from this device due to unusual activity. Try again later. [ Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later. ]
                 Log.d("LoginVM -> loginUser:", tmr.toString())
-                sendMsgToFront(msgToLogin, SingleMsg("Se ha bloqueado la cuenta por intentos reiterados"))
+                sendMsgToFront(
+                    msgToLogin,
+                    SingleMsg("Se ha bloqueado la cuenta por intentos reiterados")
+                )
 
             } catch (ne: FirebaseNetworkException) {
                 //FirebaseNetworkException: A network error (such as timeout, interrupted connection or unreachable host) has occurred.
@@ -114,7 +117,10 @@ class LoginViewModel : ViewModel() {
             } catch (wp: FirebaseAuthWeakPasswordException) {
                 //com.google.firebase.auth.FirebaseAuthWeakPasswordException: The given password is invalid. [ Password should be at least 6 characters ]
                 Log.d("LoginVM -> loginUser:", wp.toString())
-                sendMsgToFront(msgToRegister, SingleMsg("La contraseña debe tener al menos 6 caracteres"))
+                sendMsgToFront(
+                    msgToRegister,
+                    SingleMsg("La contraseña debe tener al menos 6 caracteres")
+                )
 
             } catch (uc: FirebaseAuthUserCollisionException) {
                 //com.google.firebase.auth.FirebaseAuthUserCollisionException: The email address is already in use by another account.
@@ -187,72 +193,39 @@ class LoginViewModel : ViewModel() {
                 ).addOnSuccessListener {
                     currentUser.postValue(userEdit)
                     sendMsgToFront(msgToConfFrag, SingleMsg("Los datos se actualizaron"))
+                }.addOnFailureListener { e ->
+                    Log.w("LoginVM -> updateUserData:", "Error: Datos no actualizados")
+                    throw e
                 }
-                    .addOnFailureListener { e ->
-                        Log.w("LoginVM -> updateUserData:", "Error: Datos no actualizados")
-                        throw e
-                    }
 
             } catch (e: Exception) {
                 // Otras excepciones:
                 Log.d("LoginVM -> updateUserData:", e.toString())
-                sendMsgToFront(msgToConfFrag, SingleMsg("Error"))
+                sendMsgToFront(
+                    msgToConfFrag,
+                    SingleMsg("Error al intentar actualizar los datos", true)
+                )
             }
         }
     }
 
- /*   fun updateUserData2(userEdit: User) {
+    fun getCurrentUser() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                var userID = auth.currentUser?.uid
 
-        db.collection(USERS_COLLECTION).document(userEdit.uid).update(
-            mapOf(
-                "name" to userEdit.name,
-                "lastName" to userEdit.lastName,
-                "phoneNumber" to userEdit.phoneNumber
-            )
-        ).addOnSuccessListener {
-            currentUser.postValue(userEdit)
-            sendMsgToFront(msgToConfFrag, "Los datos se actualizaron")
-
-        }.addOnFailureListener { e ->
-            Log.w("LoginVM -> updateUserData:", "Error: Datos no actualizados")
-            //Log.d("LoginVM -> updateUserData:", e.toString())
-            sendMsgToFront(msgToConfFrag, "Error")
-        }
-    }*/
-
-    /*.addOnSuccessListener { documentReference ->
-        if (documentReference != null) {
-            Log.d("ConfigTest", "Document edited")
-            Toast.makeText(v.context, "Usuario editado exitosamente", Toast.LENGTH_SHORT).show()
-            Navigation.findNavController(v).popBackStack(R.id.mapFragment, false)
-            Navigation.findNavController(v).navigate(R.id.profileFragment)
-        } else {
-            Log.d("ConfigTest", "Usuario no encontrado")
-            Toast.makeText(v.context, "No se pudo editar el usuario debido a un error", Toast.LENGTH_SHORT).show()
-        }
-    }
-    .addOnFailureListener { exception ->
-        Log.d("Test", "get failed with ", exception)
-    }
-}*/
-
-fun getCurrentUser() {
-    viewModelScope.launch(Dispatchers.IO) {
-        try {
-            var userID = auth.currentUser?.uid
-
-            if (userID != null) {
-                currentUser.postValue(getFirebaseUserData(userID))
+                if (userID != null) {
+                    currentUser.postValue(getFirebaseUserData(userID))
+                }
+                //Sino queda en null
+            } catch (e: Exception) {
+                Log.d("LoginVM -> getCurrentUser:", e.toString())
             }
-            //Sino queda en null
-        } catch (e: Exception) {
-            Log.d("LoginVM -> getCurrentUser:", e.toString())
         }
     }
-}
 
-private fun sendMsgToFront(mutableLiveData: MutableLiveData<SingleMsg>, smsg: SingleMsg) {
-    mutableLiveData.postValue(smsg)
-}
+    private fun sendMsgToFront(mutableLiveData: MutableLiveData<SingleMsg>, smsg: SingleMsg) {
+        mutableLiveData.postValue(smsg)
+    }
 
 }
