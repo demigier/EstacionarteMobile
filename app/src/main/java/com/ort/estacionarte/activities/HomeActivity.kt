@@ -35,7 +35,7 @@ class HomeActivity : AppCompatActivity() {
                     ReservState.FINALIZED -> contentText = "La reserva finalizó"
                 }
                 sendNotification("Estado de reserva:", contentText)
-                sendAlertMessage("Estado de reserva:", contentText)
+                //sendAlertMessage("Estado de reserva:", contentText)
             }
         })
     }

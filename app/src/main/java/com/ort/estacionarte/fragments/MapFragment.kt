@@ -158,6 +158,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
         enableLocation()
+
+        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.style_json));
+
         putCameraOnCurrentLocation()
 
         map.uiSettings.isZoomControlsEnabled = false

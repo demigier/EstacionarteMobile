@@ -21,7 +21,6 @@ import com.ort.estacionarte.viewmodels.ReservationsViewModel
 import com.ort.estacionarte.viewmodels.VehiclesViewModel
 
 class LoginFragment : Fragment() {
-
     companion object {
         fun newInstance() = LoginFragment()
     }
@@ -40,8 +39,6 @@ class LoginFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        //loginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
 
         //Esta linea obtiene el usuario logueado de la base, pero sigue mostrando un toque el login
         loginVM.getCurrentUser()
@@ -67,8 +64,7 @@ class LoginFragment : Fragment() {
         loginVM.currentUser.observe(viewLifecycleOwner, Observer { currentUser ->
             if (currentUser != null) {
                 saveInSharedPreferences("Session", mapOf("userID" to currentUser.uid))
-                //var map = getFromSharedPreferences("Session")
-                //reservationsVM.getCurrentReservation(currentUser.uid)
+
                 reservationsVM.getAllReservations(currentUser.uid)
                 vehiclesVM.getUserVehicles(currentUser.uid)
                 Navigation.findNavController(v).popBackStack(R.id.loginFragment, true)

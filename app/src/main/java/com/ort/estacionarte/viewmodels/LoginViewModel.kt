@@ -52,7 +52,7 @@ class LoginViewModel : ViewModel() {
                 if (user != null) {
                     currentUser.postValue(user)
                 } else {
-                    sendMsgToFront(msgToLogin, SingleMsg("Usuario sin perisos"))
+                    sendMsgToFront(msgToLogin, SingleMsg("Usuario sin permisos"))
                 }
 
             } catch (ia: IllegalArgumentException) {
