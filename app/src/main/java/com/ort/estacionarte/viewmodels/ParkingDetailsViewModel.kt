@@ -29,62 +29,6 @@ class ParkingDetailsViewModel : ViewModel() {
     //private val parentJob = Job()
     //val scope = CoroutineScope(Dispatchers.Default + parentJob)
 
-    init {
-        //Recupero el Usuario del SharedPreferences, para utilizarlo al momento de realizar la reserva.
-
-    }
-
-    //Métodos
-    @SuppressLint("NewApi")
-/*  fun makeReservation(userID: String, parkingID: String) {
-        //0) En algún momento hay que chequear que el ususarion no tenga una reserva vigente.
-        //1) Obtener un spot del estacionamiento: Uso la lista ya obtenida o la armo nuevamente?
-        //2) Pasar el spot a no disponible y generar la reserva con el userID, parkingID, y spotID
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                var reserved = hasReservations(userID)
-                if(reserved == false){
-                    var spots = getParkingSpots(parkingAct.value!!.uid)
-                    var vehiclesList = getFirebaseUserVehicles(userID)
-
-                    db.collection("Reservations")
-                        .document()
-                        .set(mapOf(
-                        "parkingID" to parkingID,
-                        "parkingSpotID" to spots!![0],
-                        "userID" to userID,
-                        "vehicleID" to vehiclesList[0].uid,
-                        "reservationDate" to LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm")),
-                        "userArrivedDate" to null,
-                        "userLeftDate" to null,
-                        "cancelationDate" to null,
-                        "active" to true))
-                        .await()
-
-                    Log.d("ParkingDetailsVM", "Reserva creada")
-                    db.collection("ParkingSpots")
-                        .document(spots[0])
-                        .update(mapOf(
-                            "available" to false,
-                            "parkingID" to parkingID
-                        ))
-                        .await()
-
-                    sendToast("Reserva realizada exitosamente")
-                }
-
-                //var spot=reserveSpot(spots)
-            }catch (e: Exception){
-                Log.d("ParkingDetailsVM", e.message.toString())
-            }
-        }
-
-        // Pasando el slot a no disponible... => update
-        //db.
-
-    }
-*/
-
     fun getParkingInfo(lat: Double, long: Double) {
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -142,7 +86,6 @@ class ParkingDetailsViewModel : ViewModel() {
             .await()
 
         if (docs != null) {
-            //parkingSpots.value = mutableListOf<Spot>()
             for (spot in docs) {
                 spotsAux.add(spot.id)
             }
@@ -160,7 +103,6 @@ class ParkingDetailsViewModel : ViewModel() {
     }
 
     private fun sendToast(msg: String) {
-        //toastMessage.value = msg ?: ""
         toastMessage.postValue(msg ?: "")
     }
 
@@ -221,8 +163,6 @@ class ParkingDetailsViewModel : ViewModel() {
                         pList.add(parking.toObject())
                         pList[i].uid = parking.id
                         i++
-                        /*pAux = parking.toObject()
-                        pAux.uid = parking.id*/
                     }
                     parkingList.postValue(pList)
                 } else {

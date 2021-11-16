@@ -150,6 +150,8 @@ class VehicleDetailsFragment : Fragment() {
                     if(msg == "Vehiculo añadido exitosamente" || msg == "Vehiculo editado exitosamente" || msg == "Vehiculo eliminado exitosamente"){
                         Navigation.findNavController(v).popBackStack(R.id.profileFragment, true)
                         Navigation.findNavController(v).navigate(R.id.profileFragment)
+                    }else{
+                        dialog.cancel()
                     }
                     //dialog.cancel()
                 })

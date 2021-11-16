@@ -66,7 +66,6 @@ class ReservationsViewModel : ViewModel() {
                     completeParkingExtraData(list.last().parkingID, list.last())
                     completeVehicleExtraData(list.last().vehicleID, list.last())
                 }
-                //reservationsList.value!!.clear()
                 reservationsList.postValue(list)
 
                 if (list.isNotEmpty()) {

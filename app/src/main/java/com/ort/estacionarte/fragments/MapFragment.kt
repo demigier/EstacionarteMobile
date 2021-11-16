@@ -9,6 +9,7 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.location.*
 import androidx.lifecycle.ViewModelProvider
@@ -89,34 +90,20 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
                     lastSearchAddress = searchView.query.toString()
 
                     var geocoder = Geocoder(requireContext())
-                    //addresNamesList.clear()
 
                     try {
                         var addressObtained: MutableList<Address> =
                             geocoder.getFromLocationName(lastSearchAddress, 5)
-                        //adapter.notifyDataSetChanged()
 
                         if (addressObtained.size > 0) {
                             lastSearchMarker?.remove()
 
-/*                          for (a in addressObtained) {
-                                addresNamesList.add(a.getAddressLine(0))
-                            }
-                            adapter.notifyDataSetChanged()
-*/
-                            var latLong =
-                                LatLng(addressObtained[0].latitude, addressObtained[0].longitude)
+                            var latLong = LatLng(addressObtained[0].latitude, addressObtained[0].longitude)
 
-                            lastSearchMarker = map.addMarker(
-                                MarkerOptions().position(latLong).title(lastSearchAddress)
-                            )
+                            lastSearchMarker = map.addMarker(MarkerOptions().position(latLong).title(lastSearchAddress))
                             map.animateCamera(CameraUpdateFactory.newLatLngZoom(latLong, 15F))
                         } else {
-                            Toast.makeText(
-                                requireContext(),
-                                "Dirección no encontrada",
-                                Toast.LENGTH_LONG
-                            ).show()
+                            Toast.makeText(requireContext(), "Dirección no encontrada", Toast.LENGTH_LONG).show()
                         }
                     } catch (e: IOException) {
                         Log.d("Error maps location", e.message.toString())
@@ -130,7 +117,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
             }
 
             override fun onQueryTextChange(p0: String?): Boolean {
-
                 return false
             }
         })
@@ -144,8 +130,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
 
         parkingDetailsViewModel = ViewModelProvider(this).get(ParkingDetailsViewModel::class.java)
 
-        val sharedPref: SharedPreferences =
-            requireContext().getSharedPreferences("Session", MODE_PRIVATE)
+        val sharedPref: SharedPreferences = requireContext().getSharedPreferences("Session", MODE_PRIVATE)
         userID = sharedPref.getString("userID", "default").toString()
 
         btnProfile.setOnClickListener {
@@ -228,6 +213,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
 
     private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor {
         var vectorDrawable = ContextCompat.getDrawable(context, vectorResId) as Drawable
+        vectorDrawable.setTint(Color.BLACK);
         vectorDrawable.setBounds(
             0,
             0,

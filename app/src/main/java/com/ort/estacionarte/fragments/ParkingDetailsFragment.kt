@@ -1,5 +1,6 @@
 package com.ort.estacionarte.fragments
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
@@ -15,6 +16,7 @@ import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
 import com.ort.estacionarte.R
 import com.ort.estacionarte.viewmodels.LoginViewModel
 import com.ort.estacionarte.viewmodels.ParkingDetailsViewModel
@@ -56,10 +58,7 @@ class ParkingDetailsFragment : Fragment(), AdapterView.OnItemClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.parking_details_fragment, container, false)
-
-        //parkingDetailsVM = ViewModelProvider(this).get(ParkingDetailsViewModel::class.java)
 
         btnReserve = v.findViewById(R.id.btnReserve)
         txtParkingName = v.findViewById(R.id.txtParkingName)
@@ -135,7 +134,11 @@ class ParkingDetailsFragment : Fragment(), AdapterView.OnItemClickListener {
             parkingDetailsVM.availableSpots.observe(viewLifecycleOwner, Observer {
                 txtParkingAvailableSpots.text = it.size.toString()
 
-                if (it.size > 0) btnReserve.isEnabled = true
+                if (it.size > 0){
+                    btnReserve.isEnabled = true
+                }else{
+                    btnReserve.isEnabled = false
+                }
                 Log.d(
                     "Test: ParkingDetailsFragment",
                     "spots libres:${txtParkingAvailableSpots.text}"
@@ -151,6 +154,7 @@ class ParkingDetailsFragment : Fragment(), AdapterView.OnItemClickListener {
 
     }
 
+    @SuppressLint("RestrictedApi")
     private fun sendAlertMessage(msg: String, title: String) {
         val builder: AlertDialog.Builder? = activity?.let {
             AlertDialog.Builder(it)
@@ -160,7 +164,13 @@ class ParkingDetailsFragment : Fragment(), AdapterView.OnItemClickListener {
         builder?.apply {
             setNegativeButton("Aceptar",
                 DialogInterface.OnClickListener { dialog, id ->
-                    dialog.cancel()
+                    if(msg == "Reserva realizada exitosamente"){
+                        Navigation.findNavController(v).popBackStack()
+                        //Navigation.findNavController(v).navigate()
+                    }else{
+                        dialog.cancel()
+                    }
+                    //dialog.cancel()
                 })
         }
         builder?.create()
