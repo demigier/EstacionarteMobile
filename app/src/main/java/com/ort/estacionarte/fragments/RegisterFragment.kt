@@ -55,18 +55,12 @@ class RegisterFragment : Fragment() {
         return v
     }
 
-    /*    //@Suppress("DEPRECATION")
-        override fun onActivityCreated(savedInstanceState: Bundle?) {
-            super.onActivityCreated(savedInstanceState)
-            loginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
-        }
-    */
     override fun onStart() {
         super.onStart()
+
         loginViewModel.currentUser.observe(viewLifecycleOwner, Observer { user ->
             if (user != null) {
                 saveInSharedPreferences("Session", mapOf("userID" to user.uid))
-                //var mapa = getFromSharedPreferences("Session")
 
                 Navigation.findNavController(v).popBackStack(R.id.loginFragment, true)
                 Navigation.findNavController(v).navigate(R.id.mapFragment)
@@ -74,7 +68,6 @@ class RegisterFragment : Fragment() {
         })
 
         loginViewModel.msgToRegister.observe(viewLifecycleOwner, Observer { smsg ->
-            //Toast.makeText(v.context, it, Toast.LENGTH_SHORT).show()
             if(smsg.isNew())
                 sendAlertMessage(smsg.readMsg(), "Atención")
         })

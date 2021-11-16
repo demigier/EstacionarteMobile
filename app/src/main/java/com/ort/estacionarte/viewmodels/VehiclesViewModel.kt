@@ -29,7 +29,6 @@ class VehiclesViewModel : ViewModel() {
 
     var msgToVehiclesFrag = MutableLiveData<SingleMsg>()
     var msgToVehiclesDetFrag = MutableLiveData<SingleMsg>()
-    //init {    }
 
     //Se llama desde VehiclesFragment
     fun getUserVehicles(userID: String) {
@@ -77,7 +76,8 @@ class VehiclesViewModel : ViewModel() {
                     }
                 }
 
-                if (query.documents.size == 0 || count == 1) {
+                if (query.documents.size == 0 || count > 0) {
+                    //NO HABIA DE ANTES UN VEHICULO CON EL LICENSE PLATE NUEVO
                     val query2 = db.collection(VEHICLES_COL).document(vehicle.uid)
                         .update(
                             mapOf(
@@ -94,6 +94,7 @@ class VehiclesViewModel : ViewModel() {
 
                 } else {
                     Log.d("VehicleTest", "Ya existe esa patente")
+                    sendMsgToFront(msgToVehiclesDetFrag, SingleMsg("Ya tienes un vehiculo con esa patente"))
                 }
             } catch (e: Exception) {
                 Log.d("VehicleTest", "get failed with: ${e.message.toString()}")
@@ -106,7 +107,7 @@ class VehiclesViewModel : ViewModel() {
     }
 
     @SuppressLint("RestrictedApi")
-    public fun addUserVehicle(vehicle: Vehicle/*, v: View*/) {
+    fun addUserVehicle(vehicle: Vehicle) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val query = db.collection(VEHICLES_COL)
@@ -117,16 +118,9 @@ class VehiclesViewModel : ViewModel() {
                     .await()
 
                 Log.d("VehicleTest", "Largo de vehicleList ${vehiclesList.value?.size}")
-                /*var exist = false
-
-                for(v in vehiclesList.value!!){
-                    if(v.licensePlate==vehicle.licensePlate){
-                        exist=true
-                        break
-                    }
-                }*/
                 Log.d("VehicleTest",query.documents.toString())
                 Log.d("VehicleTest","cantidad de vehiculos repetidos:" + query.documents.toString())
+
                 if (query.documents.size == 0) {
                     val query2 = db.collection(VEHICLES_COL).document()
                         .set(
@@ -140,7 +134,6 @@ class VehiclesViewModel : ViewModel() {
                         )
                         .await()
 
-                    //vehiclesList.value?.add(vehicle)
                     getUserVehicles(vehicle.userID)
 
                     Log.d("VehicleTest", "Document added")
@@ -169,10 +162,10 @@ class VehiclesViewModel : ViewModel() {
     }
 
     @SuppressLint("RestrictedApi")
-    public fun deleteUserVehicle(vehicleID: String) {
+    fun deleteUserVehicle(vehicleID: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                db.collection("Vehicles").document(vehicleID)
+                db.collection(VEHICLES_COL).document(vehicleID)
                     .update("active", false)
                     .await()
 

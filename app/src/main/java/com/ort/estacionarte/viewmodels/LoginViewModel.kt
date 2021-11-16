@@ -117,10 +117,7 @@ class LoginViewModel : ViewModel() {
             } catch (wp: FirebaseAuthWeakPasswordException) {
                 //com.google.firebase.auth.FirebaseAuthWeakPasswordException: The given password is invalid. [ Password should be at least 6 characters ]
                 Log.d("LoginVM -> loginUser:", wp.toString())
-                sendMsgToFront(
-                    msgToRegister,
-                    SingleMsg("La contraseña debe tener al menos 6 caracteres")
-                )
+                sendMsgToFront(msgToRegister,SingleMsg("La contraseña debe tener al menos 6 caracteres"))
 
             } catch (uc: FirebaseAuthUserCollisionException) {
                 //com.google.firebase.auth.FirebaseAuthUserCollisionException: The email address is already in use by another account.

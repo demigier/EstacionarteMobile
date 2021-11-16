@@ -73,7 +73,6 @@ class LoginFragment : Fragment() {
         })
 
         loginVM.msgToLogin.observe(viewLifecycleOwner, Observer { smsg ->
-            //Toast.makeText(v.context, msg, Toast.LENGTH_SHORT).show()
             if (smsg.isNew())
                 sendAlertMessage(smsg.readMsg(), "Atencion")
         })

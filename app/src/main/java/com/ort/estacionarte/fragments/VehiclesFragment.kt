@@ -34,7 +34,6 @@ class VehiclesFragment : Fragment() {
     private val vehiclesVM: VehiclesViewModel by activityViewModels()
     private val loginVM: LoginViewModel by activityViewModels()
 
-    //private lateinit var vehiclesViewModel: VehiclesViewModel
     lateinit var v: View
 
     private lateinit var recyclerViewVehiculos: RecyclerView
@@ -70,56 +69,12 @@ class VehiclesFragment : Fragment() {
         return v
     }
 
-    /*
-        override fun onActivityCreated(savedInstanceState: Bundle?) {
-            super.onActivityCreated(savedInstanceState)
-            //vehiclesViewModel = ViewModelProvider(this).get(VehiclesViewModel::class.java)
-        }
-    */
     override fun onStart() {
         super.onStart()
 
         btnAdd.setOnClickListener {
             addVehicle()
         }
-
-
-        /*       //Código viejo
-               val sharedPref: SharedPreferences = requireContext().getSharedPreferences("Session", Context.MODE_PRIVATE)
-               userID = sharedPref.getString("userID","default")!!
-               //userID = arguments?.getString("userID")!!
-
-               if (userID != null) {
-                   Log.d("Hola", userID)
-                   scope.launch {
-                       vehiclesVM.getUserVehicles(userID)
-                       delay(500)
-                       //enviar vehiculos al adapter
-
-                       vehiclesAdapter = VehiclesAdapter(vehiclesVM.vehiclesOldList!!, { item ->
-                           onItemClick(item)
-                       }, requireContext())
-                   }
-
-                   recyclerViewVehiculos.setHasFixedSize(true)
-                   var linearLayoutManager = LinearLayoutManager(context)
-                   recyclerViewVehiculos.layoutManager = linearLayoutManager
-
-                   val handler = Handler()
-                   handler.postDelayed(java.lang.Runnable {
-                       recyclerViewVehiculos.adapter = vehiclesAdapter
-                   }, 600)
-
-                   btnAdd.setOnClickListener{
-                       addVehicle()
-                   }
-               }else{
-                   Toast.makeText(v.context, "Error: usted no esta logueado", Toast.LENGTH_SHORT).show()
-                   Navigation.findNavController(v).navigate(R.id.loginFragment)
-               }
-               //recyclerViewVehiculos
-           }
-       */
     }
 
     fun onItemClick(position: Int) {

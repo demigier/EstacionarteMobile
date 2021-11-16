@@ -50,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Mi vehiculo"
-        android:textColor="#D1CCCC"
+        android:textColor="#FFFFFF"
         android:textSize="34sp"
         app:layout_constraintBottom_toTopOf="@+id/backVehicle"
         app:layout_constraintEnd_toEndOf="parent"

@@ -235,7 +235,7 @@ class ParkingDetailsViewModel : ViewModel() {
     }
 
     private fun makeSpotsSnapshot(parkinID: String){
-        // TODO: 1/11/21
+
     }
 
 }

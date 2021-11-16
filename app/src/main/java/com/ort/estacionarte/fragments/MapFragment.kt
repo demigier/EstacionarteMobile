@@ -72,12 +72,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
         savedInstanceState: Bundle?
     ): View? {
         v = inflater.inflate(R.layout.map_fragment, container, false)
+
         btnProfile = v.findViewById(R.id.btnAdd)
         searchView = v.findViewById(R.id.search_address)
         listView = v.findViewById(R.id.list_view)
 
-        adapter =
-            ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, addresNamesList)
+        adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, addresNamesList)
         listView.adapter = adapter
 
         createMapFragment()
@@ -159,7 +159,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
         map = googleMap
         enableLocation()
 
-        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.style_json));
+        googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.style_json))
 
         putCameraOnCurrentLocation()
 

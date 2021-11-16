@@ -57,16 +57,11 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         v = inflater.inflate(R.layout.profile_fragment, container, false)
-        //profileViewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
 
         btnVehicles = v.findViewById(R.id.btnVehicles)
         btnConfig = v.findViewById(R.id.btnConfig)
         txtUsername = v.findViewById(R.id.txtUserName)
         recyclerViewReservations = v.findViewById(R.id.recyclerViewReservas)
-
-        //loginViewModel.currentUser.value?.let { Log.d("ProfileF -> currnetUser:", it.name) }
-        //var userID = getFromSharedPreferences("Session")?.get("userID").toString()
-        //profileViewModel.currentUser.value = loginViewModel.currentUser.value
 
         loginVM.currentUser.observe(viewLifecycleOwner, Observer { currentUser ->
             if (currentUser != null) {

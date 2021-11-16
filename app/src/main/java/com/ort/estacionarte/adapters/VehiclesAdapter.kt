@@ -24,7 +24,6 @@ class VehiclesAdapter(private var vehicleList: MutableList<Vehicle>, val onItemC
 
     override fun onBindViewHolder(holder: VehicleHolder, position: Int) {
         holder.setModelBrand(vehicleList[position].model, vehicleList[position].brand)
-        //holder.setBrand(vehicleList[position].brand)
         holder.setLicensePlate(vehicleList[position].licensePlate)
         holder.getCardLayout().setOnClickListener() {
             onItemClick(position)
@@ -39,10 +38,6 @@ class VehiclesAdapter(private var vehicleList: MutableList<Vehicle>, val onItemC
             val txt: TextView = view.findViewById(R.id.txtUserName)
             txt.text = "$model $brand"
         }
-        /*fun setBrand(brand: String) {
-            val txt: TextView = view.findViewById(R.id.txtBrand)
-            txt.text = brand
-        }*/
         fun setLicensePlate(licensePlate: String) {
             val txt: TextView = view.findViewById(R.id.txtLicensePlate)
             txt.text = licensePlate

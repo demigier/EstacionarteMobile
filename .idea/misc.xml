@@ -35,7 +35,7 @@
         <entry key="app/src/main/res/layout/vehicle_details_fragment.xml" value="0.3619791666666667" />
         <entry key="app/src/main/res/layout/vehicle_item.xml" value="0.3619791666666667" />
         <entry key="app/src/main/res/layout/vehicle_select_item.xml" value="0.3619791666666667" />
-        <entry key="app/src/main/res/layout/vehicles_fragment.xml" value="0.5395962732919255" />
+        <entry key="app/src/main/res/layout/vehicles_fragment.xml" value="0.5" />
       </map>
     </option>
   </component>
