@@ -178,7 +178,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
                         .position(marker)
                         .draggable(false)
                         .title(parking.parkingName)
-                        .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.parking))
+                        //.icon(bitmapDescriptorFromVector(requireContext(), R.drawable.parking))
+                        .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.e_circle))
                         .snippet("Direccion: " + parking.address)
                 )
             }

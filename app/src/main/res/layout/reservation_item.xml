@@ -5,7 +5,7 @@
     android:id="@+id/reservationCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:contentPadding="3dp"
+    app:contentPadding="15dp"
     android:layout_margin="8dp"
     android:elevation="8dp">
 
