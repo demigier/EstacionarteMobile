@@ -31,10 +31,11 @@ class HomeActivity : AppCompatActivity() {
             var contentText = ""
             if (reservState != ReservState.PENDING) {
                 when (reservState) {
-                    ReservState.CANCELED -> contentText = "La reserva fue cancelada"
-                    ReservState.FINALIZED -> contentText = "La reserva finalizó"
+                    ReservState.CANCELED -> contentText = "Su reserva fue cancelada por el estacionamiento"
+                    ReservState.CANCELED_BY_USER -> contentText = "Acabas de cancelar tu reserva exitosamente"
+                    ReservState.FINALIZED -> contentText = "Su reserva fue finalizada por el estacionamiento"
                 }
-                sendNotification("Estado de reserva:", contentText)
+                sendNotification("Estado de su reserva", contentText)
                 //sendAlertMessage("Estado de reserva:", contentText)
             }
         })
@@ -50,8 +51,7 @@ class HomeActivity : AppCompatActivity() {
                 description = DESCRIPTION
             }
             // Register the channel with the system
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
 

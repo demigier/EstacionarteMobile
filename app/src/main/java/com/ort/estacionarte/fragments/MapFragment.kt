@@ -201,8 +201,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
 
     //EVENTO DE CLICK EN MARKER
     override fun onInfoWindowClick(marker: Marker) {
-        val location =
-            bundleOf("lat" to marker.position.latitude, "long" to marker.position.longitude)
+        val location = bundleOf("lat" to marker.position.latitude, "long" to marker.position.longitude)
         Navigation.findNavController(v).navigate(R.id.parkingFragment, location)
     }
 

@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.getSystemService
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -41,10 +42,11 @@ class ReservationsViewModel : ViewModel() {
     private val VEHICLES_COL = "Vehicles"
 
     var currentReservation: MutableLiveData<Reservation?> = MutableLiveData(null)
-    var reservationsList: MutableLiveData<MutableList<Reservation>> =
-        MutableLiveData(mutableListOf())
+    var reservationsList: MutableLiveData<MutableList<Reservation>> = MutableLiveData(mutableListOf())
     var reservationState: MutableLiveData<ReservState> = MutableLiveData()
     lateinit var reservSnapshot: DocumentReference
+
+    var cancelatedByUser: Boolean = false
 
     var msgToProfFrag = MutableLiveData<SingleMsg>()
     var msgToParkDetFrag = MutableLiveData<SingleMsg>()
@@ -98,9 +100,14 @@ class ReservationsViewModel : ViewModel() {
                     var auxList: MutableList<Reservation> = reservationsList.value!!
                     auxList[0].active = false
 
-                    if (res.cancelationDate != null) {
+                    if (res.cancelationDate != null && !cancelatedByUser) {
                         auxList[0].cancelationDate = res.cancelationDate
                         reservationState.postValue(ReservState.CANCELED)
+
+                    } else if (res.cancelationDate != null && cancelatedByUser) {
+                        auxList[0].cancelationDate = res.cancelationDate
+                        reservationState.postValue(ReservState.CANCELED_BY_USER)
+                        cancelatedByUser = false
 
                     } else if (res.userLeftDate != null) {
                         auxList[0].userLeftDate = res.userLeftDate
@@ -249,6 +256,7 @@ class ReservationsViewModel : ViewModel() {
                         .await()
                     //Fin de la transacción => actualizo los livedata
                     currentReservation.postValue(null)
+                    cancelatedByUser = true
 
                     sendMsgToFront(
                         msgToProfFrag,
@@ -375,5 +383,9 @@ class ReservationsViewModel : ViewModel() {
 
     private fun sendMsgToFront(mutableLiveData: MutableLiveData<SingleMsg>, smsg: SingleMsg) {
         mutableLiveData.postValue(smsg)
+    }
+
+    fun resetCancelationValidator(){
+        cancelatedByUser = false
     }
 }

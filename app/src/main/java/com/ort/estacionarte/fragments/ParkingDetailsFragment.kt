@@ -69,8 +69,7 @@ class ParkingDetailsFragment : Fragment(), AdapterView.OnItemClickListener {
 
         btnReserve.isEnabled = false
 
-        val sharedPref: SharedPreferences =
-            requireContext().getSharedPreferences("Session", Context.MODE_PRIVATE)
+        val sharedPref: SharedPreferences = requireContext().getSharedPreferences("Session", Context.MODE_PRIVATE)
         userID = sharedPref.getString("userID", "default").toString()
 
         //Coordenadas obtenidas del MapFragment del mapa
@@ -79,10 +78,8 @@ class ParkingDetailsFragment : Fragment(), AdapterView.OnItemClickListener {
 
         Log.d("Test: ParkingFragment", "lat: $lat long: $long")
 
-        //Busco el estacionamiento recibido y lo cargo en la vista
         parkingDetailsVM.getParkingInfo(lat!!, long!!)
 
-        // parkingDetailsVM.getVehicles(userID)
         vehiclesVM.getUserVehicles(userID)
 
         return v
@@ -93,7 +90,6 @@ class ParkingDetailsFragment : Fragment(), AdapterView.OnItemClickListener {
         super.onStart()
 
         vehiclesVM.vehiclesList.observe(viewLifecycleOwner, Observer { vehicles ->
-            //Toast.makeText(v.context, it, Toast.LENGTH_SHORT).show()
             if(vehicles.size > 0){
                 var items= arrayListOf<String>()
                 for (v in vehicles){
@@ -119,7 +115,6 @@ class ParkingDetailsFragment : Fragment(), AdapterView.OnItemClickListener {
             btnReserve.setOnClickListener {
                 if(selectedVehicle != ""){
                     reservationsVM.makeReservation(userID.toString(),parkingDetailsVM.parkingAct.value?.uid.toString(),selectedVehicle)
-                    //reservationsVM.makeReservation(userID.toString(),parkingDetailsVM.parkingAct.value?.uid.toString(),"6yeWT1Src7OgCbdvzjaf")
                 }else{
                     sendAlertMessage("Debe seleccionar un vehiculo","Atencion")
                 }
@@ -146,7 +141,6 @@ class ParkingDetailsFragment : Fragment(), AdapterView.OnItemClickListener {
             })
 
             reservationsVM.msgToParkDetFrag.observe(viewLifecycleOwner, Observer { smsg ->
-                //Toast.makeText(v.context, it, Toast.LENGTH_SHORT).show()
                 if(smsg.isNew())
                     sendAlertMessage(smsg.readMsg(), "Atención")
             })
@@ -166,7 +160,6 @@ class ParkingDetailsFragment : Fragment(), AdapterView.OnItemClickListener {
                 DialogInterface.OnClickListener { dialog, id ->
                     if(msg == "Reserva realizada exitosamente"){
                         Navigation.findNavController(v).popBackStack()
-                        //Navigation.findNavController(v).navigate()
                     }else{
                         dialog.cancel()
                     }
@@ -178,12 +171,10 @@ class ParkingDetailsFragment : Fragment(), AdapterView.OnItemClickListener {
     }
 
     override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        //selectedVehicle = parent?.getItemAtPosition(position).toString()
         if(vehiclesVM.vehiclesList.value != null){
             if(vehiclesVM.vehiclesList.value?.size!! > 0){
                 selectedVehicle = vehiclesVM.vehiclesList.value!![position].uid
             }
         }
-        //Toast.makeText(requireContext(), item, Toast.LENGTH_LONG).show()
     }
 }

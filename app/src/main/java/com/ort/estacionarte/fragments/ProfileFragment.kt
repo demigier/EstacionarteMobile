@@ -70,8 +70,7 @@ class ProfileFragment : Fragment() {
         })
 
         reservationsVM.msgToProfFrag.observe(viewLifecycleOwner, Observer{ smsg ->
-            if (smsg.isNew())
-                sendAlertMessage(smsg.readMsg(), "Atencion")
+            if (smsg.isNew()) sendAlertMessage(smsg.readMsg(), "Atencion")
         })
 
         //Seteos del RecyclerView de reservas
