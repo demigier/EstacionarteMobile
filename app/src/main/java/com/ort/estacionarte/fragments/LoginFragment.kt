@@ -16,6 +16,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import com.ort.estacionarte.R
+import com.ort.estacionarte.activities.LoadingDialog
 import com.ort.estacionarte.viewmodels.LoginViewModel
 import com.ort.estacionarte.viewmodels.ReservationsViewModel
 import com.ort.estacionarte.viewmodels.VehiclesViewModel
@@ -40,7 +41,6 @@ class LoginFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //Esta linea obtiene el usuario logueado de la base, pero sigue mostrando un toque el login
         loginVM.getCurrentUser()
     }
 
@@ -62,9 +62,9 @@ class LoginFragment : Fragment() {
         super.onStart()
 
         loginVM.currentUser.observe(viewLifecycleOwner, Observer { currentUser ->
+
             if (currentUser != null) {
                 saveInSharedPreferences("Session", mapOf("userID" to currentUser.uid))
-
                 reservationsVM.getAllReservations(currentUser.uid)
                 vehiclesVM.getUserVehicles(currentUser.uid)
                 Navigation.findNavController(v).popBackStack(R.id.loginFragment, true)

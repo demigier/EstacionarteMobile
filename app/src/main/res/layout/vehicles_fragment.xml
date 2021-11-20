@@ -7,36 +7,45 @@
     android:layout_height="match_parent"
     tools:context=".fragments.VehiclesFragment">
 
+    <View
+        android:id="@+id/backVehicle"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/title_background"
+        app:layout_constraintBottom_toTopOf="@+id/guideline10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/txtTitleList3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="1dp"
-        android:text="Tus vehiculos"
-        android:textColor="#000000"
+        android:text="Tus vehículos"
+        android:textColor="#FFFFFF"
         android:textSize="34sp"
-        app:layout_constraintBottom_toTopOf="@+id/recyclerViewVehiculos"
+        app:layout_constraintBottom_toBottomOf="@+id/backVehicle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline10" />
+        app:layout_constraintTop_toTopOf="@+id/backVehicle" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.04103967" />
+        app:layout_constraintGuide_percent="0.15" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewVehiculos"
         android:layout_width="match_parent"
-        android:layout_height="654dp"
-        android:layout_marginTop="2dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtTitleList3" />
+        app:layout_constraintTop_toTopOf="@+id/guideline10" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnAdd"
@@ -45,7 +54,7 @@
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
         android:src="@drawable/add"
-        app:backgroundTint="#29A5DE"
+        app:backgroundTint="#6200EE"
         app:borderWidth="0dp"
         app:layout_constraintBottom_toBottomOf="@+id/guideline21"
         app:layout_constraintEnd_toEndOf="@+id/guideline24"

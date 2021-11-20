@@ -15,11 +15,16 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ort.estacionarte.R
 import com.ort.estacionarte.entities.Reservation
 
-class ReservationsAdapter(private var reservationsList: MutableList<Reservation>, val onItemClick: (Int) -> Unit, private val context: Context) :
-        RecyclerView.Adapter<ReservationsAdapter.ReservationHolder>() {
+class ReservationsAdapter(
+    private var reservationsList: MutableList<Reservation>,
+    val onItemClick: (Int) -> Unit,
+    private val context: Context
+) :
+    RecyclerView.Adapter<ReservationsAdapter.ReservationHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReservationHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.reservation_item, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.reservation_item, parent, false)
         return (ReservationHolder(view))
     }
 
@@ -30,20 +35,23 @@ class ReservationsAdapter(private var reservationsList: MutableList<Reservation>
     override fun onBindViewHolder(holder: ReservationHolder, position: Int) {
         holder.setParkingName(reservationsList[position]?.parking!!.parkingName)
         holder.setAddress(reservationsList[position]?.parking!!.address)
-        holder.setVehicle(reservationsList[position]?.vehicle!!.model, reservationsList[position]!!.vehicle.brand)
+        holder.setVehicle(
+            reservationsList[position]?.vehicle!!.model,
+            reservationsList[position]!!.vehicle.brand
+        )
         holder.setLicense(reservationsList[position]?.vehicle!!.licensePlate)
         holder.setReservationDate(reservationsList[position]?.reservationDate.toString())
-        var type = "nada"
+        var type = "UNDEFINED"
         var altDate = ""
         if (reservationsList[position]?.userLeftDate != null) {
-            type = "finalizacion"
+            type = "FINISHED"
             Log.d("test", type)
             altDate = reservationsList[position]?.userLeftDate.toString()
         } else if (reservationsList[position]?.cancelationDate != null) {
-            type = "cancelacion"
+            type = "CANCELED"
             altDate = reservationsList[position]?.cancelationDate.toString()
         } else if (reservationsList[position]?.userArrivedDate != null) {
-            type = "llegada"
+            type = "ARRIVAL"
             altDate = reservationsList[position]?.userArrivedDate.toString()
         }
         holder.setAlternativeDate(altDate, type)
@@ -51,9 +59,10 @@ class ReservationsAdapter(private var reservationsList: MutableList<Reservation>
             onItemClick(position)
         }
         if (reservationsList[position]?.active == true) {
-            holder.showCancelButton()
+            if (reservationsList[position]?.userArrivedDate == null) {
+                holder.showCancelButton()
+            }
             holder.setColorActive(true)
-
         } else {
             holder.hideCancelButton()
             holder.setColorActive(false)
@@ -101,10 +110,10 @@ class ReservationsAdapter(private var reservationsList: MutableList<Reservation>
                 txt.text = "Fecha cancelacion: $altDate"
             }*/
             when (type) {
-                "cancelacion" -> txt.text = "Fecha cancelacion: $altDate"
-                "finalizacion" -> txt.text = "Fecha finalizacion: $altDate"
-                "llegada" -> txt.text = "Fecha llegada: $altDate"
-                "nada" -> txt.text = "Aun se encuentra pendiente de su llegada"
+                "CANCELED" -> txt.text = "Fecha cancelación: $altDate"
+                "FINISHED" -> txt.text = "Fecha finalización: $altDate"
+                "ARRIVAL" -> txt.text = "Fecha llegada: $altDate"
+                "UNDEFINED" -> txt.text = "Aun se encuentra pendiente de su llegada"
             }
         }
 
@@ -122,7 +131,7 @@ class ReservationsAdapter(private var reservationsList: MutableList<Reservation>
             when (active) {
                 true -> {
                     card.setCardBackgroundColor(Color.parseColor("#6200EE")) //A379DF //6200EE
-                    txtState.text ="Reserva Actual"
+                    txtState.text = "Reserva Actual"
                     txtState.setTextColor(Color.WHITE)
                     txtPName.setTextColor(Color.WHITE)
                     txtPAddres.setTextColor(Color.WHITE)
@@ -133,7 +142,7 @@ class ReservationsAdapter(private var reservationsList: MutableList<Reservation>
                 }
                 false -> {
                     card.setCardBackgroundColor(Color.LTGRAY)
-                    txtState.text ="Reserva Finalizada"
+                    txtState.text = "Reserva Finalizada"
                     txtState.setTextColor(Color.BLACK)
                     txtPName.setTextColor(Color.BLACK)
                     txtPAddres.setTextColor(Color.BLACK)

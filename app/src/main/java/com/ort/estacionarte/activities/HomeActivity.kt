@@ -10,7 +10,6 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import com.ort.estacionarte.viewmodels.ReservationsViewModel
-import com.ort.estacionarte.entities.ReservState
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.ort.estacionarte.R
@@ -28,17 +27,10 @@ class HomeActivity : AppCompatActivity() {
         setContentView(R.layout.home_activity)
 
         reservationsVM.reservationState.observe(this, Observer { reservState ->
-            var contentText = ""
-            if (reservState != ReservState.PENDING) {
-                when (reservState) {
-                    ReservState.CANCELED -> contentText = "Su reserva fue cancelada por el estacionamiento"
-                    ReservState.CANCELED_BY_USER -> contentText = "Acabas de cancelar tu reserva exitosamente"
-                    ReservState.FINALIZED -> contentText = "Su reserva fue finalizada por el estacionamiento"
-                }
-                sendNotification("Estado de su reserva", contentText)
-                //sendAlertMessage("Estado de reserva:", contentText)
+            if (reservState.isNew()){
+                sendNotification("Estado de su reserva", reservState.readMsg())
             }
-        })
+  })
     }
 
     private fun sendNotification(contentTitle: String, contentText: String) {

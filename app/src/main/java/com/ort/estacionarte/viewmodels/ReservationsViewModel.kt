@@ -1,36 +1,23 @@
 package com.ort.estacionarte.viewmodels
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
-import com.ort.estacionarte.R
-import com.ort.estacionarte.activities.HomeActivity
 import com.ort.estacionarte.adapters.SingleMsg
-import com.ort.estacionarte.entities.ReservState
 import com.ort.estacionarte.entities.Reservation
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import kotlin.random.Random
 
 class ReservationsViewModel : ViewModel() {
     private var db = Firebase.firestore
@@ -42,23 +29,27 @@ class ReservationsViewModel : ViewModel() {
     private val VEHICLES_COL = "Vehicles"
 
     var currentReservation: MutableLiveData<Reservation?> = MutableLiveData(null)
-    var reservationsList: MutableLiveData<MutableList<Reservation>> = MutableLiveData(mutableListOf())
-    var reservationState: MutableLiveData<ReservState> = MutableLiveData()
-    lateinit var reservSnapshot: DocumentReference
+    var reservationsList: MutableLiveData<MutableList<Reservation>> =
+        MutableLiveData(mutableListOf())
 
-    var cancelatedByUser: Boolean = false
+    //var reservationState: MutableLiveData<ReservState> = MutableLiveData()
+    var reservationState = MutableLiveData<SingleMsg>()
+    lateinit var reservSnapshot: ListenerRegistration
+
+    //var cancelatedByUser: Boolean = false
 
     var msgToProfFrag = MutableLiveData<SingleMsg>()
     var msgToParkDetFrag = MutableLiveData<SingleMsg>()
 
     fun getAllReservations(userID: String) {
         viewModelScope.launch {
-            var list: MutableList<Reservation> = mutableListOf()
+            val list: MutableList<Reservation> = mutableListOf()
 
             try {
                 val query = db.collection(RESERVATIONS_COL)
                     .whereEqualTo("userID", userID)
-                    .orderBy("active", Query.Direction.DESCENDING)
+                    .orderBy("active", Query.Direction.DESCENDING)//.limit(8)
+                    //.orderBy("reservationDate", Query.Direction.DESCENDING)//.limit(10)
                     .get()
                     .await()
 
@@ -73,22 +64,23 @@ class ReservationsViewModel : ViewModel() {
                 if (list.isNotEmpty()) {
                     if (list[0].active) {
                         currentReservation.postValue(list[0])
-                        reservationState.postValue(ReservState.PENDING)
+                        //reservationState.postValue(ReservState.PENDING)
                         createSnapshot(list[0].uid)
                     } else {
                         currentReservation.postValue(null)
                     }
                 }
 
-            } catch (e: java.lang.Exception) {
-                sendMsgToFront(msgToProfFrag, SingleMsg("Error al intentar traer las reservas"))
+            } catch (e: Exception) {
+                sendMsgToFront(msgToProfFrag, SingleMsg("Error al intentar traer las reservas: ${e.message}"))
             }
         }
     }
 
     private fun createSnapshot(reservationID: String) {
-        reservSnapshot = db.collection(RESERVATIONS_COL).document(reservationID)
-        reservSnapshot.addSnapshotListener { snapshot, error ->
+        val query = db.collection(RESERVATIONS_COL).document(reservationID)
+
+        reservSnapshot = query.addSnapshotListener { snapshot, error ->
             if (error != null) {
                 Log.d("Test", "Listen failed.", error)
                 return@addSnapshotListener
@@ -96,27 +88,39 @@ class ReservationsViewModel : ViewModel() {
             if (snapshot != null && snapshot.exists()) {
                 val res: Reservation? = snapshot.toObject()
 
-                if (res != null && !res.active) {
-                    var auxList: MutableList<Reservation> = reservationsList.value!!
-                    auxList[0].active = false
+                if (res != null) {
+                    val auxList: MutableList<Reservation> = reservationsList.value!!
 
-                    if (res.cancelationDate != null && !cancelatedByUser) {
-                        auxList[0].cancelationDate = res.cancelationDate
-                        reservationState.postValue(ReservState.CANCELED)
+                    if(res.active){
+                        if (res.userArrivedDate != null) {
+                            auxList[0].userArrivedDate = res.userArrivedDate
+                            reservationState.postValue(SingleMsg("Arribó al estacionamiento"))
+                            currentReservation.postValue(auxList[0])
+                            reservationsList.postValue(auxList)
+                        }
+                    }else{
+                        auxList[0].active = false
 
-                    } else if (res.cancelationDate != null && cancelatedByUser) {
-                        auxList[0].cancelationDate = res.cancelationDate
-                        reservationState.postValue(ReservState.CANCELED_BY_USER)
-                        cancelatedByUser = false
+                        if (res.cancelationDate != null) {
+                            //Reserva cancelada
+                            auxList[0].cancelationDate = res.cancelationDate
 
-                    } else if (res.userLeftDate != null) {
-                        auxList[0].userLeftDate = res.userLeftDate
-                        reservationState.postValue(ReservState.FINALIZED)
+                            //Reserva cancelada por el estacionamiento
+                            reservationState.postValue(SingleMsg("Su reserva fue cancelada por el estacionamiento"))
+
+                        }
+                        if (res.userLeftDate != null) {
+                            //Reserva finalizada
+                            auxList[0].userLeftDate = res.userLeftDate
+                            reservationState.postValue(SingleMsg("Su reserva fue finalizada por el estacionamiento"))
+                        }
+
+                        currentReservation.postValue(null)
+                        reservationsList.postValue(auxList)
 
                     }
-                    reservationsList.postValue(auxList)
 
-                    Log.d("Test", "DocumentSnapshot: ${auxList[0]}")
+                    //Log.d("Test", "DocumentSnapshot: ${auxList[0]}")
                 }
             } else {
                 Log.d("Test", "Current data: null")
@@ -190,12 +194,12 @@ class ReservationsViewModel : ViewModel() {
                         completeVehicleExtraData(auxRes.vehicleID, auxRes)
                         currentReservation.postValue(auxRes)
 
-                        var auxList: MutableList<Reservation> = reservationsList.value!!
+                        val auxList: MutableList<Reservation> = reservationsList.value!!
                         auxList.add(0, auxRes)
                         // guardar reserva, en currentReservation y generar snapshot
                         reservationsList.postValue(auxList)
                         createSnapshot(auxRes.uid)
-                        //getAllReservations(currentReservation.value!!.userID)
+                        //getAllReservations(userID)
 
                         Log.d(
                             "TEST: ReservationsVM -> makeReservation($userID, $parkingID, $vehicleID): ",
@@ -230,22 +234,30 @@ class ReservationsViewModel : ViewModel() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun cancelCurrentReservation() {
         //Esto debería implementarse en una transacción
+        reservSnapshot.remove()
+
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 if (currentReservation.value != null) {
                     val cancelDate =
                         LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"))
 
-                    //Inicio de la transacción
-                    db.collection(RESERVATIONS_COL)
-                        .document(currentReservation.value!!.uid)
-                        .update(
-                            mapOf(
-                                "active" to false,
-                                "cancelationDate" to cancelDate
-                            )
-                        ).await()
+                    try {
+                        db.collection(RESERVATIONS_COL)
+                            .document(currentReservation.value!!.uid)
+                            .update(
+                                mapOf(
+                                    "active" to false,
+                                    "cancelationDate" to cancelDate
+                                )
+                            ).await()
+                    } catch (e: Exception) {
+                        //En caso de error, restauro el snapshot
+                        createSnapshot(currentReservation.value!!.uid)
+                        throw  e
+                    }
 
+                    //A continuación se libera el spot
                     db.collection(SPOTS_COL)
                         .document(currentReservation.value!!.parkingSpotID)
                         .update(
@@ -254,25 +266,26 @@ class ReservationsViewModel : ViewModel() {
                             )
                         )
                         .await()
-                    //Fin de la transacción => actualizo los livedata
+
                     currentReservation.postValue(null)
-                    cancelatedByUser = true
 
                     sendMsgToFront(
                         msgToProfFrag,
                         SingleMsg("La reserva fue cancelada exitosamente")
                     )
 
+                    //A continuación, se lanza la notificación
+                    reservationState.postValue(SingleMsg("Acabas de cancelar tu reserva exitosamente"))
+
                     //Ahora actualizo la lista de reservas
                     //Creo una lista temporal para acutalizar solo el primer item de la lista
                     val resList = reservationsList.value
 
-                    if (resList!!.get(0).active) {
-                        resList?.get(0)?.active = false
-                        resList?.get(0)?.cancelationDate = cancelDate
+                    if (resList!![0].active) {
+                        resList[0].active = false
+                        resList[0].cancelationDate = cancelDate
                     }
 
-                    //reservationsList.value!!.clear()
                     reservationsList.postValue(resList)
 
                     //Ahora vuelvo a actualizar la lista completa por las dudas.
@@ -283,6 +296,7 @@ class ReservationsViewModel : ViewModel() {
                         "Reserva cancelada"
                     )
                 } else {
+                    //cancelatedByUser = false
                     Log.d(
                         "TEST: ReservationsVM -> cancelCurrentReservation(): ",
                         "No hay una reserva activa"
@@ -292,6 +306,7 @@ class ReservationsViewModel : ViewModel() {
                     )
                 }
             } catch (e: Exception) {
+                //cancelatedByUser = false
                 Log.d(
                     "TEST: ReservationsVM -> cancelCurrentReservation(): ",
                     "Error al cancelar: ${e.message}"
@@ -325,7 +340,7 @@ class ReservationsViewModel : ViewModel() {
     private suspend fun hasReservations(userId: String): Boolean {
         var hasReservations = false
 
-        var query = db.collection(RESERVATIONS_COL)
+        val query = db.collection(RESERVATIONS_COL)
             .limit(1)
             .whereEqualTo("userID", userId)
             .whereEqualTo("active", true)
@@ -335,9 +350,9 @@ class ReservationsViewModel : ViewModel() {
         if (query.size() > 0) {
             hasReservations = true
 
-            for (d in query) {
+            /*for (d in query) {
                 //Log.d("TEST: ReservationsVM -> hasReservations($userId)", d.toString())
-            }
+            }*/
             Log.d("TEST: ReservationsVM -> hasReservations($userId): ", hasReservations.toString())
         }
         return hasReservations
@@ -345,7 +360,7 @@ class ReservationsViewModel : ViewModel() {
 
     private suspend fun completeParkingExtraData(parkingID: String, reservation: Reservation) {
         try {
-            var parking = db.collection(PARKINGS_COL).document(parkingID).get()
+            val parking = db.collection(PARKINGS_COL).document(parkingID).get()
                 .await()
 
             reservation.parking = parking.toObject()!!
@@ -364,7 +379,7 @@ class ReservationsViewModel : ViewModel() {
 
     private suspend fun completeVehicleExtraData(vehicleID: String, reservation: Reservation) {
         try {
-            var vehicle = db.collection(VEHICLES_COL).document(vehicleID).get()
+            val vehicle = db.collection(VEHICLES_COL).document(vehicleID).get()
                 .await()
 
             reservation.vehicle = vehicle.toObject()!!
@@ -385,7 +400,7 @@ class ReservationsViewModel : ViewModel() {
         mutableLiveData.postValue(smsg)
     }
 
-    fun resetCancelationValidator(){
+/*    fun resetCancelationValidator() {
         cancelatedByUser = false
-    }
+    }*/
 }

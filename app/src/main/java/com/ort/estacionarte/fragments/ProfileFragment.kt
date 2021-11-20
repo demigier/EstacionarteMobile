@@ -1,13 +1,11 @@
 package com.ort.estacionarte.fragments
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.view.*
 import android.widget.Button
 import androidx.fragment.app.Fragment
@@ -20,10 +18,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ort.estacionarte.R
+import com.ort.estacionarte.activities.LoadingDialog
 import com.ort.estacionarte.adapters.ReservationsAdapter
 import com.ort.estacionarte.viewmodels.LoginViewModel
 import com.ort.estacionarte.viewmodels.ReservationsViewModel
-import kotlinx.coroutines.*
 
 class ProfileFragment : Fragment() {
 
@@ -48,8 +46,8 @@ class ProfileFragment : Fragment() {
     private lateinit var recyclerViewReservations: RecyclerView
     private lateinit var reservationsAdapter: ReservationsAdapter
 
-    private val parentJob = Job()
-    val scope = CoroutineScope(Dispatchers.Default + parentJob)
+    //private val parentJob = Job()
+    //val scope = CoroutineScope(Dispatchers.Default + parentJob)
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -63,13 +61,16 @@ class ProfileFragment : Fragment() {
         txtUsername = v.findViewById(R.id.txtUserName)
         recyclerViewReservations = v.findViewById(R.id.recyclerViewReservas)
 
+        val loadinDialog = LoadingDialog(requireActivity())
+        loadinDialog.startDialog()
+
         loginVM.currentUser.observe(viewLifecycleOwner, Observer { currentUser ->
             if (currentUser != null) {
                 txtUsername.text = currentUser.lastName + " " + currentUser.name
             }
         })
 
-        reservationsVM.msgToProfFrag.observe(viewLifecycleOwner, Observer{ smsg ->
+        reservationsVM.msgToProfFrag.observe(viewLifecycleOwner, Observer { smsg ->
             if (smsg.isNew()) sendAlertMessage(smsg.readMsg(), "Atencion")
         })
 
@@ -77,14 +78,15 @@ class ProfileFragment : Fragment() {
         reservationsAdapter = ReservationsAdapter(reservationsVM.reservationsList.value!!, { item ->
             onItemClick(item)
         }, requireContext())
-        recyclerViewReservations.setHasFixedSize(false) //Cambie esto a false
-        var linearLayoutManager = LinearLayoutManager(context)
+        recyclerViewReservations.setHasFixedSize(false) //Se cambió esto a false
+        val linearLayoutManager = LinearLayoutManager(context)
         recyclerViewReservations.layoutManager = linearLayoutManager
         recyclerViewReservations.adapter = reservationsAdapter
 
         reservationsVM.reservationsList.observe(viewLifecycleOwner, Observer { reservationsList ->
-            if(reservationsList.size > 0){
+            if (reservationsList.size > 0) {
                 //recyclerViewReservations.adapter!!.notifyDataSetChanged()
+                loadinDialog.dismissDialog()
 
                 reservationsAdapter = ReservationsAdapter(reservationsList, { item ->
                     onItemClick(item)
@@ -98,7 +100,7 @@ class ProfileFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        reservationsVM.getAllReservations(loginVM.currentUser.value!!.uid)
+        //reservationsVM.getAllReservations(loginVM.currentUser.value!!.uid)
 
         btnVehicles.setOnClickListener {
             Navigation.findNavController(v).navigate(R.id.vehiclesFragment)
@@ -111,7 +113,7 @@ class ProfileFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun onItemClick(item: Int) {
-        if(reservationsVM.reservationsList.value!![item].active){
+        if (reservationsVM.reservationsList.value!![item].active) {
             val builder: AlertDialog.Builder? = activity?.let {
                 AlertDialog.Builder(it)
             }
@@ -148,7 +150,7 @@ class ProfileFragment : Fragment() {
         builder?.show()
     }
 
-    //Funciones para manejo de las SP
+    // Funciones para manejo de las SP
     private fun saveInSharedPreferences(tag: String, values: Map<String, Any>) {
         val sharedPref: SharedPreferences = requireContext().getSharedPreferences(
             tag,

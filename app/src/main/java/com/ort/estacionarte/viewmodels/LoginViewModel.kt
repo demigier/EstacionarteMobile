@@ -136,7 +136,7 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    fun registerUserV2(newUser: User, password: String) {
+ /*   fun registerUserV2(newUser: User, password: String) {
         auth.createUserWithEmailAndPassword(newUser.email, password)
             .addOnSuccessListener { result ->
                 newUser.uid = result.user?.uid.toString()
@@ -150,7 +150,7 @@ class LoginViewModel : ViewModel() {
             .addOnFailureListener { e ->
                 sendMsgToFront(msgToRegister, SingleMsg(e.message.toString()))
             }
-    }
+    }*/
 
     private suspend fun getFirebaseUserData(userID: String): User? {
         var doc = db.collection(USERS_COLLECTION).document(userID).get().await()
@@ -162,9 +162,9 @@ class LoginViewModel : ViewModel() {
         db.collection(USERS_COLLECTION).document(newUser.uid).set(newUser).await()
     }
 
-    private fun registerFirebaseUserDataV2(newUser: User): Task<Void> {
+  /*  private fun registerFirebaseUserDataV2(newUser: User): Task<Void> {
         return db.collection(USERS_COLLECTION).document(newUser.uid).set(newUser)
-    }
+    }*/
 
     fun logOut() {
         try {

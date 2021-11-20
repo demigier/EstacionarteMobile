@@ -7,12 +7,12 @@
     <string name="hint_password">Ingrese su contraseña…</string>
     <string name="hint_name">Ingrese su nombre…</string>
     <string name="hint_last_name">Ingrese su apellido…</string>
-    <string name="hint_phone_number">Ingrese su telefono…</string>
+    <string name="hint_phone_number">Ingrese su teléfono…</string>
     <string name="hint_repeat_password">Repita su contraseña…</string>
 
     <!--BTN TEXTS-->
     <string name="btn_login">Login</string>
-    <string name="btn_register">Registrate aqui</string>
+    <string name="btn_register">Registrate aquí</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="reservar">Reservar</string>
     <string name="parking">Parking</string>

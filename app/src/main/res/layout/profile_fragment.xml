@@ -50,13 +50,13 @@
         app:layout_constraintGuide_percent="0.15" />
 
     <View
-        android:id="@+id/imgFondo"
-        android:layout_width="0dp"
+        android:id="@+id/backVehicle"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:background="@drawable/back_splash"
+        android:layout_marginBottom="0dp"
+        android:background="@drawable/title_background"
         app:layout_constraintBottom_toTopOf="@+id/guideline8"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -72,12 +72,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <View
+        android:id="@+id/imgFondo"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/subtitle_background"
+        app:layout_constraintBottom_toTopOf="@+id/guideline9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline15" />
+
+
     <TextView
         android:id="@+id/txtTitleList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:text="Tus reservas"
-        android:textColor="#000000"
+        android:textColor="#FFFFFF"
         android:textSize="34sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline9"
         app:layout_constraintEnd_toEndOf="parent"
@@ -87,13 +101,13 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewReservas"
-        android:layout_width="414dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtTitleList"
+        app:layout_constraintTop_toBottomOf="@+id/guideline9"
         app:layout_constraintVertical_bias="1.0" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -108,7 +122,7 @@
         android:layout_width="64dp"
         android:layout_height="21dp"
         android:layout_marginStart="92dp"
-        android:text="Vehiculos"
+        android:text="Vehículos"
         app:layout_constraintBottom_toTopOf="@+id/guideline15"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnVehicles" />
@@ -118,7 +132,7 @@
         android:layout_width="wrap_content"
         android:layout_height="19dp"
         android:layout_marginEnd="76dp"
-        android:text="Configuracion"
+        android:text="Configuración"
         app:layout_constraintBottom_toTopOf="@+id/guideline15"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnConfig" />

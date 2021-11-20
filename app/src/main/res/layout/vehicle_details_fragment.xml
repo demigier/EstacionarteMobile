@@ -49,7 +49,7 @@
         android:id="@+id/logo3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Mi vehiculo"
+        android:text="Mi vehículo"
         android:textColor="#FFFFFF"
         android:textSize="34sp"
         app:layout_constraintBottom_toTopOf="@+id/backVehicle"
