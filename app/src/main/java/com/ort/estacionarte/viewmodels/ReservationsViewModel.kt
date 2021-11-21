@@ -40,6 +40,7 @@ class ReservationsViewModel : ViewModel() {
 
     var msgToProfFrag = MutableLiveData<SingleMsg>()
     var msgToParkDetFrag = MutableLiveData<SingleMsg>()
+    var msgToLoadinDialog = MutableLiveData<SingleMsg>()
 
     fun getAllReservations(userID: String) {
         viewModelScope.launch {
@@ -59,6 +60,7 @@ class ReservationsViewModel : ViewModel() {
                     completeParkingExtraData(list.last().parkingID, list.last())
                     completeVehicleExtraData(list.last().vehicleID, list.last())
                 }
+                sendMsgToFront(msgToLoadinDialog,SingleMsg("END"))
                 reservationsList.postValue(list)
 
                 if (list.isNotEmpty()) {

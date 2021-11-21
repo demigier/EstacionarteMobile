@@ -16,7 +16,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import com.ort.estacionarte.R
-import com.ort.estacionarte.activities.LoadingDialog
 import com.ort.estacionarte.viewmodels.LoginViewModel
 import com.ort.estacionarte.viewmodels.ReservationsViewModel
 import com.ort.estacionarte.viewmodels.VehiclesViewModel
@@ -30,7 +29,6 @@ class LoginFragment : Fragment() {
     private val reservationsVM: ReservationsViewModel by activityViewModels()
     private val vehiclesVM: VehiclesViewModel by activityViewModels()
 
-    //private lateinit var loginViewModel: LoginViewModel
     lateinit var v: View
 
     lateinit var txtMail: EditText
@@ -41,7 +39,7 @@ class LoginFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        loginVM.getCurrentUser()
+        //loginVM.getCurrentUser()
     }
 
     override fun onCreateView(
@@ -62,11 +60,12 @@ class LoginFragment : Fragment() {
         super.onStart()
 
         loginVM.currentUser.observe(viewLifecycleOwner, Observer { currentUser ->
-
             if (currentUser != null) {
                 saveInSharedPreferences("Session", mapOf("userID" to currentUser.uid))
+
                 reservationsVM.getAllReservations(currentUser.uid)
                 vehiclesVM.getUserVehicles(currentUser.uid)
+
                 Navigation.findNavController(v).popBackStack(R.id.loginFragment, true)
                 Navigation.findNavController(v).navigate(R.id.mapFragment)
             }

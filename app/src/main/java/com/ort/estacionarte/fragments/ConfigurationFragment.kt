@@ -1,7 +1,9 @@
 package com.ort.estacionarte.fragments
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.DialogInterface
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import com.ort.estacionarte.R
@@ -141,6 +144,16 @@ class ConfigurationFragment : Fragment() {
         reservationsVM.reservationsList.value = mutableListOf()
         reservationsVM.currentReservation.value = null
         vehiclesVM.vehiclesList.value = mutableListOf()
+        reservationsVM.msgToLoadinDialog = MutableLiveData<SingleMsg>() //Limpia el loading dialog
+
+        val sharedPref: SharedPreferences = requireContext().getSharedPreferences(
+            "Session",
+            Context.MODE_PRIVATE
+        )
+        val editor = sharedPref.edit()
+
+        editor.remove("userID")
+        editor.apply()
 
         //Navegar hasta loginFragment
         Navigation.findNavController(v).popBackStack(R.id.mapFragment, true)

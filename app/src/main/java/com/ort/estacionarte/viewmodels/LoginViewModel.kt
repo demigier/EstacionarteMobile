@@ -136,22 +136,6 @@ class LoginViewModel : ViewModel() {
         }
     }
 
- /*   fun registerUserV2(newUser: User, password: String) {
-        auth.createUserWithEmailAndPassword(newUser.email, password)
-            .addOnSuccessListener { result ->
-                newUser.uid = result.user?.uid.toString()
-
-                registerFirebaseUserDataV2(newUser)
-                    .addOnSuccessListener {
-                        currentUser.value = newUser
-                        sendMsgToFront(msgToRegister, SingleMsg("Usuario registrado"))
-                    }
-            }
-            .addOnFailureListener { e ->
-                sendMsgToFront(msgToRegister, SingleMsg(e.message.toString()))
-            }
-    }*/
-
     private suspend fun getFirebaseUserData(userID: String): User? {
         var doc = db.collection(USERS_COLLECTION).document(userID).get().await()
 
@@ -162,10 +146,6 @@ class LoginViewModel : ViewModel() {
         db.collection(USERS_COLLECTION).document(newUser.uid).set(newUser).await()
     }
 
-  /*  private fun registerFirebaseUserDataV2(newUser: User): Task<Void> {
-        return db.collection(USERS_COLLECTION).document(newUser.uid).set(newUser)
-    }*/
-
     fun logOut() {
         try {
             Firebase.auth.signOut()
@@ -174,7 +154,7 @@ class LoginViewModel : ViewModel() {
 
         } catch (e: Exception) {
             Log.d("LoginVM -> logOut:", e.toString())
-            //sendMsgToFront(,"Error")
+            sendMsgToFront(msgToConfFrag,SingleMsg("Error"))
         }
     }
 

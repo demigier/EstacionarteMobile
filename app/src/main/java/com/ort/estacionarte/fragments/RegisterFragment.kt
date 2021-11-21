@@ -104,6 +104,8 @@ class RegisterFragment : Fragment() {
 
     private fun validateInput(): Boolean {
         var validData: Boolean = false
+        //val phonePattern = Regex("[^a-zA-Z]")
+        //val namePattern = Regex("")
 
         if (txtMail.text.isEmpty() || txtPassword.text.isEmpty() || txtName.text.isEmpty() || txtLastName.text.isEmpty() || txtPhoneNumber.text.isEmpty()) {
             loginViewModel.msgToRegister.value = SingleMsg("No deje campos vacios")
@@ -111,12 +113,14 @@ class RegisterFragment : Fragment() {
         } else if (txtPassword.text.toString() != txtPassword2.text.toString()) {
             loginViewModel.msgToRegister.value = SingleMsg("Las contraseñas deben coincidir")
 
-        } else {
-            //Faltaría chequear que el telefono cumpla con un formato específico.
-            //Y que los nombres no contengan nros. y caracteres especiales, etc.
+        }
+        /*else if(!phonePattern.matches(txtPhoneNumber.text)){
+            loginViewModel.msgToRegister.value = SingleMsg("El telefonó no tiene un formato válido")
+
+        }*/
+        else{
             validData = true
         }
-
         return validData
     }
 

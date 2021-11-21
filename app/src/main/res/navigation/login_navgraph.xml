@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/login_navgraph"
-    app:startDestination="@id/loginFragment">
+    app:startDestination="@id/splashFragment">
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.ort.estacionarte.fragments.LoginFragment"
@@ -87,4 +87,16 @@
         android:name="com.ort.estacionarte.fragments.ParkingDetailsFragment"
         android:label="parking_fragment"
         tools:layout="@layout/parking_details_fragment" />
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.ort.estacionarte.fragments.SplashFragment"
+        android:label="splash_fragment"
+        tools:layout="@layout/splash_fragment" >
+        <action
+            android:id="@+id/action_splashFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+        <action
+            android:id="@+id/action_splashFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
 </navigation>

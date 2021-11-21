@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ort.estacionarte.R
-import com.ort.estacionarte.activities.LoadingDialog
+import com.ort.estacionarte.adapters.LoadingDialog
 import com.ort.estacionarte.adapters.ReservationsAdapter
 import com.ort.estacionarte.viewmodels.LoginViewModel
 import com.ort.estacionarte.viewmodels.ReservationsViewModel
@@ -45,9 +45,6 @@ class ProfileFragment : Fragment() {
 
     private lateinit var recyclerViewReservations: RecyclerView
     private lateinit var reservationsAdapter: ReservationsAdapter
-
-    //private val parentJob = Job()
-    //val scope = CoroutineScope(Dispatchers.Default + parentJob)
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
@@ -86,12 +83,18 @@ class ProfileFragment : Fragment() {
         reservationsVM.reservationsList.observe(viewLifecycleOwner, Observer { reservationsList ->
             if (reservationsList.size > 0) {
                 //recyclerViewReservations.adapter!!.notifyDataSetChanged()
-                loadinDialog.dismissDialog()
 
                 reservationsAdapter = ReservationsAdapter(reservationsList, { item ->
                     onItemClick(item)
                 }, requireContext())
                 recyclerViewReservations.adapter = reservationsAdapter
+            }
+        })
+
+        reservationsVM.msgToLoadinDialog.observe(viewLifecycleOwner, Observer { smsg ->
+            if (smsg.isNew()){
+                //smsg.readMsg()
+                loadinDialog.dismissDialog()
             }
         })
 

@@ -1,4 +1,4 @@
-package com.ort.estacionarte.activities
+package com.ort.estacionarte.adapters
 
 import android.app.Activity
 import android.app.AlertDialog
