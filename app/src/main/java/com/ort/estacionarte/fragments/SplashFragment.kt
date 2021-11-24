@@ -39,7 +39,7 @@ class SplashFragment : Fragment() {
         Log.d("test", userID!!)
 
         Handler().postDelayed({
-            if (userID != "") {
+            if (userID != "default") {
                 Log.d("TestRedirect", userID)
                 reservationsVM.getAllReservations(userID)
                 vehiclesVM.getUserVehicles(userID)
