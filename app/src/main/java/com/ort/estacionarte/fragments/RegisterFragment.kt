@@ -18,6 +18,8 @@ import com.ort.estacionarte.R
 import com.ort.estacionarte.adapters.SingleMsg
 import com.ort.estacionarte.entitiescountry.User
 import com.ort.estacionarte.viewmodels.LoginViewModel
+import com.ort.estacionarte.viewmodels.ReservationsViewModel
+import com.ort.estacionarte.viewmodels.VehiclesViewModel
 
 class RegisterFragment : Fragment() {
 
@@ -26,8 +28,9 @@ class RegisterFragment : Fragment() {
     }
 
     private val loginViewModel: LoginViewModel by activityViewModels()
+    private val reservationsVM: ReservationsViewModel by activityViewModels()
+    private val vehiclesVM: VehiclesViewModel by activityViewModels()
 
-    //private lateinit var loginViewModel: LoginViewModel
     lateinit var v: View
 
     lateinit var txtMail: EditText
@@ -61,6 +64,9 @@ class RegisterFragment : Fragment() {
         loginViewModel.currentUser.observe(viewLifecycleOwner, Observer { user ->
             if (user != null) {
                 saveInSharedPreferences("Session", mapOf("userID" to user.uid))
+
+                reservationsVM.getAllReservations(user.uid)
+                vehiclesVM.getUserVehicles(user.uid)
 
                 Navigation.findNavController(v).popBackStack(R.id.loginFragment, true)
                 Navigation.findNavController(v).navigate(R.id.mapFragment)
@@ -104,8 +110,6 @@ class RegisterFragment : Fragment() {
 
     private fun validateInput(): Boolean {
         var validData: Boolean = false
-        //val phonePattern = Regex("[^a-zA-Z]")
-        //val namePattern = Regex("")
 
         if (txtMail.text.isEmpty() || txtPassword.text.isEmpty() || txtName.text.isEmpty() || txtLastName.text.isEmpty() || txtPhoneNumber.text.isEmpty()) {
             loginViewModel.msgToRegister.value = SingleMsg("No deje campos vacios")
@@ -113,12 +117,13 @@ class RegisterFragment : Fragment() {
         } else if (txtPassword.text.toString() != txtPassword2.text.toString()) {
             loginViewModel.msgToRegister.value = SingleMsg("Las contraseñas deben coincidir")
 
-        }
-        /*else if(!phonePattern.matches(txtPhoneNumber.text)){
-            loginViewModel.msgToRegister.value = SingleMsg("El telefonó no tiene un formato válido")
-
-        }*/
-        else{
+        } else if(txtName.text.length > 15 || txtLastName.text.length > 15){
+            loginViewModel.msgToRegister.value = SingleMsg("El maximo de caracteres de los nombres y apellidos es de 15")
+        } else if(txtName.text.length < 3){
+            loginViewModel.msgToRegister.value = SingleMsg("El nombre debe tener minimo tres caracteres")
+        } else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(txtMail.text).matches()){
+            loginViewModel.msgToRegister.value = SingleMsg("El formato del mail es invalido")
+        } else{
             validData = true
         }
         return validData
@@ -144,9 +149,9 @@ class RegisterFragment : Fragment() {
         editor.apply()
     }
 
-    private fun getFromSharedPreferences(tag: String): MutableMap<String, *>? {
+    /*private fun getFromSharedPreferences(tag: String): MutableMap<String, *>? {
         return requireContext().getSharedPreferences(tag, Context.MODE_PRIVATE).all
-    }
+    }*/
 
 
 }

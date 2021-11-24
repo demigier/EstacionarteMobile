@@ -33,9 +33,8 @@ class SplashFragment : Fragment() {
 
         loginVM.getCurrentUser()
 
-        val sharedPref: SharedPreferences =
-            requireContext().getSharedPreferences("Session", Context.MODE_PRIVATE)
-        var userID = sharedPref.getString("userID", "")
+        val sharedPref: SharedPreferences = requireContext().getSharedPreferences("Session", Context.MODE_PRIVATE)
+        var userID = sharedPref.getString("userID", "default")
 
         Log.d("test", userID!!)
 
@@ -55,10 +54,6 @@ class SplashFragment : Fragment() {
         }, 1000)
 
         return v
-    }
-
-    override fun onStart() {
-        super.onStart()
     }
 
 }

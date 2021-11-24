@@ -21,9 +21,6 @@ import com.ort.estacionarte.entitiescountry.User
 import com.ort.estacionarte.viewmodels.LoginViewModel
 import com.ort.estacionarte.viewmodels.ReservationsViewModel
 import com.ort.estacionarte.viewmodels.VehiclesViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 
 class ConfigurationFragment : Fragment() {
 
@@ -92,8 +89,6 @@ class ConfigurationFragment : Fragment() {
                     btnUpdate.text = "Editar"
                     btnUpdate.setBackgroundColor(Color.RED);
 
-                    //Navigation.findNavController(v).popBackStack(R.id.configurationFragment, true)
-                    //Navigation.findNavController(v).navigate(R.id.profileFragment)
                 }
             } else {
                 editMode = !editMode
@@ -127,11 +122,13 @@ class ConfigurationFragment : Fragment() {
         var validData = false
 
         if (txtName.text.isEmpty() || txtLastName.text.isEmpty() || txtPhoneNumber.text.isEmpty()) {
-            loginVM.msgToConfFrag.value = SingleMsg("No deje campos vacios")
+            loginVM.msgToConfFrag.value = SingleMsg("No deje campos vacios", true)
 
+        }  else if(txtName.text.length > 15 || txtLastName.text.length > 15){
+            loginVM.msgToConfFrag.value = SingleMsg("El maximo de caracteres de los nombres y apellidos es de 15", true)
+        } else if(txtName.text.length < 3){
+            loginVM.msgToConfFrag.value = SingleMsg("El nombre debe tener minimo tres caracteres", true)
         } else {
-            //Faltaría chequear que el telefono cumpla con un formato específico con regex.
-            //Y que los nombres no contengan nros. y caracteres especiales, etc.
             validData = true
         }
 

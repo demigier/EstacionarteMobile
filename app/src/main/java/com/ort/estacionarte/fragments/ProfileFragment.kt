@@ -36,12 +36,7 @@ class ProfileFragment : Fragment() {
 
     lateinit var btnVehicles: FloatingActionButton
     lateinit var btnConfig: FloatingActionButton
-    lateinit var btnCancel: Button
     lateinit var txtUsername: TextView
-    lateinit var txtReservPName: TextView
-    lateinit var txtReservPAddress: TextView
-    lateinit var txtReservPPhone: TextView
-    lateinit var txtReservVehicle: TextView
 
     private lateinit var recyclerViewReservations: RecyclerView
     private lateinit var reservationsAdapter: ReservationsAdapter
@@ -63,7 +58,8 @@ class ProfileFragment : Fragment() {
 
         loginVM.currentUser.observe(viewLifecycleOwner, Observer { currentUser ->
             if (currentUser != null) {
-                txtUsername.text = currentUser.lastName + " " + currentUser.name
+                //txtUsername.text = currentUser.lastName + " " + currentUser.name
+                txtUsername.text = currentUser.name[0].uppercase() + currentUser.name.subSequence(1,currentUser.name.length) + " " + currentUser.lastName[0].uppercase()
             }
         })
 
@@ -82,8 +78,6 @@ class ProfileFragment : Fragment() {
 
         reservationsVM.reservationsList.observe(viewLifecycleOwner, Observer { reservationsList ->
             if (reservationsList.size > 0) {
-                //recyclerViewReservations.adapter!!.notifyDataSetChanged()
-
                 reservationsAdapter = ReservationsAdapter(reservationsList, { item ->
                     onItemClick(item)
                 }, requireContext())
@@ -103,7 +97,6 @@ class ProfileFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        //reservationsVM.getAllReservations(loginVM.currentUser.value!!.uid)
 
         btnVehicles.setOnClickListener {
             Navigation.findNavController(v).navigate(R.id.vehiclesFragment)
@@ -153,8 +146,7 @@ class ProfileFragment : Fragment() {
         builder?.show()
     }
 
-    // Funciones para manejo de las SP
-    private fun saveInSharedPreferences(tag: String, values: Map<String, Any>) {
+    /*private fun saveInSharedPreferences(tag: String, values: Map<String, Any>) {
         val sharedPref: SharedPreferences = requireContext().getSharedPreferences(
             tag,
             Context.MODE_PRIVATE
@@ -175,5 +167,5 @@ class ProfileFragment : Fragment() {
 
     private fun getFromSharedPreferences(tag: String): MutableMap<String, *>? {
         return requireContext().getSharedPreferences(tag, Context.MODE_PRIVATE).all
-    }
+    }*/
 }

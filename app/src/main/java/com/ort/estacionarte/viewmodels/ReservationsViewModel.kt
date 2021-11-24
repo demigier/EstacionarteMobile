@@ -22,7 +22,6 @@ import java.time.format.DateTimeFormatter
 class ReservationsViewModel : ViewModel() {
     private var db = Firebase.firestore
 
-    //private val auth = Firebase.auth
     private val RESERVATIONS_COL = "Reservations"
     private val SPOTS_COL = "ParkingSpots"
     private val PARKINGS_COL = "ParkingUsers"
@@ -32,11 +31,8 @@ class ReservationsViewModel : ViewModel() {
     var reservationsList: MutableLiveData<MutableList<Reservation>> =
         MutableLiveData(mutableListOf())
 
-    //var reservationState: MutableLiveData<ReservState> = MutableLiveData()
     var reservationState = MutableLiveData<SingleMsg>()
     lateinit var reservSnapshot: ListenerRegistration
-
-    //var cancelatedByUser: Boolean = false
 
     var msgToProfFrag = MutableLiveData<SingleMsg>()
     var msgToParkDetFrag = MutableLiveData<SingleMsg>()
@@ -60,13 +56,13 @@ class ReservationsViewModel : ViewModel() {
                     completeParkingExtraData(list.last().parkingID, list.last())
                     completeVehicleExtraData(list.last().vehicleID, list.last())
                 }
+
                 sendMsgToFront(msgToLoadinDialog,SingleMsg("END"))
                 reservationsList.postValue(list)
 
                 if (list.isNotEmpty()) {
                     if (list[0].active) {
                         currentReservation.postValue(list[0])
-                        //reservationState.postValue(ReservState.PENDING)
                         createSnapshot(list[0].uid)
                     } else {
                         currentReservation.postValue(null)
@@ -121,8 +117,6 @@ class ReservationsViewModel : ViewModel() {
                         reservationsList.postValue(auxList)
 
                     }
-
-                    //Log.d("Test", "DocumentSnapshot: ${auxList[0]}")
                 }
             } else {
                 Log.d("Test", "Current data: null")
@@ -132,13 +126,6 @@ class ReservationsViewModel : ViewModel() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun makeReservation(userID: String, parkingID: String, vehicleID: String) {
-        //0) Previo a realizar la reserva hay que chequear que el ususarion no tenga una reserva vigente.
-        //1) Despues, hay que obtener un spot del estacionamiento.
-        //2) Pasar el spot a no disponible y
-        //3) generar la reserva con el userID, parkingID, y spotID.
-        //Todo_ esto debería hacerce en una transacción,
-        //ver: https://firebase.google.com/docs/firestore/manage-data/transactions
-
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 if (!hasReservations(userID)) {
@@ -201,7 +188,6 @@ class ReservationsViewModel : ViewModel() {
                         // guardar reserva, en currentReservation y generar snapshot
                         reservationsList.postValue(auxList)
                         createSnapshot(auxRes.uid)
-                        //getAllReservations(userID)
 
                         Log.d(
                             "TEST: ReservationsVM -> makeReservation($userID, $parkingID, $vehicleID): ",
@@ -235,7 +221,6 @@ class ReservationsViewModel : ViewModel() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun cancelCurrentReservation() {
-        //Esto debería implementarse en una transacción
         reservSnapshot.remove()
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -290,15 +275,11 @@ class ReservationsViewModel : ViewModel() {
 
                     reservationsList.postValue(resList)
 
-                    //Ahora vuelvo a actualizar la lista completa por las dudas.
-                    //getAllReservations(currentReservation.value!!.userID)
-
                     Log.d(
                         "TEST: ReservationsVM -> cancelCurrentReservation(): ",
                         "Reserva cancelada"
                     )
                 } else {
-                    //cancelatedByUser = false
                     Log.d(
                         "TEST: ReservationsVM -> cancelCurrentReservation(): ",
                         "No hay una reserva activa"
@@ -308,7 +289,6 @@ class ReservationsViewModel : ViewModel() {
                     )
                 }
             } catch (e: Exception) {
-                //cancelatedByUser = false
                 Log.d(
                     "TEST: ReservationsVM -> cancelCurrentReservation(): ",
                     "Error al cancelar: ${e.message}"
@@ -352,9 +332,6 @@ class ReservationsViewModel : ViewModel() {
         if (query.size() > 0) {
             hasReservations = true
 
-            /*for (d in query) {
-                //Log.d("TEST: ReservationsVM -> hasReservations($userId)", d.toString())
-            }*/
             Log.d("TEST: ReservationsVM -> hasReservations($userId): ", hasReservations.toString())
         }
         return hasReservations
@@ -401,8 +378,4 @@ class ReservationsViewModel : ViewModel() {
     private fun sendMsgToFront(mutableLiveData: MutableLiveData<SingleMsg>, smsg: SingleMsg) {
         mutableLiveData.postValue(smsg)
     }
-
-/*    fun resetCancelationValidator() {
-        cancelatedByUser = false
-    }*/
 }

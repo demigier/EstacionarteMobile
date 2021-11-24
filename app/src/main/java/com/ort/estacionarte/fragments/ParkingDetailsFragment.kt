@@ -23,8 +23,8 @@ import com.ort.estacionarte.viewmodels.ParkingDetailsViewModel
 import com.ort.estacionarte.viewmodels.ReservationsViewModel
 import com.ort.estacionarte.viewmodels.VehiclesViewModel
 import kotlinx.coroutines.*
-import java.time.OffsetDateTime
 
+@Suppress("RedundantIf")
 class ParkingDetailsFragment : Fragment(), AdapterView.OnItemClickListener {
 
     companion object {
@@ -47,9 +47,6 @@ class ParkingDetailsFragment : Fragment(), AdapterView.OnItemClickListener {
     lateinit var autoCompleteVehicles: AutoCompleteTextView
 
     var selectedVehicle: String = ""
-
-    private val parentJob = Job()
-    val scope = CoroutineScope(Dispatchers.Default + parentJob)
 
     lateinit var userID: String
 
@@ -102,15 +99,7 @@ class ParkingDetailsFragment : Fragment(), AdapterView.OnItemClickListener {
                 sendAlertMessage("Para reservas, debes agregar al menos un vehiculo en tu perfil", "Atencion")
             }
         })
-        //1) Traer datos del estacionamiento seleccionado para mostrar en pantalla
-        //      Nombre, direccion, precios, horarios, puntaje.
-        //2) Buscar si tiene lugares disponible -> habilitar boton de reservar.
-        //      Parking.getSlots().size() >0
-        // Procesos de reserva:
-        //3) Pasar el Slot a reservado, Crear una reserva y cargar datos del usuario, del estacionamiento y horarios
-        //  Parking.takeSlot().addUser()
-        //  addReserveDocument()
-        //4) Por ahora hasta ahí...
+
         if (loginVM.currentUser.value != null) { //userID != "default"
             btnReserve.setOnClickListener {
                 if(selectedVehicle != ""){

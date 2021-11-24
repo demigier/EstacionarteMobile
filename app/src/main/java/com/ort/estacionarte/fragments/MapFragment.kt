@@ -29,9 +29,7 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ort.estacionarte.R
-import com.ort.estacionarte.entities.Parking
 import com.ort.estacionarte.viewmodels.ParkingDetailsViewModel
-import kotlinx.coroutines.*
 import java.io.IOException
 
 
@@ -45,11 +43,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
     private lateinit var parkingDetailsViewModel: ParkingDetailsViewModel
     lateinit var v: View
 
-    private val parentJob = Job()
-    val scope = CoroutineScope(Dispatchers.Default + parentJob)
-
     lateinit var btnProfile: FloatingActionButton
-    lateinit var searchView: SearchView//search_address
+    lateinit var searchView: SearchView
     lateinit var listView: ListView
     var addresNamesList: MutableList<String> = mutableListOf()
     lateinit var adapter: ArrayAdapter<*>
@@ -59,7 +54,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
     lateinit var userID: String
     private lateinit var map: GoogleMap
 
-    private lateinit var parkingList: MutableList<Parking>
+    //private lateinit var parkingList: MutableList<Parking>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -171,7 +166,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnInfoWindowClickL
                         .position(marker)
                         .draggable(false)
                         .title(parking.parkingName)
-                        //.icon(bitmapDescriptorFromVector(requireContext(), R.drawable.parking))
                         .icon(bitmapDescriptorFromVector(requireContext(), R.drawable.e_circle))
                         .snippet("Direccion: " + parking.address)
                 )

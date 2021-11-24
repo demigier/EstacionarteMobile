@@ -36,12 +36,6 @@ class LoginFragment : Fragment() {
     lateinit var btnLogin: Button
     lateinit var btnRegister: TextView
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        //loginVM.getCurrentUser()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -77,7 +71,6 @@ class LoginFragment : Fragment() {
         })
 
         btnLogin.setOnClickListener {
-            //if (validateInput()) //no hace falta, lo resuelve Auth
             loginVM.loginUser(txtMail.text.toString(), txtPassword.text.toString())
         }
 
@@ -102,9 +95,9 @@ class LoginFragment : Fragment() {
         builder?.show()
     }
 
-    private fun validateInput(): Boolean {
+    /*private fun validateInput(): Boolean {
         return txtMail.text.isNotEmpty() && txtPassword.text.isNotEmpty()
-    }
+    }*/
 
     //Funciones para manejo de las SP
     private fun saveInSharedPreferences(tag: String, values: Map<String, Any>) {
@@ -126,8 +119,8 @@ class LoginFragment : Fragment() {
         editor.apply()
     }
 
-    private fun getFromSharedPreferences(tag: String): MutableMap<String, *>? {
+    /*private fun getFromSharedPreferences(tag: String): MutableMap<String, *>? {
         return requireContext().getSharedPreferences(tag, Context.MODE_PRIVATE).all
-    }
+    }*/
 
 }

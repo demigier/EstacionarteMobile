@@ -150,7 +150,6 @@ class LoginViewModel : ViewModel() {
         try {
             Firebase.auth.signOut()
             currentUser.value = null
-            //sendMsgToFront(msgToConfFrag, "Sesion finalizada")
 
         } catch (e: Exception) {
             Log.d("LoginVM -> logOut:", e.toString())

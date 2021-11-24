@@ -3,8 +3,6 @@ package com.ort.estacionarte.fragments
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
-import android.os.Build
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -14,15 +12,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.Navigation
 import com.ort.estacionarte.R
 import com.ort.estacionarte.entities.Vehicle
-import com.ort.estacionarte.viewmodels.LoginViewModel
 import com.ort.estacionarte.viewmodels.VehiclesViewModel
-import kotlinx.coroutines.*
 import java.util.*
 
 class VehicleDetailsFragment : Fragment() {
@@ -34,9 +29,6 @@ class VehicleDetailsFragment : Fragment() {
     private val vehicleViewModel: VehiclesViewModel by activityViewModels()
 
     lateinit var v: View
-
-    private val parentJob = Job()
-    val scope = CoroutineScope(Dispatchers.Default + parentJob)
 
     lateinit var txtBrand: EditText
     lateinit var txtModel: EditText
